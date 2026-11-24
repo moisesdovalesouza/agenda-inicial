@@ -459,7 +459,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.8.0';    // versão do programa
+const APP_RELEASE = '1.9.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -589,6 +589,7 @@ function save(renderAfter = true){
   S.updatedAt = Date.now();
   try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){ toast('Não foi possível salvar no navegador.'); }
   clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 500);
+  if (typeof cloudSchedule === 'function') cloudSchedule();
   if (renderAfter) render();
 }
 
@@ -1224,6 +1225,7 @@ function renderSide(){
     <div class="side-foot">
       <div class="who" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil"><b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</div>
       <div class="row">${storageLine()}<button class="btn icon ghost" data-act="theme" title="Tema: ${S.settings.theme === 'auto' ? 'automático' : S.settings.theme === 'dark' ? 'escuro' : 'claro'}">${themeIcon()}</button></div>
+      ${cloudLine()}
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
     </div>`;
 }
@@ -1638,10 +1640,10 @@ VIEWS.config = () => {
   <div class="page">
     <div class="kicker">Sistema</div>
     <h1 class="title">Configurações</h1>
-    <p class="sub">Tudo fica salvo na pasta Agenda Inicial, em Documentos, no seu computador.</p>
+    <p class="sub">${CLOUD.user ? 'Salvo na pasta Agenda Inicial, em Documentos, e na sua conta na nuvem.' : 'Tudo fica salvo na pasta Agenda Inicial, em Documentos, no seu computador.'}</p>
 
     <div class="sec"><div class="sec-h"><h2>Aplicativo</h2></div>
-      <div class="appcard">${ICON_SVG}<div><b style="font-family:var(--serif);font-size:17px">Agenda Inicial · versão ${APP_RELEASE}</b><div class="muted small">${isStandalone() ? 'Instalada como aplicativo.' : 'Aberta no navegador.'} As versões novas chegam sozinhas: ao abrir a agenda com internet, ela já carrega a mais recente. Seus dados nunca saem do computador.</div>
+      <div class="appcard">${ICON_SVG}<div><b style="font-family:var(--serif);font-size:17px">Agenda Inicial · versão ${APP_RELEASE}</b><div class="muted small">${isStandalone() ? 'Instalada como aplicativo.' : 'Aberta no navegador.'} As versões novas chegam sozinhas: ao abrir a agenda com internet, ela já carrega a mais recente.</div>
         <div style="display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s2)">
           ${window._bip ? `<button class="btn primary" data-act="pwa-install">Instalar aplicativo</button>` : ''}
           <button class="btn" data-act="up-check">${I.sync}Verificar versão</button>
@@ -1650,6 +1652,17 @@ VIEWS.config = () => {
       </div></div>
       ${S.settings.notesSeen === APP_RELEASE && UP.notes ? `<div class="card" style="margin-top:var(--s2)"><b>Novidades da versão ${APP_RELEASE}</b><ul style="margin:6px 0 0;padding-left:20px">${UP.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : ''}
       <p class="hint">Seus dados pessoais e as opções dos PDFs ficam em <a href="#" data-act="go" data-v="perfil">Perfil e PDFs</a>.</p>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Conta e nuvem</h2></div>
+      ${CLOUD.user ? `<dl class="kv">
+        <dt>Conta</dt><dd>${esc(CLOUD.user.email || '')}</dd>
+        <dt>Situação</dt><dd>${cloudLine().replace('<div class="row">', '').replace(/<\/div>$/, '')}</dd>
+      </dl>
+      <div style="display:flex;gap:var(--s2);margin-top:var(--s2)"><button class="btn" data-act="cloud-sync">${I.sync}Sincronizar agora</button><button class="btn ghost" data-act="cloud-out">Sair da conta</button></div>
+      <p class="hint">Registros, listas, cadernos, anotações, perfil, ponto e ajustes ficam na nuvem e chegam a qualquer aparelho em que você entrar com esta conta. Os arquivos anexados continuam na pasta deste computador; na nuvem vão só os nomes.</p>`
+      : `<p class="muted" style="margin:0 0 var(--s2)">Entre com a mesma conta Google do Termo Inicial para ter a agenda em qualquer lugar. Tudo o que já está aqui é enviado na primeira entrada, e a agenda continua funcionando sem internet.</p>
+      <button class="btn primary" data-act="cloud-in">${I.g}Entrar com Google</button>`}
     </div>
 
     <div class="sec"><div class="sec-h"><h2>Pasta de dados</h2></div>
@@ -1709,6 +1722,148 @@ VIEWS.config = () => {
   </div>`;
 };
 
+/* ---------------- Nuvem (Supabase do Termo Inicial) ---------------- */
+const SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
+const SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';   // chave pública; o acesso é protegido por usuário no banco
+const SYNC_KEY = 'agendaInicial.nuvem';
+const DEVICE_SETTINGS = ['openerOn', 'openerFiles', 'winPath', 'basePath', 'notesSeen'];
+const DEVICE_FIELDS = new Set(['fileTime', 'renamedFrom']);
+const CLOUD = { sb: null, user: null, state: 'off', last: 0, error: '', timer: null, busy: false, again: false };
+let SYNC = (() => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch(e){ return {}; } })();
+SYNC.sent = SYNC.sent || {}; SYNC.pulled = SYNC.pulled || '1970-01-01T00:00:00Z';
+const saveSync = () => { try { localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); } catch(e){} };
+function hashStr(str){ let h1 = 0xdeadbeef, h2 = 0x41c6ce57; for (let i = 0; i < str.length; i++){ const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); } h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909); return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36); }
+const clean = o => JSON.parse(JSON.stringify(o, (k, v) => DEVICE_FIELDS.has(k) ? undefined : v));
+function cloudItems(){
+  const m = new Map();
+  for (const e of S.entries) m.set('registro:' + e.id, e);
+  for (const l of S.lists) m.set('lista:' + l.id, l);
+  for (const f of S.files) m.set((f.kind === 'caderno' ? 'caderno:' : 'arquivo:') + f.id, f);
+  for (const [d, v] of Object.entries(S.days)) m.set('dia:' + d, v);
+  m.set('ajuste:perfil', S.profile); m.set('ajuste:ponto', S.ponto); m.set('ajuste:google', S.google);
+  const st = Object.assign({}, S.settings); for (const k of DEVICE_SETTINGS) delete st[k]; m.set('ajuste:ajustes', st);
+  return m;
+}
+async function cloudClient(){
+  if (CLOUD.sb) return CLOUD.sb;
+  await lib('supabase');
+  CLOUD.sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce', storageKey: 'agendaInicial.sessao' } });
+  CLOUD.sb.auth.onAuthStateChange((ev, session) => {
+    const u = session && session.user ? session.user : null;
+    const changed = (u && u.id) !== (CLOUD.user && CLOUD.user.id);
+    CLOUD.user = u;
+    if (u && changed){
+      if (SYNC.user && SYNC.user !== u.id){ SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; }
+      SYNC.user = u.id; saveSync(); cloudSync(true);
+    }
+    if (!u){ CLOUD.state = 'off'; }
+    renderSide(); if (ui.view === 'config') render(false);
+  });
+  return CLOUD.sb;
+}
+async function cloudLogin(){
+  if (!navigator.onLine) return toast('Sem internet agora. Tente de novo quando a conexão voltar.');
+  try {
+    const sb = await cloudClient();
+    const back = location.origin + location.pathname;
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: back } });
+    if (error) throw error;
+  } catch(e){ toast('Não foi possível entrar: ' + e.message, 6000); }
+}
+async function cloudLogout(){
+  if (!confirm('Sair da conta nesta agenda? Os dados continuam neste computador e na nuvem; só a sincronização para.')) return;
+  try { await (await cloudClient()).auth.signOut(); } catch(e){}
+  CLOUD.user = null; CLOUD.state = 'off'; SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; saveSync(); render();
+}
+function cloudSchedule(delay = 2500){ if (!CLOUD.user) return; clearTimeout(CLOUD.timer); CLOUD.timer = setTimeout(() => cloudSync(), delay); }
+function applyRow(r){
+  const del = r.excluido, d = r.dados || {};
+  const upsert = (arr, key = 'id') => { const i = arr.findIndex(x => x[key] === r.id); if (del){ if (i >= 0) arr.splice(i, 1); } else if (i >= 0){ const keep = {}; for (const k of DEVICE_FIELDS) if (arr[i][k] !== undefined) keep[k] = arr[i][k]; arr[i] = Object.assign(d, keep); } else arr.push(d); };
+  switch (r.tipo){
+    case 'registro': upsert(S.entries); break;
+    case 'lista':
+      if (!del && !SYNC.done){ const dup = S.lists.findIndex(l => l.id !== r.id && l.title === d.title && !(l.items || []).length && !(l.notes || '').trim()); if (dup >= 0){ const old = S.lists[dup].id; S.lists.splice(dup, 1); if (ui.listId === old) ui.listId = r.id; } }
+      upsert(S.lists); break;
+    case 'caderno': case 'arquivo': upsert(S.files); if (!del && r.tipo === 'caderno') pendingNbFiles.add(r.id); break;
+    case 'dia': if (del) delete S.days[r.id]; else S.days[r.id] = d; break;
+    case 'ajuste':
+      if (r.id === 'perfil') S.profile = Object.assign({}, S.profile, d);
+      if (r.id === 'ponto') S.ponto = Object.assign({ done: {} }, d);
+      if (r.id === 'google') S.google = Object.assign({}, S.google, d);
+      if (r.id === 'ajustes'){ const keep = {}; for (const k of DEVICE_SETTINGS) if (S.settings[k] !== undefined) keep[k] = S.settings[k]; S.settings = Object.assign({}, d, keep); resetHolidayCache(); }
+      break;
+  }
+}
+const pendingNbFiles = new Set();
+async function writePulledNotebooks(){
+  if (FS.state !== 'granted') return;
+  for (const id of [...pendingNbFiles]){
+    pendingNbFiles.delete(id);
+    const f = S.files.find(x => x.id === id); if (!f || typeof f.md !== 'string') continue;
+    try { let cur = null; try { cur = await (await fileOf(f)).text(); } catch(e){} if (cur !== f.md){ await writeRel(f.path, new Blob([f.md], { type: 'text/markdown' })); f.fileTime = Date.now() + 1500; } } catch(e){}
+  }
+}
+async function cloudSync(full){
+  if (!CLOUD.user || !navigator.onLine) { if (CLOUD.user) { CLOUD.state = 'offline'; renderSide(); } return; }
+  if (CLOUD.busy){ CLOUD.again = true; return; }
+  CLOUD.busy = true; CLOUD.state = 'sync'; renderSide();
+  try {
+    const sb = await cloudClient();
+    // 1. buscar o que mudou em outros aparelhos
+    let changed = false, from = full && !SYNC.done ? '1970-01-01T00:00:00Z' : SYNC.pulled;
+    for (;;){
+      const { data, error } = await sb.from('agendainicial_itens').select('tipo,id,dados,excluido,alterado_em,atualizado').gt('atualizado', from).order('atualizado', { ascending: true }).limit(500);
+      if (error) throw error;
+      const items = cloudItems();
+      for (const r of data){
+        const key = r.tipo + ':' + r.id, local = items.get(key);
+        const localHash = local ? hashStr(JSON.stringify(clean(local))) : null;
+        const localDirty = local ? localHash !== SYNC.sent[key] : false;
+        if (localDirty && local && SYNC.done) continue;          // alteração local ainda não enviada: a local vale
+        applyRow(r); changed = true;
+        SYNC.sent[key] = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {})));
+        from = r.atualizado;
+      }
+      SYNC.pulled = from;
+      if (data.length < 500) break;
+    }
+    if (changed){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); writePulledNotebooks(); }
+    // 2. enviar o que mudou aqui (inclui exclusões)
+    const items = cloudItems(), now = Date.now(), up = [];
+    for (const [key, obj] of items){
+      const h = hashStr(JSON.stringify(clean(obj)));
+      if (SYNC.sent[key] !== h){ const [tipo, ...rest] = key.split(':'); up.push({ tipo, id: rest.join(':'), dados: clean(obj), excluido: false, alterado_em: now, _h: h, _k: key }); }
+    }
+    for (const key of Object.keys(SYNC.sent)) if (!items.has(key) && SYNC.sent[key] !== '×'){ const [tipo, ...rest] = key.split(':'); up.push({ tipo, id: rest.join(':'), dados: {}, excluido: true, alterado_em: now, _h: '×', _k: key }); }
+    for (let i = 0; i < up.length; i += 200){
+      const chunk = up.slice(i, i + 200);
+      const { error } = await sb.from('agendainicial_itens').upsert(chunk.map(({ _h, _k, ...row }) => row), { onConflict: 'usuario,tipo,id' });
+      if (error) throw error;
+      for (const r of chunk) SYNC.sent[r._k] = r._h;
+    }
+    SYNC.done = true; saveSync();
+    CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
+    if (changed && !(ui.view === 'caderno' && NB.dirty)) render(false);
+  } catch(e){
+    CLOUD.state = 'erro'; CLOUD.error = e.message || String(e);
+    console.warn('Sincronização', e);
+  } finally {
+    CLOUD.busy = false; renderSide();
+    if (CLOUD.again){ CLOUD.again = false; cloudSchedule(800); }
+  }
+}
+function cloudLine(){
+  if (!CLOUD.user) return '';
+  const t = CLOUD.last ? new Date(CLOUD.last).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+  const map = { ok: ['ok', `Nuvem: sincronizado${t ? ' às ' + t : ''}`], sync: ['warn', 'Nuvem: sincronizando…'], offline: ['warn', 'Nuvem: sem internet, guarda para depois'], erro: ['err', 'Nuvem: ' + (CLOUD.error || 'erro')], off: ['', 'Nuvem'] };
+  const [c, txt] = map[CLOUD.state] || map.off;
+  return `<div class="row"><span title="${esc(CLOUD.user.email || '')}"><span class="dot ${c}"></span>${esc(txt)}</span></div>`;
+}
+window.addEventListener('online', () => cloudSync());
+window.addEventListener('offline', () => { if (CLOUD.user){ CLOUD.state = 'offline'; renderSide(); } });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudSync(); });
+setInterval(() => { if (!document.hidden) cloudSync(); }, 60000);
+
 /* ---------------- Versões ---------------- */
 const UP = { notes: null, checked: 0, error: '', newer: null };
 const verNum = v => String(v || '0').split('.').map(n => parseInt(n, 10) || 0).reduce((a, n) => a * 1000 + n, 0);
@@ -1730,7 +1885,7 @@ async function checkUpdate(manual){
 }
 
 /* ---------------- Visualizador de arquivos ---------------- */
-const LIBS = { jszip: 'assets/lib/jszip.min.js', docx: 'assets/lib/docx-preview.min.js', xlsx: 'assets/lib/xlsx.full.min.js', pptx: 'assets/lib/pptx-preview.umd.js', marked: 'assets/lib/marked.umd.js', turndown: 'assets/lib/turndown.umd.js', gfm: 'assets/lib/turndown-plugin-gfm.js' };
+const LIBS = { jszip: 'assets/lib/jszip.min.js', docx: 'assets/lib/docx-preview.min.js', xlsx: 'assets/lib/xlsx.full.min.js', pptx: 'assets/lib/pptx-preview.umd.js', marked: 'assets/lib/marked.umd.js', turndown: 'assets/lib/turndown.umd.js', gfm: 'assets/lib/turndown-plugin-gfm.js', supabase: 'assets/lib/supabase.umd.js' };
 const _libs = {};
 function lib(k){
   return _libs[k] || (_libs[k] = new Promise((res, rej) => {
@@ -1928,9 +2083,11 @@ function nbOpen(id){ ui.nbId = id; ui.nbHtml = null; ui.view = 'caderno'; render
 async function nbLoad(id){
   const f = nbById(id); if (!f) return;
   try {
-    const file = await fileOf(f);
-    f.fileTime = file.lastModified;
-    ui.nbHtml = await mdToHtml(await file.text());
+    let md;
+    if (FS.state === 'granted'){ try { const file = await fileOf(f); f.fileTime = file.lastModified; md = await file.text(); } catch(e){} }
+    if (md === undefined && typeof f.md === 'string') md = f.md;
+    if (md === undefined) throw new Error('o arquivo não está neste aparelho');
+    ui.nbHtml = await mdToHtml(md);
   } catch(e){ ui.nbHtml = ''; toast('Não consegui ler o caderno: ' + e.message); }
   if (ui.view === 'caderno' && ui.nbId === id) nbMount();
 }
@@ -1995,12 +2152,12 @@ function nbChanged(){
 async function nbSave(){
   const f = nbById(ui.nbId); const d = $('#nbdoc');
   if (!f || !NB.dirty) return;
-  if (FS.state !== 'granted'){ nbStatus('Pasta não autorizada: alterações só neste navegador'); return; }
   NB.dirty = false;
+  if (FS.state !== 'granted'){ try { const md = await htmlToMd(d ? d.innerHTML : ui.nbHtml || ''); f.md = md; f.updatedAt = Date.now(); f.preview = (d ? d.innerText : '').replace(/\s+/g, ' ').trim().slice(0, 180); save(false); nbStatus(CLOUD.user ? 'Salvo na nuvem' : 'Salvo neste navegador'); } catch(e){ NB.dirty = true; } return; }
   try {
     const md = await htmlToMd(d ? d.innerHTML : ui.nbHtml || '');
     await writeRel(f.path, new Blob([md], { type: 'text/markdown' }));
-    f.size = new Blob([md]).size; f.updatedAt = Date.now(); f.fileTime = Date.now() + 1500;
+    f.md = md; f.size = new Blob([md]).size; f.updatedAt = Date.now(); f.fileTime = Date.now() + 1500;
     f.preview = (d ? d.innerText : '').replace(/\s+/g, ' ').trim().slice(0, 180);
     save(false); renderSide();
     nbStatus('Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
@@ -2240,6 +2397,9 @@ const ACT = {
   'li-fold': a => { const it = curList().items.find(x => x.id === a.closest('.check').dataset.iid); it.collapsed = !it.collapsed; save(); },
   'f-folder': a => localAction('pasta', a.dataset.p),
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
+  'cloud-in': () => cloudLogin(),
+  'cloud-out': () => cloudLogout(),
+  'cloud-sync': () => { cloudSync(); toast('Sincronizando…'); },
   'm-close': () => { closeModal(); ui.pick = null; ui.pickFor = null; },
   'fl-add': a => { ui.pick = null; linkPicker(a.closest('[data-fid]').dataset.fid); },
   'fl-save': a => { const f = S.files.find(x => x.id === a.dataset.fid); f.entries = [...ui.pick]; const first = byId(f.entries[0]); if (first && first.date && !f.link) f.link = first.date; ui.pick = null; closeModal(); save(); toast(f.entries.length ? `Anexo vinculado a ${f.entries.length} registro(s).` : 'Vínculos removidos.'); },
@@ -2537,6 +2697,9 @@ if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
   if (pontoInfo().pending) document.title = '• Ponto pendente · Agenda Inicial';
   setTimeout(() => checkUpdate(), 1500);
   setInterval(() => checkUpdate(), 6 * 3600 * 1000);
+  if (/^https?:$/.test(location.protocol) && (localStorage.getItem('agendaInicial.sessao') || /[?&]code=/.test(location.search))){
+    try { const sb = await cloudClient(); const { data } = await sb.auth.getSession(); if (data && data.session && !CLOUD.user){ CLOUD.user = data.session.user; SYNC.user = CLOUD.user.id; saveSync(); cloudSync(true); } } catch(e){ console.warn(e); }
+  }
 })();
 </script>
 </body>
