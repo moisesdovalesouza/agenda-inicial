@@ -1,10 +1,10 @@
 {
- "version": "1.12.0",
+ "version": "1.13.0",
  "date": "2026-11-24",
  "notes": [
+  "Foto de perfil do grupo Inicial: a mesma do Termo Inicial (ou a da conta Google); clique na foto, no Perfil, para trocar nos dois apps",
   "Perfil do grupo Inicial: nome e registro na OAB são os mesmos do Termo Inicial (alterou num, altera no outro); matrícula, cargo, e-mail e telefone da empresa continuam só da agenda",
   "No computador, o botão de menu do celular não aparece mais",
-  "Celular: telas reorganizadas (avisos empilhados, registro rápido em duas linhas, calendário com marcadores, arquivos em cartões, formulários em coluna única) e cadernos criados direto no celular, salvos na nuvem",
-  "No celular: botão de menu (☰) no alto, à esquerda, abre a barra lateral"
+  "Celular: telas reorganizadas (avisos empilhados, registro rápido em duas linhas, calendário com marcadores, arquivos em cartões, formulários em coluna única) e cadernos criados direto no celular, salvos na nuvem"
  ]
 }

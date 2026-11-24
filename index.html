@@ -66,6 +66,13 @@ a{color:inherit}
 .nav a .cnt{font-size:11px;color:var(--faint)}
 .side-foot{border-top:1px solid var(--border);padding:var(--s3) var(--edge);font-size:var(--fs-s);color:var(--muted)}
 .side-foot .who b{display:block;color:var(--text);font-size:13px}
+.side-foot .who.pic{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:var(--s2);align-items:center}
+.side-foot .who.pic img{width:32px;height:32px;border-radius:var(--r);object-fit:cover;grid-row:span 2}
+.avatar.foto{background:var(--bg2);overflow:hidden;padding:0}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar.troca{cursor:pointer;position:relative}
+.avatar.troca::after{content:'Trocar';position:absolute;left:0;right:0;bottom:0;font:600 10px/16px var(--sans,system-ui);letter-spacing:.04em;text-align:center;color:#fff;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s}
+.avatar.troca:hover::after{opacity:1}
 .side-foot .row{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:var(--s2)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--faint);margin-right:6px;vertical-align:1px}
 .dot.ok{background:var(--ok)} .dot.warn{background:var(--accent)} .dot.err{background:var(--danger)}
@@ -520,7 +527,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.12.0';    // versão do programa
+const APP_RELEASE = '1.13.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1286,7 +1293,7 @@ function renderSide(){
     ${UP.newer ? `<div class="install"><button class="btn primary" data-act="up-check">Nova versão ${esc(UP.newer.version)} · recarregar</button></div>` : ''}
     ${window._bip && !isStandalone() ? `<div class="install"><button class="btn" data-act="pwa-install">${I.dl}Instalar a Agenda Inicial</button></div>` : ''}
     <div class="side-foot">
-      <div class="who" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil"><b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</div>
+      <div class="who${S.profile.foto ? ' pic' : ''}" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil">${S.profile.foto ? `<img src="${esc(S.profile.foto)}" alt="">` : ''}<b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</div>
       <div class="row">${storageLine()}<button class="btn icon ghost" data-act="theme" title="Tema: ${S.settings.theme === 'auto' ? 'automático' : S.settings.theme === 'dark' ? 'escuro' : 'claro'}">${themeIcon()}</button></div>
       ${cloudLine()}
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
@@ -1495,7 +1502,7 @@ VIEWS.perfil = () => {
   return topbar('Perfil e PDFs', '') + `
   <div class="page">
     <div style="display:flex;gap:var(--s3);align-items:center;margin-top:var(--s3)">
-      <div class="avatar" id="pf-av">${esc(initials(P.name))}</div>
+      <div class="avatar troca${P.foto ? ' foto' : ''}" id="pf-av" data-act="pf-foto" title="Trocar a foto${P.grupo ? ' (vale também no Termo Inicial)' : ''}">${P.foto ? `<img src="${esc(P.foto)}" alt="">` : esc(initials(P.name))}</div>
       <div style="min-width:0"><h1 class="title" style="margin:0" id="pf-name">${esc(P.name || 'Seu nome')}</h1><div class="muted" id="pf-line">${esc([P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo')}</div></div>
     </div>
     <p class="sub" style="margin-top:var(--s3)">Estes dados identificam você no cabeçalho e na assinatura dos PDFs.${P.grupo ? ' <b>Nome</b> e <b>registro na OAB</b> são os mesmos do seu cadastro no Termo Inicial: alterou aqui, altera lá. Os demais campos são só da agenda.' : CLOUD.user ? '' : ' Entre com a conta Google em Configurações para usar o mesmo nome e OAB do Termo Inicial.'}</p>
@@ -2006,6 +2013,7 @@ function grupoAplicar(p){
   if (p.oab_numero && p.oab_uf) P.registro = `OAB/${p.oab_uf} nº ${fmtOab(p.oab_numero)}`;
   else if (oabLocal && oabLocal.oab_numero && !primeira) P.registro = '';
   P.grupo = { at: p.atualizado };
+  fotoDoGrupo(p);
   if (primeira && !p.oab_numero && oabLocal && oabLocal.oab_numero) grupoAgendar();   // a OAB só existia na agenda: leva para o Termo Inicial
   save(false);
   if (antes !== JSON.stringify([P.name, P.registro])){ renderSide(); if (ui.view === 'perfil') render(false); }
@@ -2014,7 +2022,7 @@ async function grupoPuxar(forcar){
   if (!CLOUD.user || GRUPO.busy || GRUPO.timer) return;
   if (!forcar && Date.now() - GRUPO.last < 5 * 60000) return;
   GRUPO.busy = true;
-  try { const p = await grupoRpc(false); GRUPO.last = Date.now(); if (!p || !S.profile.grupo || p.atualizado !== S.profile.grupo.at) grupoAplicar(p); }
+  try { const p = await grupoRpc(false); GRUPO.last = Date.now(); if (!p || !S.profile.grupo || p.atualizado !== S.profile.grupo.at) grupoAplicar(p); else fotoDoGrupo(p); }
   catch(e){ console.warn('Perfil do grupo', e); }
   finally { GRUPO.busy = false; }
 }
@@ -2029,6 +2037,46 @@ function grupoAgendar(){
     try { const p = await grupoRpc(true, d); if (p) S.profile.grupo = { at: p.atualizado }; save(false); grupoMsg('Salvo também no Termo Inicial.'); }
     catch(e){ grupoMsg('Só nesta agenda: ' + (e.message || e) + '.', true); }
   }, 1500);
+}
+const fotoUrl = p => p && p.foto_caminho ? `${SB_URL}/storage/v1/object/public/fotos-perfil/${p.foto_caminho.split('/').map(encodeURIComponent).join('/')}` : (p && p.foto_google) || '';
+async function fotoReduzir(blob, lado){
+  const bmp = await createImageBitmap(blob);
+  const k = Math.min(1, lado / Math.min(bmp.width, bmp.height)), w = Math.round(bmp.width * k), h = Math.round(bmp.height * k);
+  const c = document.createElement('canvas'), q = Math.min(w, h); c.width = c.height = q;
+  const x = c.getContext('2d'); x.clearRect(0, 0, q, q); x.drawImage(bmp, (bmp.width - q / k) / 2, (bmp.height - q / k) / 2, q / k, q / k, 0, 0, q, q);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', .86));
+}
+const blobParaDados = b => new Promise((r, j) => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = j; f.readAsDataURL(b); });
+async function fotoDoGrupo(p){
+  const url = fotoUrl(p), P = S.profile;
+  if (P.fotoLocal || url === (P.fotoFonte || '')) return;
+  if (!url){ delete P.foto; delete P.fotoFonte; save(false); renderSide(); if (ui.view === 'perfil') render(false); return; }
+  try { const r = await fetch(url, { mode: 'cors' }); if (!r.ok) throw new Error(r.status); P.foto = await blobParaDados(await fotoReduzir(await r.blob(), 192)); }
+  catch(e){ if (CLOUD.via === 'ponte' && url.startsWith(SB_URL)) return; P.foto = url; }   // sem acesso direto: usa o endereço da imagem
+  P.fotoFonte = url; save(false); renderSide(); if (ui.view === 'perfil') render(false);
+}
+async function fotoTrocar(){
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp';
+  inp.onchange = async () => {
+    const f = inp.files[0]; if (!f) return;
+    try {
+      const grande = await fotoReduzir(f, 512), P = S.profile;
+      P.foto = await blobParaDados(await fotoReduzir(f, 192));
+      if (CLOUD.user && P.grupo && CLOUD.via !== 'ponte'){
+        const sb = await cloudClient(), caminho = `${CLOUD.user.id}/agenda-${Date.now()}.jpg`;
+        const up = await sb.storage.from('fotos-perfil').upload(caminho, grande, { contentType: 'image/jpeg', upsert: true });
+        if (up.error) throw up.error;
+        const p = await grupoRpc(true, { foto_caminho: caminho });
+        P.fotoFonte = fotoUrl(p); delete P.fotoLocal; if (p) P.grupo = { at: p.atualizado };
+        toast('Foto trocada aqui e no Termo Inicial.');
+      } else {
+        delete P.fotoFonte; P.fotoLocal = true;
+        toast(CLOUD.via === 'ponte' ? 'Foto trocada na agenda. Nesta rede não dá para enviar ao Termo Inicial; troque de novo fora da Cagece para valer lá também.' : 'Foto trocada.', 6000);
+      }
+      save(false); render(false);
+    } catch(e){ toast('Não consegui trocar a foto: ' + (e.message || e), 6000); }
+  };
+  inp.click();
 }
 function grupoMsg(t, erro){ const el = $('#pf-grupo'); if (el){ el.textContent = t; el.style.color = erro ? 'var(--danger)' : ''; } }
 
@@ -2567,6 +2615,7 @@ const ACT = {
   'f-folder': a => localAction('pasta', a.dataset.p),
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'side-toggle': () => document.body.classList.toggle('side-open'),
+  'pf-foto': () => fotoTrocar(),
   'cloud-in': () => cloudLogin(),
   'ponte-in': () => ponteConectar((document.getElementById('ponteIn') || {}).value),
   'ponte-gerar': () => ponteGerar(),
@@ -2790,7 +2839,7 @@ document.addEventListener('input', ev => {
 function refreshProfilePreview(){
   const P = S.profile, pv = $('#rp-prev'); if (!pv) return;
   pv.innerHTML = rpHeader('Registro do dia', `${longDate(today())} de ${today().slice(0,4)}`);
-  $('#pf-av').textContent = initials(P.name); $('#pf-name').textContent = P.name || 'Seu nome';
+  if (!P.foto) $('#pf-av').textContent = initials(P.name); $('#pf-name').textContent = P.name || 'Seu nome';
   $('#pf-line').textContent = [P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo';
 }
 document.addEventListener('focusout', ev => {
