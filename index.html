@@ -41,7 +41,8 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:var(-
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit}
 ::selection{background:var(--accent-bg)}
-.app{display:grid;grid-template-columns:var(--side-w) 1fr;height:100vh}
+.app{display:grid;grid-template-columns:var(--side-w) 1fr;height:100vh;height:100dvh}
+.mob-menu{display:none}
 
 /* ---------- Sidebar ---------- */
 .side{background:var(--bg2);border-right:1px solid var(--border);box-shadow:inset -1px 0 0 rgba(255,255,255,.25);display:flex;flex-direction:column;min-height:0}
@@ -430,7 +431,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 @media print{body.printing .app,body.printing .toast,body.printing #dp{display:none!important}body.printing #print{display:block}body.printing{background:#fff;color:#111}body.printing,body.printing html{height:auto}}
 @media (max-width:1180px){table.t .c-size,table.t .c-date{display:none}}
 @media (max-width:1024px){.cal .cell{min-height:88px}.fgrid{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
+@media (max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;top:0;bottom:0;left:0;width:min(300px,86vw);z-index:40;transform:translateX(-102%);transition:transform .2s ease;box-shadow:none}body.side-open .side{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}.mob-menu{display:inline-flex;margin-left:calc(-1 * var(--s1))}.topbar{padding-left:var(--s3)}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
 @media print{.side,.topbar,.qlog,.hint,.acts{display:none!important}.app{display:block}.page{padding:0}}
 </style>
 </head>
@@ -459,7 +460,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.10.0';    // versão do programa
+const APP_RELEASE = '1.10.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1193,6 +1194,7 @@ function logoHTML(){
 function storageLine(){
   if (FS.state === 'granted') return `<span title="Documentos\\${esc(FS.root.name)}"><span class="dot ok"></span>Salvo em ${esc(FS.root.name)}</span>`;
   if (FS.state === 'prompt') return '<span title="O acesso volta sozinho no primeiro clique"><span class="dot warn"></span>Pasta: reconecta no 1º clique</span>';
+  if (FS.state === 'unsupported' && CLOUD.user) return '<span><span class="dot ok"></span>Salvo neste aparelho e na nuvem</span>';
   if (FS.state === 'unsupported') return '<span title="Use o Chrome ou o Edge para gravar no computador"><span class="dot warn"></span>Salvo só neste navegador</span>';
   return '<a href="#" data-act="fs-connect"><span class="dot warn"></span>Autorizar pasta Documentos</a>';
 }
@@ -1229,13 +1231,13 @@ function renderSide(){
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
     </div>`;
 }
-function topbar(crumb, tools = ''){ return `<div class="topbar"><div class="crumbs">Agenda / <b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
+function topbar(crumb, tools = ''){ return `<div class="topbar"><button class="btn ghost icon mob-menu" data-act="side-toggle" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg></button><div class="crumbs" style="flex:1">Agenda / <b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
 function render(withG = true){
   applyTheme(); renderSide();
   const v = VIEWS[ui.view] || VIEWS.hoje;
   const main = $('#main'); const st = main.scrollTop;
   ui.rendering = true;
-  main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME)}; nada é enviado para a internet.</div></div>`;
+  main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME)}${CLOUD.user ? ' e na sua conta na nuvem' : '; nada é enviado para a internet'}.</div></div>`;
   ui.rendering = false;
   main.scrollTop = st;
   if (ui.focusItem){ const el = $(`.check[data-iid="${ui.focusItem}"] .txt`); ui.focusItem = null; if (el){ el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); } }
@@ -2448,6 +2450,7 @@ const ACT = {
   'li-fold': a => { const it = curList().items.find(x => x.id === a.closest('.check').dataset.iid); it.collapsed = !it.collapsed; save(); },
   'f-folder': a => localAction('pasta', a.dataset.p),
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
+  'side-toggle': () => document.body.classList.toggle('side-open'),
   'cloud-in': () => cloudLogin(),
   'ponte-in': () => ponteConectar((document.getElementById('ponteIn') || {}).value),
   'ponte-gerar': () => ponteGerar(),
@@ -2591,6 +2594,7 @@ document.addEventListener('click', ev => {
   const men = ev.target.closest('.mention'); if (men){ ev.preventDefault(); openMention(men.dataset.path); return; }
   if (ev.target.id === 'viewer'){ closeViewer(); return; }
   if (ev.target.id === 'modal'){ closeModal(); ui.pick = null; return; }
+  if (document.body.classList.contains('side-open') && !ev.target.closest('.mob-menu') && (!ev.target.closest('#side') || ev.target.closest('#side [data-act]'))) document.body.classList.remove('side-open');
   const a = ev.target.closest('[data-act]'); if (!a) return;
   const fn = ACT[a.dataset.act]; if (!fn) return;
   if (a.tagName === 'A' && a.getAttribute('href') === '#') ev.preventDefault();
