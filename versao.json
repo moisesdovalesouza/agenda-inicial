@@ -1,10 +1,10 @@
 {
- "version": "1.13.0",
+ "version": "1.14.0",
  "date": "2026-11-24",
  "notes": [
+  "Perfil com o nome da empresa: ele aparece embaixo de “Agenda Inicial” (no lugar de “Uso pessoal”) e no cabeçalho dos PDFs",
+  "Foto do perfil em formato retrato (4×5), maior na barra lateral",
   "Foto de perfil do grupo Inicial: a mesma do Termo Inicial (ou a da conta Google); clique na foto, no Perfil, para trocar nos dois apps",
-  "Perfil do grupo Inicial: nome e registro na OAB são os mesmos do Termo Inicial (alterou num, altera no outro); matrícula, cargo, e-mail e telefone da empresa continuam só da agenda",
-  "No computador, o botão de menu do celular não aparece mais",
-  "Celular: telas reorganizadas (avisos empilhados, registro rápido em duas linhas, calendário com marcadores, arquivos em cartões, formulários em coluna única) e cadernos criados direto no celular, salvos na nuvem"
+  "Perfil do grupo Inicial: nome e registro na OAB são os mesmos do Termo Inicial (alterou num, altera no outro); matrícula, cargo, e-mail e telefone da empresa continuam só da agenda"
  ]
 }

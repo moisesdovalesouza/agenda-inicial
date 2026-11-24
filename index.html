@@ -66,9 +66,10 @@ a{color:inherit}
 .nav a .cnt{font-size:11px;color:var(--faint)}
 .side-foot{border-top:1px solid var(--border);padding:var(--s3) var(--edge);font-size:var(--fs-s);color:var(--muted)}
 .side-foot .who b{display:block;color:var(--text);font-size:13px}
-.side-foot .who.pic{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:var(--s2);align-items:center}
-.side-foot .who.pic img{width:32px;height:32px;border-radius:var(--r);object-fit:cover;grid-row:span 2}
-.avatar.foto{background:var(--bg2);overflow:hidden;padding:0}
+.side-foot .who.pic{display:grid;grid-template-columns:48px minmax(0,1fr);column-gap:var(--s3);align-items:center;align-content:center}
+.side-foot .who.pic img{width:48px;height:60px;border-radius:var(--r);object-fit:cover}
+.side-foot .who-t{min-width:0;overflow-wrap:anywhere}
+.avatar.foto{background:var(--bg2);overflow:hidden;padding:0;height:70px;border-bottom:0}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .avatar.troca{cursor:pointer;position:relative}
 .avatar.troca::after{content:'Trocar';position:absolute;left:0;right:0;bottom:0;font:600 10px/16px var(--sans,system-ui);letter-spacing:.04em;text-align:center;color:#fff;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s}
@@ -527,7 +528,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.13.0';    // versão do programa
+const APP_RELEASE = '1.14.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -624,7 +625,7 @@ const ICON_SVG = '<svg class="appicon" aria-hidden="true" xmlns="http://www.w3.o
 /* ---------------- Estado ---------------- */
 const DEFAULT = () => ({
   version: APP_VERSION, updatedAt: 0, since: new Date().toISOString().slice(0,7),
-  profile: { name: '', cargo: '', email: '', matricula: '', telefone: '', setor: '', unidade: '', registro: '', pdf: { mat: true, email: true, tel: true, reg: false, sign: true } },
+  profile: { name: '', empresa: '', cargo: '', email: '', matricula: '', telefone: '', setor: '', unidade: '', registro: '', pdf: { mat: true, email: true, tel: true, reg: false, sign: true } },
   entries: [],      // {id,type:'task'|'event'|'note',text,date,month,time,status,prio,gId,from,createdAt}
   days: {},         // 'AAAA-MM-DD': {notes}
   lists: [{ id: uid(), title: 'Lista geral', items: [], notes: '', createdAt: Date.now() }],
@@ -1273,7 +1274,7 @@ function renderSide(){
   $('#side').innerHTML = `
     <div class="brand">
       <div class="mark">${ICON_SVG}</div>
-      <div><b>Agenda Inicial</b><small>Uso pessoal${S.profile.setor ? ' · ' + esc(S.profile.setor) : ''} · v${APP_RELEASE}</small></div>
+      <div><b>Agenda Inicial</b><small>${esc(S.profile.empresa || 'Uso pessoal')}${S.profile.setor ? ' · ' + esc(S.profile.setor) : ''} · v${APP_RELEASE}</small></div>
     </div>
     ${S.settings.logo ? `<div class="logo-wide"><img src="${S.settings.logo}" alt="Logo"></div>` : ''}
     <nav class="nav">
@@ -1293,7 +1294,7 @@ function renderSide(){
     ${UP.newer ? `<div class="install"><button class="btn primary" data-act="up-check">Nova versão ${esc(UP.newer.version)} · recarregar</button></div>` : ''}
     ${window._bip && !isStandalone() ? `<div class="install"><button class="btn" data-act="pwa-install">${I.dl}Instalar a Agenda Inicial</button></div>` : ''}
     <div class="side-foot">
-      <div class="who${S.profile.foto ? ' pic' : ''}" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil">${S.profile.foto ? `<img src="${esc(S.profile.foto)}" alt="">` : ''}<b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</div>
+      <div class="who${S.profile.foto ? ' pic' : ''}" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil">${S.profile.foto ? `<img src="${esc(S.profile.foto)}" alt="">` : ''}<span class="who-t"><b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</span></div>
       <div class="row">${storageLine()}<button class="btn icon ghost" data-act="theme" title="Tema: ${S.settings.theme === 'auto' ? 'automático' : S.settings.theme === 'dark' ? 'escuro' : 'claro'}">${themeIcon()}</button></div>
       ${cloudLine()}
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
@@ -1503,7 +1504,7 @@ VIEWS.perfil = () => {
   <div class="page">
     <div style="display:flex;gap:var(--s3);align-items:center;margin-top:var(--s3)">
       <div class="avatar troca${P.foto ? ' foto' : ''}" id="pf-av" data-act="pf-foto" title="Trocar a foto${P.grupo ? ' (vale também no Termo Inicial)' : ''}">${P.foto ? `<img src="${esc(P.foto)}" alt="">` : esc(initials(P.name))}</div>
-      <div style="min-width:0"><h1 class="title" style="margin:0" id="pf-name">${esc(P.name || 'Seu nome')}</h1><div class="muted" id="pf-line">${esc([P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo')}</div></div>
+      <div style="min-width:0"><h1 class="title" style="margin:0" id="pf-name">${esc(P.name || 'Seu nome')}</h1><div class="muted" id="pf-line">${esc([P.cargo, P.setor, P.unidade, P.empresa].filter(Boolean).join(' · ') || 'Complete o perfil abaixo')}</div></div>
     </div>
     <p class="sub" style="margin-top:var(--s3)">Estes dados identificam você no cabeçalho e na assinatura dos PDFs.${P.grupo ? ' <b>Nome</b> e <b>registro na OAB</b> são os mesmos do seu cadastro no Termo Inicial: alterou aqui, altera lá. Os demais campos são só da agenda.' : CLOUD.user ? '' : ' Entre com a conta Google em Configurações para usar o mesmo nome e OAB do Termo Inicial.'}</p>
     ${P.grupo ? '<p class="hint" id="pf-grupo" style="margin-top:calc(-1 * var(--s3))"></p>' : ''}
@@ -1511,6 +1512,7 @@ VIEWS.perfil = () => {
     <div class="sec"><div class="sec-h"><h2>Dados</h2></div>
       <div class="form">
         ${fld('name', 'Nome completo')}
+        ${fld('empresa', 'Empresa', 'Ex.: Cagece')}
         ${fld('cargo', 'Cargo ou função', 'Ex.: Advogado, Analista…')}
         ${fld('matricula', 'Matrícula', '', '160px')}
         ${fld('email', 'E-mail institucional')}
@@ -1548,7 +1550,7 @@ VIEWS.perfil = () => {
 function rpHeader(title, sub){
   const P = S.profile, f = P.pdf || {};
   const info = [P.cargo && esc(P.cargo), P.setor && esc(P.setor) + (P.unidade ? ' · ' + esc(P.unidade) : ''), !P.setor && P.unidade && esc(P.unidade), f.mat && P.matricula && 'Matrícula ' + esc(P.matricula), f.reg && P.registro && esc(P.registro), f.email && P.email && esc(P.email), f.tel && P.telefone && esc(P.telefone)].filter(Boolean);
-  return `<div class="rp-h"><div class="rp-logo">${S.settings.logo ? `<img src="${S.settings.logo}" alt="">` : ICON_SVG}</div><div><div class="rp-k">Agenda Inicial · uso pessoal</div><h1>${esc(title)}</h1><div class="rp-s">${sub}</div></div></div><div class="rp-p"><b>${esc(P.name)}</b>${info.map(x => `<span>${x}</span>`).join('')}</div>`;
+  return `<div class="rp-h"><div class="rp-logo">${S.settings.logo ? `<img src="${S.settings.logo}" alt="">` : ICON_SVG}</div><div><div class="rp-k">Agenda Inicial · ${esc(S.profile.empresa || 'uso pessoal')}</div><h1>${esc(title)}</h1><div class="rp-s">${sub}</div></div></div><div class="rp-p"><b>${esc(P.name)}</b>${info.map(x => `<span>${x}</span>`).join('')}</div>`;
 }
 function rpFoot(){
   const P = S.profile, now = new Date();
@@ -2039,19 +2041,23 @@ function grupoAgendar(){
   }, 1500);
 }
 const fotoUrl = p => p && p.foto_caminho ? `${SB_URL}/storage/v1/object/public/fotos-perfil/${p.foto_caminho.split('/').map(encodeURIComponent).join('/')}` : (p && p.foto_google) || '';
-async function fotoReduzir(blob, lado){
+// Foto em 4×5 (retrato), recortada pelo centro, com o rosto mais perto do topo.
+async function fotoReduzir(blob, largura){
   const bmp = await createImageBitmap(blob);
-  const k = Math.min(1, lado / Math.min(bmp.width, bmp.height)), w = Math.round(bmp.width * k), h = Math.round(bmp.height * k);
-  const c = document.createElement('canvas'), q = Math.min(w, h); c.width = c.height = q;
-  const x = c.getContext('2d'); x.clearRect(0, 0, q, q); x.drawImage(bmp, (bmp.width - q / k) / 2, (bmp.height - q / k) / 2, q / k, q / k, 0, 0, q, q);
+  let sw = bmp.width, sh = Math.round(sw * 5 / 4);
+  if (sh > bmp.height){ sh = bmp.height; sw = Math.round(sh * 4 / 5); }
+  const sx = Math.round((bmp.width - sw) / 2), sy = Math.round((bmp.height - sh) * 0.3);
+  const W = Math.min(largura, sw), H = Math.round(W * 5 / 4);
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  c.getContext('2d').drawImage(bmp, sx, sy, sw, sh, 0, 0, W, H);
   return new Promise(r => c.toBlob(r, 'image/jpeg', .86));
 }
 const blobParaDados = b => new Promise((r, j) => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = j; f.readAsDataURL(b); });
 async function fotoDoGrupo(p){
   const url = fotoUrl(p), P = S.profile;
-  if (P.fotoLocal || url === (P.fotoFonte || '')) return;
+  if (P.fotoLocal || (url === (P.fotoFonte || '') && P.fotoFormato === '4x5')) return;
   if (!url){ delete P.foto; delete P.fotoFonte; save(false); renderSide(); if (ui.view === 'perfil') render(false); return; }
-  try { const r = await fetch(url, { mode: 'cors' }); if (!r.ok) throw new Error(r.status); P.foto = await blobParaDados(await fotoReduzir(await r.blob(), 192)); }
+  try { const r = await fetch(url, { mode: 'cors' }); if (!r.ok) throw new Error(r.status); P.foto = await blobParaDados(await fotoReduzir(await r.blob(), 240)); P.fotoFormato = '4x5'; }
   catch(e){ if (CLOUD.via === 'ponte' && url.startsWith(SB_URL)) return; P.foto = url; }   // sem acesso direto: usa o endereço da imagem
   P.fotoFonte = url; save(false); renderSide(); if (ui.view === 'perfil') render(false);
 }
@@ -2061,7 +2067,7 @@ async function fotoTrocar(){
     const f = inp.files[0]; if (!f) return;
     try {
       const grande = await fotoReduzir(f, 512), P = S.profile;
-      P.foto = await blobParaDados(await fotoReduzir(f, 192));
+      P.foto = await blobParaDados(await fotoReduzir(f, 240)); P.fotoFormato = '4x5';
       if (CLOUD.user && P.grupo && CLOUD.via !== 'ponte'){
         const sb = await cloudClient(), caminho = `${CLOUD.user.id}/agenda-${Date.now()}.jpg`;
         const up = await sb.storage.from('fotos-perfil').upload(caminho, grande, { contentType: 'image/jpeg', upsert: true });
@@ -2840,7 +2846,7 @@ function refreshProfilePreview(){
   const P = S.profile, pv = $('#rp-prev'); if (!pv) return;
   pv.innerHTML = rpHeader('Registro do dia', `${longDate(today())} de ${today().slice(0,4)}`);
   if (!P.foto) $('#pf-av').textContent = initials(P.name); $('#pf-name').textContent = P.name || 'Seu nome';
-  $('#pf-line').textContent = [P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo';
+  $('#pf-line').textContent = [P.cargo, P.setor, P.unidade, P.empresa].filter(Boolean).join(' · ') || 'Complete o perfil abaixo';
 }
 document.addEventListener('focusout', ev => {
   const t = ev.target;
