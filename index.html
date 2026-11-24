@@ -42,7 +42,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit}
 ::selection{background:var(--accent-bg)}
 .app{display:grid;grid-template-columns:var(--side-w) 1fr;height:100vh;height:100dvh}
-.mob-menu{display:none}
+.topbar .mob-menu{display:none}
 
 /* ---------- Sidebar ---------- */
 .side{background:var(--bg2);border-right:1px solid var(--border);box-shadow:inset -1px 0 0 rgba(255,255,255,.25);display:flex;flex-direction:column;min-height:0}
@@ -431,7 +431,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 @media print{body.printing .app,body.printing .toast,body.printing #dp{display:none!important}body.printing #print{display:block}body.printing{background:#fff;color:#111}body.printing,body.printing html{height:auto}}
 @media (max-width:1180px){table.t .c-size,table.t .c-date{display:none}}
 @media (max-width:1024px){.cal .cell{min-height:88px}.fgrid{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;top:0;bottom:0;left:0;width:min(300px,86vw);z-index:40;transform:translateX(-102%);transition:transform .2s ease;box-shadow:none}body.side-open .side{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}.mob-menu{display:inline-flex;margin-left:calc(-1 * var(--s1))}.topbar{padding-left:var(--s3)}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
+@media (max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;top:0;bottom:0;left:0;width:min(300px,86vw);z-index:40;transform:translateX(-102%);transition:transform .2s ease;box-shadow:none}body.side-open .side{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}.topbar .mob-menu{display:inline-flex;margin-left:calc(-1 * var(--s1))}.topbar{padding-left:var(--s3)}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
 /* ---------- Celular ---------- */
 @media (max-width:640px){
   :root{--page-x:16px}
@@ -520,7 +520,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.11.0';    // versão do programa
+const APP_RELEASE = '1.12.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1498,7 +1498,8 @@ VIEWS.perfil = () => {
       <div class="avatar" id="pf-av">${esc(initials(P.name))}</div>
       <div style="min-width:0"><h1 class="title" style="margin:0" id="pf-name">${esc(P.name || 'Seu nome')}</h1><div class="muted" id="pf-line">${esc([P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo')}</div></div>
     </div>
-    <p class="sub" style="margin-top:var(--s3)">Sem login e sem senha. Estes dados ficam só na pasta do sistema e servem para identificar você no cabeçalho e na assinatura dos PDFs.</p>
+    <p class="sub" style="margin-top:var(--s3)">Estes dados identificam você no cabeçalho e na assinatura dos PDFs.${P.grupo ? ' <b>Nome</b> e <b>registro na OAB</b> são os mesmos do seu cadastro no Termo Inicial: alterou aqui, altera lá. Os demais campos são só da agenda.' : CLOUD.user ? '' : ' Entre com a conta Google em Configurações para usar o mesmo nome e OAB do Termo Inicial.'}</p>
+    ${P.grupo ? '<p class="hint" id="pf-grupo" style="margin-top:calc(-1 * var(--s3))"></p>' : ''}
 
     <div class="sec"><div class="sec-h"><h2>Dados</h2></div>
       <div class="form">
@@ -1509,7 +1510,7 @@ VIEWS.perfil = () => {
         ${fld('telefone', 'Telefone ou ramal', '(85) …', '220px')}
         ${fld('setor', 'Setor', 'Ex.: CGPAR', '220px')}
         ${fld('unidade', 'Unidade ou diretoria', 'Ex.: Diretoria…')}
-        ${fld('registro', 'Registro profissional', 'Ex.: OAB/CE nº …', '220px')}
+        ${fld('registro', 'Registro profissional', 'Ex.: OAB/CE nº 30.800', '220px')}
       </div>
     </div>
 
@@ -1955,6 +1956,7 @@ async function cloudSync(full){
       for (const r of chunk) SYNC.sent[r._k] = r._h;
     }
     SYNC.done = true; saveSync();
+    grupoPuxar();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
     if (changed && !(ui.view === 'caderno' && NB.dirty)) render(false);
   } catch(e){
@@ -1977,6 +1979,58 @@ window.addEventListener('online', () => cloudSync());
 window.addEventListener('offline', () => { if (CLOUD.user){ CLOUD.state = 'offline'; renderSide(); } });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudSync(); });
 setInterval(() => { if (!document.hidden) cloudSync(); }, 60000);
+
+/* ---------------- Perfil do grupo Inicial (o mesmo do Termo Inicial) ---------------- */
+// Em comum: nome e inscrição na OAB. O resto do perfil (matrícula, cargo, e-mail e telefone da empresa) é só da agenda.
+const GRUPO = { timer: null, last: 0, busy: false };
+const fmtOab = n => String(n || '').replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+function parseOab(txt){
+  const t = String(txt || '').trim();
+  if (!t) return { oab_numero: '', oab_uf: '' };
+  const m = t.match(/OAB\s*[\/\-–]?\s*([A-Za-z]{2})\D*([\d.]{3,9})/i) || t.match(/^([\d.]{3,9})\s*[\/\-–]\s*([A-Za-z]{2})$/);
+  if (!m) return null;
+  const [uf, num] = /^\d/.test(m[1]) ? [m[2], m[1]] : [m[1], m[2]];
+  return { oab_numero: num.replace(/\D/g, ''), oab_uf: uf.toUpperCase() };
+}
+async function grupoRpc(gravar, dados){
+  if (CLOUD.via === 'ponte') return ponte('rpc', gravar ? { fn: 'agendainicial_ponte_perfil_gravar', args: { p_dados: dados } } : { fn: 'agendainicial_ponte_perfil' });
+  const sb = await cloudClient();
+  const { data, error } = gravar ? await sb.rpc('inicial_perfil_gravar', { d: dados }) : await sb.rpc('inicial_perfil');
+  if (error) throw error; return data;
+}
+function grupoAplicar(p){
+  if (!p){ if (S.profile.grupo){ delete S.profile.grupo; save(false); } return; }
+  const P = S.profile, antes = JSON.stringify([P.name, P.registro]), primeira = !P.grupo;
+  const oabLocal = parseOab(P.registro);
+  if (p.nome) P.name = p.nome;
+  if (p.oab_numero && p.oab_uf) P.registro = `OAB/${p.oab_uf} nº ${fmtOab(p.oab_numero)}`;
+  else if (oabLocal && oabLocal.oab_numero && !primeira) P.registro = '';
+  P.grupo = { at: p.atualizado };
+  if (primeira && !p.oab_numero && oabLocal && oabLocal.oab_numero) grupoAgendar();   // a OAB só existia na agenda: leva para o Termo Inicial
+  save(false);
+  if (antes !== JSON.stringify([P.name, P.registro])){ renderSide(); if (ui.view === 'perfil') render(false); }
+}
+async function grupoPuxar(forcar){
+  if (!CLOUD.user || GRUPO.busy || GRUPO.timer) return;
+  if (!forcar && Date.now() - GRUPO.last < 5 * 60000) return;
+  GRUPO.busy = true;
+  try { const p = await grupoRpc(false); GRUPO.last = Date.now(); if (!p || !S.profile.grupo || p.atualizado !== S.profile.grupo.at) grupoAplicar(p); }
+  catch(e){ console.warn('Perfil do grupo', e); }
+  finally { GRUPO.busy = false; }
+}
+function grupoAgendar(){
+  if (!CLOUD.user || !S.profile.grupo) return;
+  clearTimeout(GRUPO.timer);
+  GRUPO.timer = setTimeout(async () => {
+    GRUPO.timer = null;
+    const d = { nome: S.profile.name };
+    const oab = parseOab(S.profile.registro);
+    if (oab) Object.assign(d, oab);
+    try { const p = await grupoRpc(true, d); if (p) S.profile.grupo = { at: p.atualizado }; save(false); grupoMsg('Salvo também no Termo Inicial.'); }
+    catch(e){ grupoMsg('Só nesta agenda: ' + (e.message || e) + '.', true); }
+  }, 1500);
+}
+function grupoMsg(t, erro){ const el = $('#pf-grupo'); if (el){ el.textContent = t; el.style.color = erro ? 'var(--danger)' : ''; } }
 
 /* ---------------- Versões ---------------- */
 const UP = { notes: null, checked: 0, error: '', newer: null };
@@ -2727,7 +2781,7 @@ document.addEventListener('input', ev => {
   if (t.id === 'daynotes'){ autosize(t); (S.days[ui.date] = S.days[ui.date] || {}).notes = t.value; if (!t.value) delete S.days[ui.date]; save(false); }
   if (t.id === 'lnotes'){ autosize(t); S.lists.find(x => x.id === ui.listId).notes = t.value; save(false); }
   if (t.id === 'ltitle'){ S.lists.find(x => x.id === ui.listId).title = t.value; save(false); renderSide(); }
-  if (t.dataset && t.dataset.prof){ S.profile[t.dataset.prof] = t.value; save(false); renderSide(); refreshProfilePreview(); }
+  if (t.dataset && t.dataset.prof){ S.profile[t.dataset.prof] = t.value; save(false); renderSide(); refreshProfilePreview(); if (t.dataset.prof === 'name' || t.dataset.prof === 'registro') grupoAgendar(); }
   if (t.id === 'fq'){ ui.fq = t.value; const pos = t.selectionStart; render(false); const n = $('#fq'); n.focus(); n.setSelectionRange(pos, pos); }
   if (t.id === 'win-path'){ S.settings.winPath = t.value.trim(); save(false); }
   if (t.id === 'g-cal'){ S.google.calName = t.value.trim() || 'Cagece'; save(false); }

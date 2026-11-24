@@ -5,7 +5,7 @@ var SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 var SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';
 
 function doGet() {
-  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 1 });
+  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 2 });
 }
 
 function doPost(e) {
@@ -13,6 +13,11 @@ function doPost(e) {
     var p = JSON.parse(e.postData.contents);
     if (p.op === 'ler') return saida({ ok: true, dados: rpc('agendainicial_ponte_ler', { p_chave: p.chave, p_desde: p.desde, p_limite: p.limite || 500 }) });
     if (p.op === 'gravar') return saida({ ok: true, dados: rpc('agendainicial_ponte_gravar', { p_chave: p.chave, p_itens: p.itens }) });
+    // Funções novas da ponte (perfil, nuvem…): só as do grupo agendainicial_ponte_, sempre com a chave pessoal.
+    if (p.op === 'rpc' && /^agendainicial_ponte_[a-z_]{1,40}$/.test(p.fn || '')) {
+      var args = p.args || {}; args.p_chave = p.chave;
+      return saida({ ok: true, dados: rpc(p.fn, args) });
+    }
     return saida({ ok: false, erro: 'operação desconhecida' });
   } catch (err) {
     return saida({ ok: false, erro: String(err && err.message || err) });

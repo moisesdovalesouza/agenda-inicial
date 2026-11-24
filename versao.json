@@ -1,10 +1,10 @@
 {
- "version": "1.11.0",
+ "version": "1.12.0",
  "date": "2026-11-24",
  "notes": [
+  "Perfil do grupo Inicial: nome e registro na OAB são os mesmos do Termo Inicial (alterou num, altera no outro); matrícula, cargo, e-mail e telefone da empresa continuam só da agenda",
+  "No computador, o botão de menu do celular não aparece mais",
   "Celular: telas reorganizadas (avisos empilhados, registro rápido em duas linhas, calendário com marcadores, arquivos em cartões, formulários em coluna única) e cadernos criados direto no celular, salvos na nuvem",
-  "No celular: botão de menu (☰) no alto, à esquerda, abre a barra lateral",
-  "Funciona na rede do trabalho: gere a chave em Configurações › Conta e nuvem num computador já conectado e cole no computador do trabalho; a agenda sincroniza pela ponte do Google quando o servidor da nuvem está bloqueado",
-  "Agenda em qualquer lugar: entre com a conta Google em Configurações › Conta e nuvem e seus registros, listas, cadernos e ajustes sincronizam com outros aparelhos (os arquivos anexados continuam no computador)"
+  "No celular: botão de menu (☰) no alto, à esquerda, abre a barra lateral"
  ]
 }
