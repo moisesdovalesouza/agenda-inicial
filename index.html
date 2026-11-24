@@ -245,6 +245,9 @@ pre.code{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:var
 /* ---------- Visualizador ---------- */
 .viewer{position:fixed;inset:0;z-index:40;background:rgba(15,15,14,.55);display:grid;padding:24px}
 .viewer[hidden]{display:none}
+body.vonly .app{display:none}
+body.vonly .viewer{padding:0;background:var(--bg)}
+body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .vpanel{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);display:grid;grid-template-rows:44px 1fr auto;min-height:0;overflow:hidden}
 .vbar{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s2);align-items:center;padding:0 var(--s2) 0 var(--s3);border-bottom:1px solid var(--border)}
 .vbar .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
@@ -371,7 +374,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.5.1';    // versão do programa
+const APP_RELEASE = '1.5.2';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -643,17 +646,42 @@ async function uploadFiles(fileList, link = '', entry = ''){
 }
 const relHref = p => p.split('/').map(encodeURIComponent).join('/');
 function baseHref(){ const p = (S.settings.winPath || '').trim().replace(/\\/g, '/').replace(/\/?$/, '/'); return p.length > 3 ? 'file:///' + encodeURI(p) : ''; }
-function officeUri(p){
-  if (!baseHref()) return '';
+function officeApp(p){
   const e = extOf(p);
-  const app = ['doc','docx','docm','dotx','rtf','odt'].includes(e) ? 'ms-word' : ['xls','xlsx','xlsm','xltx','csv','ods'].includes(e) ? 'ms-excel' : ['ppt','pptx'].includes(e) ? 'ms-powerpoint' : '';
-  if (!app) return '';
-  return `${app}:ofe|u|${baseHref()}${relHref(p)}`;
+  return ['doc','docx','docm','dotx','dot','rtf','odt'].includes(e) ? 'word' : ['xls','xlsx','xlsm','xltx','csv','ods'].includes(e) ? 'excel' : ['ppt','pptx','ppsx','potx'].includes(e) ? 'powerpoint' : '';
+}
+const OFFICE_NAME = { word: 'Word', excel: 'Excel', powerpoint: 'PowerPoint' };
+function officeUri(p){
+  const app = officeApp(p);
+  if (!app || !baseHref()) return '';
+  return `ms-${app}:ofe|u|${baseHref()}${relHref(p)}`;
+}
+/* Botão "Abrir no Word/Excel/PowerPoint": abre o arquivo onde ele está, sem baixar. */
+function officeBtn(p, cls = 'btn ghost'){
+  const app = officeApp(p); if (!app) return '';
+  return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}" title="Abre o arquivo direto da pasta, sem baixar">Abrir no ${OFFICE_NAME[app]}</button>`;
+}
+function askWinPath(){
+  const v = prompt(`Para abrir no Office sem baixar, a agenda precisa saber onde fica a pasta ${FOLDER_NAME} no Windows (é perguntado só uma vez).\n\nNo Explorador de Arquivos, abra a pasta ${FOLDER_NAME}, clique na barra de endereço, copie e cole aqui:`, S.settings.winPath || '');
+  if (v === null) return false;
+  const p = v.trim().replace(/^"|"$/g, '');
+  if (!/^([a-zA-Z]:\\|\\\\)/.test(p)){ toast('Endereço não reconhecido. Ele começa com a letra do disco, como C:\\…'); return false; }
+  S.settings.winPath = p; save(false); return true;
+}
+function officeOpen(p){
+  if (!baseHref() && !askWinPath()) return;
+  location.href = officeUri(p);
+  toast(`Abrindo no ${OFFICE_NAME[officeApp(p)]}… Se ele não abrir, use "Abrir em janela", que também não baixa nada.`, 6000);
 }
 function openPath(p){
-  const o = officeUri(p);
-  if (o) { location.href = o; return; }
+  if (officeApp(p)) return officeOpen(p);
   openViewer([{ name: p.split('/').pop(), path: p }], 0);
+}
+/* Janela própria do visualizador (sem download). */
+function openWindow(item){
+  if (item.path){ window.open(location.pathname + '#ver=' + encodeURIComponent(item.path), 'ver_' + item.path.replace(/\W/g, '_'), 'popup,width=1180,height=860'); return; }
+  if (V.file && ['pdf','image','audio','video','text'].includes(kindOf(item.name))){ const u = URL.createObjectURL(new Blob([V.file], { type: MIME[extOf(item.name)] || V.file.type })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); return; }
+  toast('Este arquivo não está na pasta da agenda. Envie-o para a agenda para abri-lo em janela própria.');
 }
 
 /* ---------------- Feriados e dias úteis ---------------- */
@@ -1315,11 +1343,10 @@ function taskSelect(f){
 }
 function fileTable(files, compact){
   return `<table class="t"><thead><tr><th>Nome</th>${compact ? '<th>Tarefa</th>' : '<th>Dia vinculado</th>'}<th>Enviado</th><th>Tamanho</th><th></th></tr></thead><tbody>${files.map(f => {
-    const off = officeUri(f.path);
     return `<tr data-fid="${f.id}"><td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
       ${compact ? `<td>${taskSelect(f)}</td>` : `<td class="num">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${brDate(f.link)}</a>` : '—'}</td>`}
       <td class="num">${brDate(f.date)}</td><td class="num">${fmtSize(f.size || 0)}</td>
-      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar">${I.eye}</button>${off ? `<a class="btn ghost" href="${off}" title="Abrir no aplicativo do Office">Abrir no Office</a>` : ''}<button class="btn icon ghost" data-act="f-link" title="Vincular a um dia">${I.sched}</button><button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`;
+      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar">${I.eye}</button>${officeBtn(f.path)}<button class="btn icon ghost" data-act="f-link" title="Vincular a um dia">${I.sched}</button><button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`;
   }).join('')}</tbody></table>`;
 }
 VIEWS.arquivos = () => {
@@ -1421,7 +1448,7 @@ VIEWS.config = () => {
         <span class="muted">Caminho no Windows</span>
         <input class="inp" id="win-path" placeholder="Ex.: C:\Users\seu-usuario\Documents\Agenda Inicial" value="${esc(S.settings.winPath || '')}">
       </div>
-      <p class="hint">Opcional: com o caminho da pasta, os arquivos do Word, Excel e PowerPoint ganham o botão "Abrir no Office". Copie o endereço na barra do Explorador de Arquivos, dentro da pasta ${esc(FOLDER_NAME)}.</p>
+      <p class="hint">Usado pelos botões "Abrir no Word/Excel/PowerPoint", que abrem o arquivo direto da pasta, sem baixar. Se estiver vazio, a agenda pergunta na primeira vez.</p>
       <div style="display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap">
         ${fsSupported ? `<button class="btn" data-act="fs-connect">${I.folder}${FS.root ? 'Trocar pasta' : 'Autorizar pasta Documentos'}</button>` : ''}
         ${fsSupported ? `<button class="btn" data-act="import-old" title="Traz os registros e anexos da pasta Agenda Cagece">Trazer dados da agenda anterior</button>` : ''}
@@ -1525,15 +1552,14 @@ function openViewer(list, i = 0){ V.list = list; V.i = i; $('#viewer').hidden = 
 function closeViewer(){ vCleanup(); $('#viewer').hidden = true; $('#vbody').innerHTML = ''; $('#vtabs').innerHTML = ''; document.body.style.overflow = ''; }
 function vCleanup(){ if (V.cleanup){ try { V.cleanup(); } catch(e){} V.cleanup = null; } if (V.url){ URL.revokeObjectURL(V.url); V.url = ''; } }
 function vBar(item, extra = ''){
-  const off = item.path ? officeUri(item.path) : '';
   const n = V.list.length;
   $('#vbar').innerHTML = `<span class="ext">${esc(extOf(item.name))}</span>
     <div class="nm" title="${esc(item.path || item.name)}">${esc(item.name)}<small>${item.path ? esc(item.path) : 'arquivo do computador (não enviado)'}</small></div>
     <div class="tools">
       ${n > 1 ? `<button class="btn icon ghost" data-act="v-prev" title="Anterior (←)">${I.left}</button><span class="zv">${V.i + 1}/${n}</span><button class="btn icon ghost" data-act="v-next" title="Próximo (→)">${I.right}</button><span class="sep"></span>` : ''}
       ${extra}
-      ${off ? `<a class="btn ghost" href="${off}" title="Abrir no aplicativo do Office">Abrir no Office</a>` : ''}
-      <button class="btn icon ghost" data-act="v-tab" title="Abrir em nova aba">${I.open}</button>
+      ${item.path ? officeBtn(item.path) : ''}
+      ${V.only ? '' : `<button class="btn icon ghost" data-act="v-tab" title="Abrir em janela própria (sem baixar)">${I.open}</button>`}
       <button class="btn icon ghost" data-act="v-dl" title="Baixar uma cópia">${I.dl}</button>
       <span class="sep"></span>
       <button class="btn icon ghost" data-act="v-close" title="Fechar (Esc)">${I.x}</button>
@@ -1542,8 +1568,7 @@ function vBar(item, extra = ''){
 const zoomTools = () => `<button class="btn icon ghost" data-act="v-zout" title="Diminuir (−)">${I.zout}</button><span class="zv" id="vz">${Math.round(V.zoom * 100)}%</span><button class="btn icon ghost" data-act="v-zin" title="Aumentar (+)">${I.zin}</button><span class="sep"></span>`;
 function applyZoom(){ const z = $('#vbody .vzoom'); if (z) z.style.zoom = V.zoom; const l = $('#vz'); if (l) l.textContent = Math.round(V.zoom * 100) + '%'; }
 function vMsg(title, text, item){
-  const off = item && item.path ? officeUri(item.path) : '';
-  $('#vbody').innerHTML = `<div class="vmsg"><div><b>${title}</b>${text}<div class="tools">${off ? `<a class="btn primary" href="${off}">Abrir no Office</a>` : ''}<button class="btn" data-act="v-tab">${I.open}Abrir em nova aba</button></div></div></div>`;
+  $('#vbody').innerHTML = `<div class="vmsg"><div><b>${title}</b>${text}<div class="tools">${item && item.path ? officeBtn(item.path, 'btn primary') : ''}${V.only ? '' : `<button class="btn" data-act="v-tab">${I.open}Abrir em janela</button>`}</div></div></div>`;
 }
 async function showViewer(){
   vCleanup();
@@ -1707,14 +1732,15 @@ const ACT = {
   },
   'ponto-view': () => { if (S.ponto.file) openViewer([S.ponto.file], 0); },
   'v-local': () => $('#vpick').click(),
-  'v-close': () => closeViewer(),
+  'v-close': () => { if (V.only) window.close(); else closeViewer(); },
+  'o-open': a => officeOpen(a.dataset.p),
   'v-prev': () => { V.i = (V.i - 1 + V.list.length) % V.list.length; showViewer(); },
   'v-next': () => { V.i = (V.i + 1) % V.list.length; showViewer(); },
   'v-zin': () => { V.zoom = Math.min(3, Math.round((V.zoom + .1) * 10) / 10); applyZoom(); },
   'v-zout': () => { V.zoom = Math.max(.3, Math.round((V.zoom - .1) * 10) / 10); applyZoom(); },
   'v-sheet': a => { V.sheet = +a.dataset.i; renderSheet(); $('#vbody').scrollTop = 0; },
   'v-imgfull': a => a.closest('.vimg').classList.toggle('full'),
-  'v-tab': () => { if (!V.file) return; const u = URL.createObjectURL(new Blob([V.file], { type: MIME[extOf(V.list[V.i].name)] || V.file.type || 'application/octet-stream' })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); },
+  'v-tab': () => openWindow(V.list[V.i]),
   'v-dl': () => { if (!V.file) return; const a = document.createElement('a'); a.href = URL.createObjectURL(V.file); a.download = V.list[V.i].name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 10000); },
   'e-sub': a => { ui.subFor = a.closest('.entry').dataset.id; ui.subType = 'task'; ui.subPrio = false; ui.focusSub = true; render(false); },
   'sub-type': a => { ui.subType = a.dataset.t; ui.focusSub = true; const v = $('#subtext') ? $('#subtext').value : ''; render(false); if ($('#subtext')) $('#subtext').value = v; },
@@ -1948,6 +1974,16 @@ if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
 (async function start(){
   ui._today = today();
   { const h = location.hash.slice(1); if (['hoje','cal','futuro','arquivos','ponto','perfil','config'].includes(h)) ui.view = h; }
+  if (location.hash.startsWith('#ver=')){
+    const path = decodeURIComponent(location.hash.slice(5)); V.only = true;
+    document.body.classList.add('vonly'); applyTheme(); document.title = path.split('/').pop() + ' · Agenda Inicial';
+    await initFS();
+    const f = S.files.find(x => x.path === path) || { name: path.split('/').pop(), path };
+    if (FS.state === 'granted') openViewer([f], 0);
+    else if (!FS.root){ openViewer([f], 0); $('#vbody').innerHTML = '<div class="vmsg"><div><b>Pasta ainda não autorizada</b>Abra a Agenda Inicial e clique em Autorizar; depois tente de novo.</div></div>'; }
+    else { openViewer([f], 0); $('#vbody').innerHTML = '<div class="vmsg"><div><b>Clique aqui para liberar o acesso à pasta</b>O navegador pede uma confirmação ao abrir uma janela nova.</div></div>'; window.addEventListener('pointerdown', async () => { try { if (FS.root && await FS.root.requestPermission({ mode: 'readwrite' }) === 'granted'){ FS.state = 'granted'; showViewer(); } } catch(e){} }, { once: true }); }
+    return;
+  }
   applyTheme();
   render(false);
   await initFS();
