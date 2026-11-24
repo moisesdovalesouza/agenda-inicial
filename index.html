@@ -432,6 +432,66 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 @media (max-width:1180px){table.t .c-size,table.t .c-date{display:none}}
 @media (max-width:1024px){.cal .cell{min-height:88px}.fgrid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:900px){.app{grid-template-columns:1fr}.side{position:fixed;top:0;bottom:0;left:0;width:min(300px,86vw);z-index:40;transform:translateX(-102%);transition:transform .2s ease;box-shadow:none}body.side-open .side{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}.mob-menu{display:inline-flex;margin-left:calc(-1 * var(--s1))}.topbar{padding-left:var(--s3)}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
+/* ---------- Celular ---------- */
+@media (max-width:640px){
+  :root{--page-x:16px}
+  .page{padding:var(--s3) 16px 96px}
+  .topbar{padding:0 var(--s1) 0 var(--s2);gap:var(--s1)}
+  .cr-pre{display:none}
+  .topbar .tools{gap:0}
+  .topbar .tools .btn:not(.icon){padding:0 8px}
+  .kicker{margin-top:var(--s2)}
+  h1.title,.title-edit{font-size:30px;line-height:1.2}
+  .sub{margin:var(--s2) 0 var(--s4)}
+  .sec{margin-top:32px}
+  .banner{grid-template-columns:1fr;gap:var(--s2)}
+  .banner .tools{justify-content:flex-start}
+  .form,.kv{grid-template-columns:minmax(0,1fr);gap:0}
+  .form>*{min-width:0}
+  .form>.muted,.form>label:not(.chk),.kv dt{font-size:12px;color:var(--muted);margin-top:var(--s2)}
+  .form>.muted:first-child,.kv dt:first-child{margin-top:0}
+  .form .inp:not([type=checkbox]):not([type=date]):not(.time){width:100%!important;max-width:none!important}
+  .kv dd{margin-bottom:var(--s1)}
+  .seg{max-width:100%;flex-wrap:wrap}
+  .grid2,.grid3{gap:var(--s2)}
+  /* registro rápido em duas linhas: tipo e horário em cima, texto e botão embaixo */
+  .qlog{grid-template-columns:auto 1fr auto auto;row-gap:var(--s1);padding:var(--s1)}
+  .qlog .typebtns{grid-area:1/1}
+  .qlog>.chk,.qlog>span:empty{grid-area:1/3}
+  .qlog .time{grid-area:1/4}
+  .qlog .typebtns~.txt{grid-area:2/1/3/4;height:36px;padding:0 var(--s1);border-top:1px solid var(--border)}
+  .qlog .typebtns~.btn.primary{grid-area:2/4;align-self:end}
+  .qlog+.hint{display:none}
+  /* calendário: dia com marcadores em vez de texto cortado */
+  .cal .wd{padding:4px 0;text-align:center;font-size:10px;letter-spacing:.04em}
+  .cal .cell{min-height:58px;padding:4px;flex-direction:row;flex-wrap:wrap;align-content:flex-start;gap:3px}
+  .cal .cell .hd{width:100%;justify-content:center;height:22px}
+  .cal .cell .hol{display:none}
+  .cal .it{font-size:0;line-height:0;width:6px;height:6px;padding:0;border-radius:50%;background:var(--muted);flex:none}
+  .cal .it .b{display:none}
+  .cal .it.ev{background:var(--text)}
+  .cal .it.g{background:var(--accent-strong)}
+  .cal .it.done{background:var(--faint)}
+  .cal .it.ponto{background:var(--accent);padding:0;border-radius:50%}
+  .cal .more{font-size:10px;line-height:6px}
+  /* registro futuro: meses sem altura fixa */
+  .fcell{min-height:0;padding:var(--s2) var(--s2) var(--s3)}
+  /* tabelas de arquivos viram cartões: nome inteiro em cima, vínculos e ações embaixo */
+  table.ftable,table.ftable tbody{display:block}
+  table.ftable colgroup,table.ftable thead{display:none}
+  table.ftable tr{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:var(--s2);border-bottom:1px solid var(--border);padding:var(--s2) 0}
+  table.ftable td{display:block;border:0;height:auto;padding:0}
+  table.ftable td:first-child{grid-column:1/-1;margin-bottom:var(--s1)}
+  table.ftable td.c-date,table.ftable td.c-size{display:none}
+  table.ftable .fname a{white-space:normal;overflow:visible;word-break:break-word;line-height:20px}
+  table.ftable tr:hover td{background:transparent}
+  /* tabela do ponto: sem a coluna de referência, datas inteiras */
+  table.ptable{table-layout:auto}
+  table.ptable th:nth-child(3),table.ptable td:nth-child(3){display:none}
+  table.ptable td.num{white-space:normal}
+  table.ptable td.acts .btn{padding:0 6px}
+  .toast{bottom:calc(16px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px)}
+}
 @media print{.side,.topbar,.qlog,.hint,.acts{display:none!important}.app{display:block}.page{padding:0}}
 </style>
 </head>
@@ -460,7 +520,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.10.1';    // versão do programa
+const APP_RELEASE = '1.11.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -595,6 +655,7 @@ function save(renderAfter = true){
 }
 
 /* ---------------- Pasta do sistema (File System Access) ---------------- */
+const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 const FS = { root: null, state: 'none', lastWrite: 0 }; // state: none | granted | prompt | unsupported
 const fsSupported = 'showDirectoryPicker' in window;
 function idb(){ return new Promise((res, rej) => { const r = indexedDB.open(IDB_NAME, 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
@@ -1231,13 +1292,13 @@ function renderSide(){
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
     </div>`;
 }
-function topbar(crumb, tools = ''){ return `<div class="topbar"><button class="btn ghost icon mob-menu" data-act="side-toggle" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg></button><div class="crumbs" style="flex:1">Agenda / <b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
+function topbar(crumb, tools = ''){ return `<div class="topbar"><button class="btn ghost icon mob-menu" data-act="side-toggle" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg></button><div class="crumbs" style="flex:1"><span class="cr-pre">Agenda / </span><b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
 function render(withG = true){
   applyTheme(); renderSide();
   const v = VIEWS[ui.view] || VIEWS.hoje;
   const main = $('#main'); const st = main.scrollTop;
   ui.rendering = true;
-  main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME)}${CLOUD.user ? ' e na sua conta na nuvem' : '; nada é enviado para a internet'}.</div></div>`;
+  main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : (FS.state === 'unsupported' ? 'neste aparelho' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME))}${CLOUD.user ? ' e na sua conta na nuvem' : '; nada é enviado para a internet'}.</div></div>`;
   ui.rendering = false;
   main.scrollTop = st;
   if (ui.focusItem){ const el = $(`.check[data-iid="${ui.focusItem}"] .txt`); ui.focusItem = null; if (el){ el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); } }
@@ -1549,7 +1610,7 @@ function linkTags(f){
 }
 function fileTable(files, compact){
   const cols = compact ? '<col><col style="width:36%"><col class="c-size" style="width:72px"><col style="width:148px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:176px">';
-  return `<table class="t"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${files.map(f => `<tr data-fid="${f.id}">
+  return `<table class="t ftable"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${files.map(f => `<tr data-fid="${f.id}">
       <td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
       <td>${linkTags(f)}</td>
       ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
@@ -1571,13 +1632,13 @@ function linkPicker(fid, date){
 VIEWS.arquivos = () => {
   const q = (ui.fq || '').toLowerCase();
   const files = S.files.filter(f => !q || f.name.toLowerCase().includes(q)).sort((a,b) => b.addedAt - a.addedAt);
-  return topbar('Arquivos', `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
+  return topbar('Arquivos', FS.state === 'unsupported' ? `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo deste aparelho">${I.eye}</button>` : `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca</div>
     <h1 class="title">Arquivos</h1>
     <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta Agenda Inicial.</p>
-    ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? 'Abra a agenda no Chrome ou no Edge para enviar arquivos.' : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
-    <div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>
+    ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? (IS_MOBILE ? 'No celular dá para ver a lista e os vínculos; os arquivos em si ficam no computador.' : 'Abra a agenda no Chrome ou no Edge para enviar arquivos.') : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
+    ${FS.state === 'unsupported' ? '' : `<div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>`}
     <div class="sec"><div class="sec-h"><h2>${S.files.length} arquivo${S.files.length === 1 ? '' : 's'}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
     ${files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
   </div>`;
@@ -1630,7 +1691,7 @@ VIEWS.ponto = () => {
     </div>
 
     <div class="sec"><div class="sec-h"><h2>Calendário do ponto</h2>${gOn() ? `<div class="tools"><button class="btn ghost" data-act="ponto-g">${I.g}Criar lembretes no Google (12 meses)</button></div>` : ''}</div>
-      <table class="t"><thead><tr><th>Mês</th><th>1º dia útil</th><th>Referência</th><th>Situação</th><th></th></tr></thead><tbody>${hist.join('')}</tbody></table>
+      <table class="t ptable"><thead><tr><th>Mês</th><th>1º dia útil</th><th>Referência</th><th>Situação</th><th></th></tr></thead><tbody>${hist.join('')}</tbody></table>
     </div>
   </div>`;
 };
@@ -1676,7 +1737,7 @@ VIEWS.config = () => {
         <dt>Situação</dt><dd>${storageLine()}</dd>
         <dt>Local</dt><dd>${FS.state === 'granted' ? `Documentos › <b>${esc(FS.root.name)}</b>` : '<span class="muted">ainda não autorizada</span>'}</dd>
         <dt>Conteúdo</dt><dd><span class="muted">dados/agenda.json · dados/backups/ (cópia diária) · arquivos/ (anexos)</span></dd>
-        <dt>Navegador</dt><dd>${fsSupported ? 'Compatível' : '<span style="color:var(--danger)">Este navegador não grava no computador. Use Chrome ou Edge.</span>'}</dd>
+        <dt>Navegador</dt><dd>${fsSupported ? 'Compatível' : IS_MOBILE ? 'Celular: os dados ficam neste aparelho' + (CLOUD.user ? ' e na nuvem' : '') + '; os anexos, no computador.' : '<span style="color:var(--danger)">Este navegador não grava no computador. Use Chrome ou Edge.</span>'}</dd>
       </dl>
       <dl class="kv" style="margin-top:var(--s2)"><dt>Abrir no computador</dt><dd>${S.settings.openerOn ? '<span class="dot ok"></span>Ativado · <a href="#" data-act="opener-off">mostrar de novo as instruções</a>' : '<span class="dot"></span>Ainda não ativado: a agenda explica na primeira vez que você clicar em "Abrir no Word"'}</dd></dl>
       <p class="hint">Os anexos abrem no programa do computador direto da pasta, sem baixar. A ativação fica em <i>sistema › Ativar abrir arquivos</i>; para desfazer, use <i>Desativar abrir arquivos</i> na mesma pasta.</p>
@@ -2122,13 +2183,14 @@ async function uniqueNbPath(title, exceptId){
   return { name, path: 'cadernos/' + name };
 }
 async function nbCreate(title, linkEntryId){
-  if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') return null; }
+  const semPasta = FS.state === 'unsupported' || (FS.state !== 'granted' && CLOUD.user);
+  if (!semPasta && FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') return null; }
   const t = title || 'Caderno sem título';
   const { name, path } = await uniqueNbPath(t);
   const md = '';
-  await writeRel(path, new Blob([md], { type: 'text/markdown' }));
+  if (FS.state === 'granted') await writeRel(path, new Blob([md], { type: 'text/markdown' }));
   const e = linkEntryId ? byId(linkEntryId) : null;
-  const f = { id: uid(), kind: 'caderno', title: t, name, path, size: md.length, date: today(), addedAt: Date.now(), updatedAt: Date.now(), link: e && e.date ? e.date : '', entries: e ? [e.id] : [], preview: '' };
+  const f = { id: uid(), kind: 'caderno', title: t, name, path, md, size: md.length, date: today(), addedAt: Date.now(), updatedAt: Date.now(), link: e && e.date ? e.date : '', entries: e ? [e.id] : [], preview: '' };
   S.files.push(f); save(false);
   return f;
 }
@@ -2231,7 +2293,7 @@ async function nbRename(newTitle){
       for (const o of S.files) if (o.kind === 'caderno' && o.id !== f.id) o.renamedFrom = o.renamedFrom || null;
       f.path = path; f.name = name;
     } catch(e){ toast('Não consegui renomear o arquivo: ' + e.message); return; }
-  }
+  } else if (path !== f.path){ f.path = path; f.name = name; }
   f.title = t; f.updatedAt = Date.now(); save(false); renderSide();
   const crumb = $('.crumbs b'); if (crumb) crumb.textContent = t;
   const sub = $('#nb-path'); if (sub) sub.textContent = 'Documentos › Agenda Inicial › ' + f.path.replace('/', ' › ');
@@ -2353,7 +2415,7 @@ VIEWS.cadernos = () => {
     <div class="kicker">Biblioteca de notas</div>
     <h1 class="title">Cadernos</h1>
     <p class="sub">Cada caderno é um arquivo do Bloco de Notas (.md) na pasta <b>Agenda Inicial › cadernos</b>. Você pode abrir e editar pelo Bloco de Notas também.</p>
-    ${FS.state !== 'granted' ? `<div class="banner"><div><b>Autorize a pasta para usar os cadernos</b><span class="muted">Os cadernos são gravados como arquivos na pasta ${esc(FOLDER_NAME)}.</span></div><div class="tools"><button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}Autorizar</button></div></div>` : ''}
+    ${FS.state !== 'granted' && FS.state !== 'unsupported' && !CLOUD.user ? `<div class="banner"><div><b>Autorize a pasta para usar os cadernos</b><span class="muted">Os cadernos são gravados como arquivos na pasta ${esc(FOLDER_NAME)}.</span></div><div class="tools"><button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}Autorizar</button></div></div>` : ''}
     <div class="nb-grid">${list.map(card).join('')}<div class="nb-card new" data-act="nb-new">${I.plus}<span>Novo caderno</span></div></div>
   </div>`;
 };
