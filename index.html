@@ -447,7 +447,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.7.0';    // versão do programa
+const APP_RELEASE = '1.7.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1086,7 +1086,7 @@ function entryRow(e, opt = {}){
   const acts = [];
   if (e.type === 'task' && e.status === 'open') acts.push(['done','Concluir',I.check]);
   if (e.status === 'done') acts.push(['reopen','Reabrir',I.sync]);
-  if ((e.type === 'task' || e.type === 'event') && e.status === 'open' && depth < MAXSUB) acts.push(['sub', `Adicionar item dentro (nível ${depth + 1} de ${MAXSUB}): subtarefa, nota ou evento`, I.subtask]);
+  if (!['migrated','scheduled','cancelled'].includes(e.status) && depth < MAXSUB) acts.push(['sub', `Adicionar item dentro (nível ${depth + 1} de ${MAXSUB}): subtarefa, nota ou evento`, I.subtask]);
   if (!depth && e.status === 'open' && e.type !== 'note') acts.push(['tomorrow','Migrar para o próximo dia útil',I.migrate], ['sched','Agendar para outra data',I.sched]);
   if ((!depth || e.type === 'event') && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
   if (e.status === 'open' && e.date) acts.push(['attach','Anexar arquivo a esta tarefa',I.clip]);
@@ -1234,7 +1234,7 @@ VIEWS.hoje = () => {
         ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
         <button class="btn primary" data-act="qadd">Adicionar</button>
       </div>
-      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no marcador para concluir. Para subtarefas, use o botão ${'<span class="kbd">↳</span>'} da tarefa ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
+      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no marcador para concluir. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
     </div>
 
     <div class="sec">

@@ -1,11 +1,10 @@
 {
- "version": "1.7.0",
+ "version": "1.7.1",
  "date": "2026-11-24",
  "notes": [
+  "Qualquer registro aceita itens dentro: tarefa, evento, nota ou prioridade (até 3 níveis)",
   "Novo menu Cadernos: notas com títulos, listas, negrito, itálico, sublinhado, tachado, links e tabelas, salvas como arquivos .md do Bloco de Notas",
   "Digite ## e o nome de um arquivo ou caderno para mencioná-lo no texto",
-  "Cadernos podem ser anexados aos registros; o botão de anexar agora também busca arquivos e cadernos que já estão na agenda",
-  "Um arquivo pode ser vinculado a vários registros (tarefas, notas, eventos); os vínculos aparecem como etiquetas",
-  "Mesma moldura em todas as telas, ajustada ao tamanho da janela; nada mais passa da margem"
+  "Cadernos podem ser anexados aos registros; o botão de anexar agora também busca arquivos e cadernos que já estão na agenda"
  ]
 }
