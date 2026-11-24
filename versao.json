@@ -1,0 +1,11 @@
+{
+ "version": "1.5.0",
+ "date": "2026-11-24",
+ "notes": [
+  "Novo nome e nova identidade visual: Agenda Inicial",
+  "Instalável pelo Chrome como aplicativo, com ícone próprio na barra de tarefas",
+  "Atualizações automáticas, sem baixar nada",
+  "Pasta de dados criada sozinha em Documentos\\Agenda Inicial",
+  "Opção para trazer os dados e anexos da agenda anterior"
+ ]
+}

@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda Inicial</title>
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#181816" media="(prefers-color-scheme: dark)">
+<meta name="application-name" content="Agenda Inicial">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231c1b19%22/%3E%20%3Crect%20x%3D%2213%22%20y%3D%2210%22%20width%3D%2238%22%20height%3D%2244%22%20rx%3D%223%22%20fill%3D%22%23f5f0e6%22/%3E%20%3Cpath%20d%3D%22M38%2010h8v17l-4-3-4%203z%22%20fill%3D%22%23c9982c%22/%3E%20%3Ccircle%20cx%3D%2223%22%20cy%3D%2234%22%20r%3D%224.2%22%20fill%3D%22%23c9982c%22/%3E%20%3Crect%20x%3D%2230%22%20y%3D%2232%22%20width%3D%2215%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%232a2824%22/%3E%20%3Ccircle%20cx%3D%2223%22%20cy%3D%2244%22%20r%3D%222.6%22%20fill%3D%22%232a2824%22/%3E%20%3Crect%20x%3D%2230%22%20y%3D%2242.2%22%20width%3D%2211%22%20height%3D%223.6%22%20rx%3D%221.8%22%20fill%3D%22%238e8778%22/%3E%20%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icone-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icone-192.png">
+<link rel="apple-touch-icon" href="assets/icone-180.png">
+<style>
+:root{
+  --bg:#fbfaf7; --bg2:#f4f2ec; --bg3:#eeebe4; --text:#262522; --muted:#77736a; --faint:#aaa59a;
+  --border:#e6e2d8; --hover:#efece4; --accent:#a87d1e; --accent-strong:#87630f; --accent-bg:#f6eed8; --on-accent:#ffffff;
+  --danger:#a9432f; --ok:#4f7a4b; --shadow:0 1px 2px rgba(40,35,25,.06),0 6px 18px rgba(40,35,25,.07);
+  --r:4px; --s1:4px; --s2:8px; --s3:16px; --s4:24px; --s5:32px; --s6:48px; --s7:64px;
+  --page-x:96px; --content:720px; --row:28px; --side-w:240px; --edge:16px;
+  --fs:14px; --fs-s:12px; --fs-h1:30px; --fs-h2:16px;
+  --font:"Segoe UI Variable Text","Segoe UI",-apple-system,ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;
+  --mono:"Cascadia Mono",Consolas,ui-monospace,monospace;
+  --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+}
+html[data-theme="dark"]{
+  --bg:#181816; --bg2:#1f1e1b; --bg3:#252420; --text:#e8e5de; --muted:#a09b90; --faint:#6d6960;
+  --border:#2f2d29; --hover:#2a2925; --accent:#d4a845; --accent-strong:#e2bb62; --accent-bg:#30291a; --on-accent:#181816;
+  --danger:#e07a68; --ok:#8fb58b; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 16px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme: dark){
+  html[data-theme="auto"]{
+    --bg:#181816; --bg2:#1f1e1b; --bg3:#252420; --text:#e8e5de; --muted:#a09b90; --faint:#6d6960;
+    --border:#2f2d29; --hover:#2a2925; --accent:#d4a845; --accent-strong:#e2bb62; --accent-bg:#30291a; --on-accent:#181816;
+    --danger:#e07a68; --ok:#8fb58b; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 16px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:var(--fs)/1.55 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+::selection{background:var(--accent-bg)}
+.app{display:grid;grid-template-columns:var(--side-w) 1fr;height:100vh}
+
+/* ---------- Sidebar ---------- */
+.side{background:var(--bg2);border-right:1px solid var(--border);box-shadow:inset -1px 0 0 rgba(255,255,255,.25);display:flex;flex-direction:column;min-height:0}
+.brand{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;padding:var(--s3) var(--edge) var(--s2)}
+.brand .mark{width:28px;height:28px;display:block}
+.brand .mark svg{width:28px;height:28px;display:block;border-radius:7px;box-shadow:0 0 0 1px var(--border)}
+.brand .mark img{max-width:28px;max-height:28px}
+.brand .mark span{font-weight:700;font-size:13px;color:var(--accent)}
+.brand b{display:block;font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+.brand small{display:block;font-size:11px;color:var(--muted);line-height:1.3;letter-spacing:.02em}
+.logo-wide{padding:0 var(--edge) var(--s2)}
+.logo-wide img{max-width:100%;max-height:34px;display:block}
+.nav{padding:var(--s2) var(--s2);overflow:auto;flex:1}
+.nav>*+*{margin-top:1px}
+.nav .grp{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;height:var(--row);display:flex;align-items:flex-end;padding:0 var(--s2) 6px;margin-top:var(--s3)}
+.nav a{display:grid;grid-template-columns:20px 1fr auto;gap:var(--s2);align-items:center;height:var(--row);padding:0 var(--s2);font-size:14px;border-radius:var(--r);text-decoration:none;color:var(--text);cursor:pointer;user-select:none}
+.nav a:hover{background:var(--hover)}
+.nav a.on{background:var(--hover);font-weight:600}
+.nav a svg{width:16px;height:16px;color:var(--muted)}
+.nav a .pill{font-size:11px;padding:0 6px;border-radius:var(--r);background:var(--accent);color:var(--on-accent);font-weight:600;line-height:18px}
+.nav a .cnt{font-size:11px;color:var(--faint)}
+.side-foot{border-top:1px solid var(--border);padding:var(--s3) var(--edge);font-size:var(--fs-s);color:var(--muted)}
+.side-foot .who b{display:block;color:var(--text);font-size:13px}
+.side-foot .row{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:var(--s2)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--faint);margin-right:6px;vertical-align:1px}
+.dot.ok{background:var(--ok)} .dot.warn{background:var(--accent)} .dot.err{background:var(--danger)}
+
+/* ---------- Main ---------- */
+.main{overflow:auto;min-width:0;position:relative}
+.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:var(--s2);height:44px;padding:0 var(--s2) 0 var(--edge);background:var(--bg);border-bottom:1px solid transparent}
+.topbar.scrolled{border-bottom-color:var(--border)}
+.crumbs{color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumbs b{color:var(--text);font-weight:500}
+.tools{display:flex;gap:var(--s1);align-items:center}
+.page{max-width:calc(var(--content) + 2 * var(--page-x));margin:0 auto;padding:var(--s5) var(--page-x) 120px}
+.page.wide{max-width:none}
+h1.title{font-family:var(--serif);font-size:40px;line-height:1.2;font-weight:600;margin:0;letter-spacing:-.015em}
+.kicker{margin:var(--s4) 0 var(--s2);font-size:11px;line-height:16px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sub{color:var(--muted);font-size:14px;line-height:22px;margin:var(--s3) 0 var(--s5)}
+.sec{margin-top:40px}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);min-height:var(--row);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:var(--s2)}
+.sec-h h2{font-size:12px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.sec-h .tools .btn{height:24px;font-size:12px}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:var(--fs-s)}
+.empty{color:var(--faint);padding:var(--s2) 0;font-size:13px}
+
+/* ---------- Controls ---------- */
+.btn{display:inline-flex;align-items:center;gap:6px;height:var(--row);padding:0 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);cursor:pointer;white-space:nowrap;font-size:13px}
+.btn:hover{background:var(--hover)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--hover)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn.primary:hover{background:var(--accent-strong);border-color:var(--accent-strong)}
+.btn.icon{width:var(--row);padding:0;justify-content:center}
+.btn svg{width:15px;height:15px}
+.btn.danger{color:var(--danger)}
+.btn:disabled{opacity:.45;cursor:default}
+.inp,select.inp,textarea.inp{height:var(--row);padding:0 var(--s2);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);outline:none;min-width:0}
+textarea.inp{height:auto;padding:var(--s2)}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg)}
+label.chk{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:13px}
+label.chk input{accent-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.seg button{border:0;background:transparent;height:26px;padding:0 10px;cursor:pointer;font-size:13px;color:var(--muted);border-right:1px solid var(--border)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--hover);color:var(--text);font-weight:600}
+.kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border);border-bottom-width:2px;border-radius:var(--r);padding:0 4px;color:var(--muted)}
+
+/* ---------- Banner ---------- */
+.banner{display:grid;grid-template-columns:1fr auto;gap:var(--s3);align-items:center;border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--accent-bg);padding:12px var(--s3);border-radius:var(--r);margin:0 0 var(--s3)}
+.banner b{display:block}
+.banner .muted{font-size:13px}
+.banner .tools{flex-wrap:wrap;justify-content:flex-end}
+.banner.info{border-left-color:var(--muted);background:var(--bg2)}
+
+/* ---------- Quick log ---------- */
+.qlog{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:var(--s2);align-items:center;border:1px solid var(--border);border-radius:var(--r);padding:var(--s1) var(--s1) var(--s1) var(--s2);background:var(--bg)}
+.qlog:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg)}
+.qlog .txt{border:0;outline:0;background:transparent;height:30px;min-width:0}
+.qlog .time{width:112px}
+.typebtns{display:flex;gap:2px}
+.typebtns button{width:28px;height:28px;border:1px solid transparent;border-radius:var(--r);background:transparent;cursor:pointer;font-family:var(--mono);font-size:15px;color:var(--muted)}
+.typebtns button.on{border-color:var(--border);background:var(--hover);color:var(--text)}
+.hint{font-size:12px;line-height:18px;color:var(--faint);margin:var(--s2) 0 0}
+
+/* ---------- Entries (bullet journal) ---------- */
+.entries{list-style:none;margin:0 0 0 -18px;padding:0}
+.entries .empty{padding-left:18px}
+.entry{display:grid;grid-template-columns:18px 20px 1fr auto;gap:2px var(--s1);align-items:start;padding:3px 0;border-radius:var(--r);position:relative}
+.entry:hover{background:var(--hover)}
+.entry .sig{font-family:var(--mono);color:var(--accent);font-weight:700;text-align:center;line-height:24px;cursor:pointer}
+.entry .bul{font-family:var(--mono);font-size:16px;line-height:24px;text-align:center;cursor:pointer;color:var(--text);user-select:none}
+.entry .txt{line-height:24px;outline:none;min-height:24px;word-break:break-word;padding-right:var(--s1)}
+.entry .txt[contenteditable="true"]{background:var(--bg);box-shadow:0 0 0 1px var(--accent);border-radius:2px;padding:0 4px}
+.entry .meta{display:flex;gap:6px;align-items:center;line-height:24px;font-size:12px;color:var(--muted);white-space:nowrap}
+.entry .time{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px;cursor:pointer}
+.entry .acts{display:none;position:absolute;right:0;top:1px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1px}
+.entry:hover .acts{display:flex}
+.entry:hover .meta{visibility:hidden}
+.entry .acts button{width:26px;height:24px;border:0;background:transparent;border-radius:2px;cursor:pointer;display:grid;place-items:center;color:var(--muted)}
+.entry .acts button:hover{background:var(--hover);color:var(--text)}
+.entry .acts svg{width:14px;height:14px}
+.entry.done .txt,.entry.cancelled .txt{color:var(--faint)}
+.entry.cancelled .txt{text-decoration:line-through}
+.entry.done .txt{text-decoration:line-through;text-decoration-color:var(--faint)}
+.entry.migrated .txt,.entry.scheduled .txt{color:var(--faint)}
+.entry.event .txt{font-weight:500}
+.tag{display:inline-block;font-size:11px;line-height:16px;padding:0 5px;border:1px solid var(--border);border-radius:var(--r);color:var(--muted);vertical-align:1px}
+.tag.g{border-color:var(--accent);color:var(--accent)}
+.tag.acc{background:var(--accent-bg);border-color:transparent;color:var(--accent-strong)}
+.daylabel{font-size:12px;line-height:16px;color:var(--muted);margin:var(--s3) 0 var(--s1);font-weight:600}
+
+/* ---------- Notes ---------- */
+.notes{width:100%;min-height:120px;border:1px solid transparent;border-radius:var(--r);padding:var(--s2);background:transparent;outline:none;resize:none;line-height:1.7;
+  background-image:linear-gradient(var(--bg) 0, transparent 0);
+}
+.notes:hover{border-color:var(--border)}
+.notes:focus{border-color:var(--accent);background:var(--bg)}
+.dotgrid{background-image:radial-gradient(var(--border) 1px, transparent 1.2px);background-size:16px 16px;background-position:8px 8px}
+
+/* ---------- Calendar ---------- */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.cal .wd{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:var(--s1) var(--s2);border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)}
+.cal .cell{min-height:112px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:var(--s1) 6px var(--s2);cursor:pointer;overflow:hidden;display:flex;flex-direction:column;gap:1px}
+.cal .cell:hover{background:var(--bg2)}
+.cal .cell.out{background:var(--bg2)}
+.cal .cell.out .n{color:var(--faint)}
+.cal .cell.wkend{background:color-mix(in srgb, var(--bg2) 55%, var(--bg))}
+.cal .cell .hd{display:flex;align-items:center;justify-content:space-between;gap:4px;height:22px}
+.cal .cell .n{font-size:13px;font-weight:500;min-width:22px;height:22px;display:grid;place-items:center;border-radius:var(--r)}
+.cal .cell.today .n{background:var(--accent);color:var(--on-accent);font-weight:700;border-radius:50%}
+.cal .cell .hol{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .it{font-size:12px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .it .b{font-family:var(--mono);display:inline-block;width:14px;color:var(--muted)}
+.cal .it.ev{font-weight:500}
+.cal .it.g{color:var(--accent-strong)}
+.cal .it.done{color:var(--faint);text-decoration:line-through}
+.cal .it.ponto{background:var(--accent-bg);color:var(--accent-strong);padding:0 4px;border-radius:2px;font-weight:600}
+.cal .more{font-size:11px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s3);font-size:12px;color:var(--muted);margin-top:var(--s2)}
+.legend span b{font-family:var(--mono);color:var(--text);margin-right:4px}
+
+/* ---------- Future log ---------- */
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.fcell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:var(--s2) var(--s3) var(--s3);min-height:220px;display:flex;flex-direction:column}
+.fcell h3{margin:0 0 var(--s2);font-family:var(--serif);font-size:17px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
+.fcell h3 small{font-weight:400;color:var(--muted);font-size:11px}
+.fcell .entries{flex:1}
+.fcell .entry{grid-template-columns:18px 20px 1fr auto}
+.fcell .d{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px}
+.fadd{display:grid;grid-template-columns:72px 1fr;gap:var(--s1);margin-top:var(--s2)}
+
+/* ---------- Tables ---------- */
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;border-bottom:1px solid var(--border);padding:6px var(--s2);height:var(--row)}
+table.t td{border-bottom:1px solid var(--border);padding:6px var(--s2);vertical-align:middle;height:40px}
+table.t th:first-child,table.t td:first-child{padding-left:0}
+table.t th:last-child,table.t td:last-child{padding-right:0}
+table.t tr:hover td{background:var(--bg2)}
+table.t td.num{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+table.t td.acts{text-align:right;white-space:nowrap}
+.fname{display:flex;align-items:center;gap:var(--s2)}
+.ext{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;width:38px;text-align:center;border:1px solid var(--border);border-radius:var(--r);color:var(--muted);line-height:18px;flex:none}
+
+/* ---------- Dropzone ---------- */
+.drop{border:1px dashed var(--faint);border-radius:var(--r);padding:var(--s4);text-align:center;color:var(--muted);background:var(--bg2)}
+.drop.over{border-color:var(--accent);background:var(--accent-bg);color:var(--text)}
+
+/* ---------- Cards / forms ---------- */
+.card{border:1px solid var(--border);border-radius:var(--r);padding:var(--s3)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+.form{display:grid;grid-template-columns:184px 1fr;gap:var(--s2) var(--s4);align-items:center}
+.form .full{grid-column:1/-1}
+.kv{display:grid;grid-template-columns:184px 1fr;gap:var(--s2) var(--s4);font-size:14px;line-height:20px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.stat b{display:block;font-size:22px;font-weight:700;line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+ol.steps{margin:0;padding-left:20px;line-height:1.8;font-size:13px}
+pre.code{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:var(--s2) var(--s3);max-height:220px;overflow:auto;white-space:pre}
+
+/* ---------- Lists (collections) ---------- */
+.check{display:grid;grid-template-columns:22px 1fr auto auto;gap:var(--s1);align-items:start;padding:3px 0 3px calc(var(--d,0) * 24px);border-radius:var(--r);position:relative}
+.check[style*="--d:1"]::before,.check[style*="--d:2"]::before,.check[style*="--d:3"]::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--d) * 24px - 12px);border-left:1px solid var(--border)}
+.check .meta{line-height:24px}
+.check .ops{display:flex;opacity:0}
+.check:hover .ops,.check:focus-within .ops{opacity:1}
+.check .ops button{border:0;background:transparent;cursor:pointer;color:var(--muted);width:26px;height:24px;display:grid;place-items:center;border-radius:2px}
+.check .ops button:hover{background:var(--bg);color:var(--text)}
+.check .ops svg{width:14px;height:14px}
+.check:hover{background:var(--hover)}
+.check input{margin:5px 0 0 0;accent-color:var(--accent);width:14px;height:14px}
+.check .txt{line-height:24px;outline:none}
+.check.done .txt{color:var(--faint);text-decoration:line-through}
+.title-edit{outline:none;border:0;background:transparent;font-family:var(--serif);font-size:40px;line-height:1.2;font-weight:600;letter-spacing:-.015em;width:100%;padding:0;margin:0}
+
+/* ---------- Toast / misc ---------- */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 14px;border-radius:var(--r);font-size:13px;box-shadow:var(--shadow);z-index:50;opacity:0;transition:opacity .15s;pointer-events:none;max-width:80vw}
+.toast.on{opacity:1}
+#dp{position:fixed;opacity:0;width:1px;height:1px;pointer-events:none}
+/* ---------- Visualizador ---------- */
+.viewer{position:fixed;inset:0;z-index:40;background:rgba(15,15,14,.55);display:grid;padding:24px}
+.viewer[hidden]{display:none}
+.vpanel{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);display:grid;grid-template-rows:44px 1fr auto;min-height:0;overflow:hidden}
+.vbar{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s2);align-items:center;padding:0 var(--s2) 0 var(--s3);border-bottom:1px solid var(--border)}
+.vbar .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.vbar .nm small{font-weight:400;color:var(--muted);margin-left:var(--s2)}
+.vbar .tools{gap:2px}
+.vbar .sep{width:1px;height:20px;background:var(--border);margin:0 var(--s1)}
+.vbar .zv{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:44px;text-align:center}
+.vbody{overflow:auto;min-height:0;background:var(--bg3);position:relative}
+.vbody.flush{overflow:hidden}
+.vbody iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+.vzoom{transform-origin:top center}
+.vmsg{display:grid;place-items:center;height:100%;text-align:center;color:var(--muted);padding:var(--s5)}
+.vmsg b{display:block;color:var(--text);font-size:15px;margin-bottom:var(--s1)}
+.vmsg .tools{justify-content:center;margin-top:var(--s3)}
+.vimg{display:grid;place-items:center;min-height:100%;padding:var(--s4)}
+.vimg img{max-width:100%;max-height:calc(100vh - 160px);box-shadow:var(--shadow);background:repeating-conic-gradient(#e8e8e8 0 25%,#fff 0 50%) 0 0/16px 16px}
+.vimg.full img{max-width:none;max-height:none}
+.vtext{margin:0;padding:var(--s4) var(--s5);font:13px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;background:var(--bg);min-height:100%;color:var(--text)}
+.vmedia{display:grid;place-items:center;height:100%;padding:var(--s4)}
+.vmedia video{max-width:100%;max-height:100%}
+.vdocx{padding:var(--s4) 0}
+.vdocx .docx-wrapper{background:transparent!important;padding:0!important}
+.vdocx .docx-wrapper>section.docx{box-shadow:var(--shadow);margin:0 auto var(--s4)!important}
+.vsheet{background:var(--bg);min-height:100%}
+.vsheet table{border-collapse:separate;border-spacing:0;font:12px/1.4 var(--font);color:var(--text)}
+.vsheet th,.vsheet td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:2px 6px;white-space:nowrap;max-width:420px;overflow:hidden;text-overflow:ellipsis;height:22px}
+.vsheet thead th{position:sticky;top:0;z-index:2;background:var(--bg2);color:var(--muted);font-weight:500;text-align:center;font-size:11px}
+.vsheet tbody th{position:sticky;left:0;z-index:1;background:var(--bg2);color:var(--muted);font-weight:500;text-align:right;font-size:11px;min-width:40px}
+.vsheet thead th:first-child{left:0;z-index:3}
+.vsheet td.n{text-align:right;font-variant-numeric:tabular-nums}
+.vsheet td.f{color:var(--muted);font-style:italic}
+.vsheet .more{padding:var(--s2) var(--s3);color:var(--muted);font-size:12px}
+.vtabs{display:flex;gap:0;border-top:1px solid var(--border);background:var(--bg2);overflow-x:auto}
+.vtabs:empty{display:none}
+.vtabs button{border:0;border-right:1px solid var(--border);background:transparent;height:30px;padding:0 var(--s3);cursor:pointer;font-size:12px;color:var(--muted);white-space:nowrap}
+.vtabs button.on{background:var(--bg);color:var(--text);font-weight:600;box-shadow:inset 0 2px 0 var(--accent)}
+.vpptx{padding:var(--s4);display:grid;justify-items:center}
+.vpptx .pptx-preview-wrapper{background:transparent!important;margin:0 auto}
+.vpptx .pptx-preview-slide-wrapper{box-shadow:var(--shadow);margin:0 auto var(--s4)!important}
+.vload{display:grid;place-items:center;height:100%;color:var(--muted);font-size:13px}
+@media print{.viewer{display:none!important}}
+.fchips{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 4px}
+.fchip{display:inline-flex;align-items:center;gap:4px;max-width:260px;height:20px;padding:0 6px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);font-size:11.5px;color:var(--text);text-decoration:none;cursor:pointer;line-height:18px}
+.fchip:hover{border-color:var(--accent);background:var(--accent-bg)}
+.fchip svg{width:12px;height:12px;color:var(--muted);flex:none}
+.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.entry .fchips{grid-column:3 / -1}
+select.inp.mini{height:24px;font-size:12px;max-width:220px}
+.page.hoje .notes{background-color:transparent}
+.install{margin:0 var(--s2) var(--s2)}
+.install .btn{width:100%;justify-content:center}
+.foot-note{margin-top:var(--s6);padding-top:var(--s2);border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
+/* ---------- Subtarefas ---------- */
+.entry{padding-left:calc(var(--d,0) * 24px)}
+.entry.child::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--d) * 24px - 12px);border-left:1px solid var(--border)}
+.subadd{display:grid;grid-template-columns:18px 20px 1fr;gap:2px var(--s1);align-items:center;padding:3px 0 3px calc(var(--d,1) * 24px)}
+.subadd .bul{font-family:var(--mono);color:var(--faint);text-align:center}
+.subadd .inp{height:26px}
+
+/* ---------- Perfil ---------- */
+.avatar{font-family:var(--serif);width:56px;height:56px;flex:none;display:grid;place-items:center;background:var(--text);color:var(--bg);font-weight:700;font-size:20px;letter-spacing:.02em;border-radius:var(--r);border-bottom:4px solid var(--accent)}
+.prev{border:1px solid var(--border);padding:20px 24px;border-radius:var(--r);box-shadow:var(--shadow)}
+.appcard{display:grid;grid-template-columns:64px 1fr;gap:var(--s3);align-items:center}
+.appcard svg{width:64px;height:64px;display:block}
+
+/* ---------- Relatórios (PDF) ---------- */
+#print{display:none}
+.rp{font:10pt/1.5 "Segoe UI",Calibri,Arial,sans-serif;color:#111;background:#fff}
+.rp-h{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding-bottom:10px;border-bottom:2px solid #111}
+.rp-logo img{max-height:42px;max-width:160px;display:block}
+.rp-logo svg{width:42px;height:42px;display:block}
+.rp-k{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:#777}
+.rp h1{font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;font-size:17pt;margin:0;line-height:1.25;font-weight:700}
+.rp-s{color:#555;font-size:9.5pt}
+.rp-p{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:8.5pt;color:#444;padding:6px 0 8px;border-bottom:1px solid #b8892b;margin-bottom:12px}
+.rp-p b{color:#111}
+.rp h2{font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#555;border-bottom:1px solid #bbb;padding-bottom:2px;margin:16px 0 6px;font-weight:600;break-after:avoid}
+.rp h3{font-size:10pt;margin:12px 0 4px;break-after:avoid}
+.rp ul{list-style:none;margin:0;padding:0}
+.rp li{display:grid;grid-template-columns:16px 1fr auto;gap:4px;padding:1px 0 1px calc(var(--d,0) * 18px);break-inside:avoid}
+.rp li .b{font-family:Consolas,monospace;text-align:center}
+.rp li.done .x,.rp li.cancelled .x{text-decoration:line-through;color:#777}
+.rp li.migrated .x,.rp li.scheduled .x{color:#888}
+.rp li .m{color:#777;font-size:8.5pt;white-space:nowrap}
+.rp .t{font-family:Consolas,monospace;font-size:9pt;color:#555;margin-right:6px}
+.rp .notes{white-space:pre-wrap;border-left:2px solid #ddd;padding-left:8px;margin-top:6px;color:#222}
+.rp table{width:100%;border-collapse:collapse;font-size:9pt}
+.rp th,.rp td{border-bottom:1px solid #ddd;padding:3px 6px;text-align:left}
+.rp th{color:#555;font-weight:600}
+.rp .sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0 8px}
+.rp .sum div{border:1px solid #ccc;padding:6px 8px;font-size:8.5pt;color:#555}
+.rp .sum b{display:block;font-size:14pt;color:#111;line-height:1.2}
+.rp .sign{margin:56px auto 0;width:60%;text-align:center;border-top:1px solid #111;padding-top:4px;font-size:9pt;break-inside:avoid}
+.rp .foot{margin-top:20px;font-size:7.5pt;color:#888;border-top:1px solid #ddd;padding-top:4px}
+.rp .vazio{color:#888;font-style:italic}
+@page{size:A4;margin:16mm 15mm 18mm;@bottom-right{content:"Página " counter(page) " de " counter(pages);font-size:8pt;color:#777}}
+@media print{body.printing .app,body.printing .toast,body.printing #dp{display:none!important}body.printing #print{display:block}body.printing{background:#fff;color:#111}body.printing,body.printing html{height:auto}}
+@media (max-width:1100px){:root{--page-x:48px}}
+@media (max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.side,.topbar,.qlog,.hint,.acts{display:none!important}.app{display:block}.page{padding:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side"></aside>
+  <main class="main" id="main"></main>
+</div>
+<input type="date" id="dp" tabindex="-1">
+<input type="file" id="fpick" multiple hidden>
+<input type="file" id="fpick1" hidden>
+<input type="file" id="logopick" accept="image/*" hidden>
+<input type="file" id="importpick" accept=".json,application/json" hidden>
+<div class="toast" id="toast"></div>
+<div id="print"></div>
+<div class="viewer" id="viewer" hidden><div class="vpanel"><div class="vbar" id="vbar"></div><div class="vbody" id="vbody"></div><div class="vtabs" id="vtabs"></div></div></div>
+<input type="file" id="vpick" hidden>
+
+<script>
+"use strict";
+/* =====================================================================
+   Agenda Cagece — uso pessoal de Moisés do Vale Souza
+   Sistema em arquivo único. Os dados ficam em ./dados/agenda.json e os
+   arquivos enviados em ./arquivos/, dentro da mesma pasta deste HTML.
+   ===================================================================== */
+
+const APP_VERSION = 1;          // versão do formato dos dados
+const APP_RELEASE = '1.5.0';    // versão do programa
+const LS_KEY = 'agendaInicial.v1';
+const IDB_NAME = 'agendaInicial';
+const FOLDER_NAME = 'Agenda Inicial';
+
+/* ---------------- Utilidades ---------------- */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const ym = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d || 1); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate()+n); return ymd(d); };
+const addMonths = (s, n) => { const d = parse(s + (s.length === 7 ? '-01' : '')); d.setDate(1); d.setMonth(d.getMonth()+n); return ym(d); };
+const today = () => ymd(new Date());
+const WD = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const WDS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const longDate = s => { const d = parse(s); return `${cap(WD[d.getDay()])}, ${d.getDate()} de ${MES[d.getMonth()]}`; };
+const shortDate = s => { const d = parse(s); return `${pad(d.getDate())}/${pad(d.getMonth()+1)}`; };
+const brDate = s => { const d = parse(s); return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`; };
+const monthName = k => { const d = parse(k + '-01'); return `${cap(MES[d.getMonth()])} ${d.getFullYear()}`; };
+const weekNo = s => { const d = parse(s); const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(t.getUTCFullYear(),0,1)); return Math.ceil(((t - y0) / 86400000 + 1) / 7); };
+const fmtSize = b => b < 1024 ? b + ' B' : b < 1048576 ? (b/1024).toFixed(0) + ' KB' : (b/1048576).toFixed(1).replace('.', ',') + ' MB';
+const extOf = n => (n.split('.').pop() || '').toLowerCase().slice(0, 5);
+function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), ms); }
+
+/* ---------------- Ícones ---------------- */
+const I = {
+  today:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/><rect x="5" y="8.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/></svg>',
+  cal:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3M5.5 9h1M9.5 9h1M5.5 11.5h1M9.5 11.5h1"/></svg>',
+  future:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4h12M2 8h12M2 12h7"/><path d="M11 10.5l2 1.5-2 1.5"/></svg>',
+  list:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 4h8M6 8h8M6 12h8"/><path d="M2 4l1 1 1.5-2M2 8l1 1 1.5-2" /><circle cx="3" cy="12" r=".9" fill="currentColor"/></svg>',
+  files:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4.5V13h12V5.5H8L6.5 3.5H2z"/></svg>',
+  ponto:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>',
+  gear:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg>',
+  plus:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 3v10M3 8h10"/></svg>',
+  left:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10 3L5 8l5 5"/></svg>',
+  right:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 3l5 5-5 5"/></svg>',
+  check:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8.5l3 3 7-7"/></svg>',
+  migrate:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h9M9 4.5L12.5 8 9 11.5"/></svg>',
+  sched:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3M6 10h4M8 8v4"/></svg>',
+  star:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2l1.8 3.8 4.2.5-3.1 2.9.8 4.1L8 11.3 4.3 13.3l.8-4.1L2 6.3l4.2-.5z"/></svg>',
+  strike:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 8h11M10.5 4.5C10 3.6 9 3 7.8 3 6.2 3 5 3.9 5 5.2c0 .9.5 1.5 1.3 1.9M5.2 11c.5 1 1.6 1.8 3 1.8 1.7 0 2.9-.9 2.9-2.3 0-.4-.1-.8-.3-1.1"/></svg>',
+  trash:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 9h5.8l.6-9"/></svg>',
+  clock:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.2"/></svg>',
+  g:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8.2H8.2M13 8.2A5 5 0 1 1 11.4 4.4"/></svg>',
+  open:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9 2.5h4.5V7M13.5 2.5L7 9M11.5 9.5v4h-9v-9h4"/></svg>',
+  clip:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10.5 5L6 9.5a1.4 1.4 0 0 0 2 2l5-5a2.8 2.8 0 0 0-4-4L3.8 7.7a4.2 4.2 0 0 0 6 6L13.5 10"/></svg>',
+  sun:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></svg>',
+  moon:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M13.5 9.5A5.8 5.8 0 0 1 6.5 2.5a5.8 5.8 0 1 0 7 7z"/></svg>',
+  auto:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5v11A5.5 5.5 0 0 0 8 2.5z" fill="currentColor"/></svg>',
+  folder:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4.5V13h12V5.5H8L6.5 3.5H2z"/><path d="M6 9.5h4M8 7.5v4"/></svg>',
+  sync:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M13 6A5 5 0 0 0 3.6 5M3 10a5 5 0 0 0 9.4 1"/><path d="M13.5 2.5V6H10M2.5 13.5V10H6"/></svg>',
+  subtask:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3.5 2.5v6a2 2 0 0 0 2 2H12"/><path d="M9.5 8l2.5 2.5L9.5 13"/></svg>',
+  user:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5.5" r="2.8"/><path d="M2.5 14c.6-2.8 2.8-4.3 5.5-4.3s4.9 1.5 5.5 4.3"/></svg>',
+  pdf:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3.5 1.5h6l3 3v10h-9z"/><path d="M9.5 1.5v3h3M5.5 8.5h5M5.5 11h5"/></svg>',
+  eye:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+  x:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  zin:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 4v8M4 8h8"/></svg>',
+  zout:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 8h8"/></svg>',
+  dl:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"/></svg>',
+  print:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 6V2.5h7V6M4.5 11.5h-2V6h11v5.5h-2M4.5 9.5h7v4h-7z"/></svg>'
+};
+
+const ICON_SVG = '<svg class="appicon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <rect width="512" height="512" rx="112" fill="#1c1b19"/> <rect x="116" y="92" width="284" height="328" rx="20" fill="#f5f0e6"/> <path d="M136 92h22v328h-22a20 20 0 0 1-20-20V112a20 20 0 0 1 20-20z" fill="#e3dac7"/> <g fill="#d9d0bd"> <circle cx="200" cy="140" r="4.5"/><circle cx="232" cy="140" r="4.5"/><circle cx="264" cy="140" r="4.5"/><circle cx="296" cy="140" r="4.5"/> <circle cx="200" cy="172" r="4.5"/><circle cx="232" cy="172" r="4.5"/><circle cx="264" cy="172" r="4.5"/><circle cx="296" cy="172" r="4.5"/> <circle cx="200" cy="204" r="4.5"/><circle cx="232" cy="204" r="4.5"/><circle cx="264" cy="204" r="4.5"/><circle cx="296" cy="204" r="4.5"/><circle cx="328" cy="204" r="4.5"/><circle cx="360" cy="204" r="4.5"/> <circle cx="200" cy="364" r="4.5"/><circle cx="232" cy="364" r="4.5"/><circle cx="264" cy="364" r="4.5"/><circle cx="296" cy="364" r="4.5"/><circle cx="328" cy="364" r="4.5"/><circle cx="360" cy="364" r="4.5"/> </g> <path d="M322 92h44v118l-22-18-22 18z" fill="#c9982c"/> <circle cx="212" cy="262" r="19" fill="#c9982c"/> <rect x="248" y="254" width="116" height="16" rx="8" fill="#2a2824"/> <circle cx="212" cy="314" r="10" fill="#2a2824"/> <rect x="248" y="307" width="84" height="14" rx="7" fill="#8e8778"/> </svg>';
+
+/* ---------------- Estado ---------------- */
+const DEFAULT = () => ({
+  version: APP_VERSION, updatedAt: 0, since: new Date().toISOString().slice(0,7),
+  profile: { name: '', cargo: '', email: '', matricula: '', telefone: '', setor: '', unidade: '', registro: '', pdf: { mat: true, email: true, tel: true, reg: false, sign: true } },
+  entries: [],      // {id,type:'task'|'event'|'note',text,date,month,time,status,prio,gId,from,createdAt}
+  days: {},         // 'AAAA-MM-DD': {notes}
+  lists: [{ id: uid(), title: 'Lista geral', items: [], notes: '', createdAt: Date.now() }],
+  files: [],        // {id,name,path,size,date,addedAt,link}
+  ponto: { kind: 'file', file: null, url: '', ref: 'anterior', monthlyCopy: false, done: {} },
+  google: { url: '', token: '', calName: 'Cagece', enabled: false, pushDefault: true, calId: '', lastOk: 0 },
+  settings: { theme: 'auto', logo: '', logoWide: false, extraHolidays: [], cityHolidays: true }
+});
+let S = load();
+const ui = { view: 'hoje', date: today(), month: today().slice(0,7), listId: null, qtype: 'task', qprio: false };
+
+function load(){
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch(e){}
+  return migrate(s || DEFAULT());
+}
+function migrate(s){
+  const d = DEFAULT();
+  for (const k of Object.keys(d)) if (s[k] === undefined) s[k] = d[k];
+  for (const k of ['profile','ponto','google','settings']) s[k] = Object.assign({}, d[k], s[k]);
+  if (!s.ponto.done) s.ponto.done = {};
+  s.profile.pdf = Object.assign({}, d.profile.pdf, s.profile.pdf || {});
+  for (const l of s.lists) for (const it of l.items) if (it.level === undefined) it.level = 0;
+  if (!Array.isArray(s.settings.extraHolidays)) s.settings.extraHolidays = [];
+  return s;
+}
+let saveTimer = null;
+function save(renderAfter = true){
+  S.updatedAt = Date.now();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){ toast('Não foi possível salvar no navegador.'); }
+  clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 500);
+  if (renderAfter) render();
+}
+
+/* ---------------- Pasta do sistema (File System Access) ---------------- */
+const FS = { root: null, state: 'none', lastWrite: 0 }; // state: none | granted | prompt | unsupported
+const fsSupported = 'showDirectoryPicker' in window;
+function idb(){ return new Promise((res, rej) => { const r = indexedDB.open(IDB_NAME, 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function idbGet(k){ const db = await idb(); return new Promise(res => { const r = db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result); r.onerror = () => res(null); }); }
+async function idbSet(k, v){ const db = await idb(); return new Promise(res => { const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(true); tx.onerror = () => res(false); }); }
+
+async function initFS(){
+  if (!fsSupported){ FS.state = 'unsupported'; return; }
+  try {
+    const h = await idbGet('root');
+    if (!h) { FS.state = 'none'; return; }
+    FS.root = h;
+    const p = await h.queryPermission({ mode: 'readwrite' });
+    FS.state = p === 'granted' ? 'granted' : 'prompt';
+    if (FS.state === 'granted') await syncFromDisk(); else armAutoGrant();
+  } catch(e){ FS.state = 'none'; }
+}
+/* O navegador só devolve o acesso à pasta depois de uma interação. A agenda
+   aproveita o primeiro clique ou tecla em qualquer lugar, sem botão nem aviso. */
+function armAutoGrant(){
+  if (armAutoGrant.on) return; armAutoGrant.on = true;
+  const go = async () => {
+    window.removeEventListener('pointerdown', go, true); window.removeEventListener('keydown', go, true); armAutoGrant.on = false;
+    if (FS.state !== 'prompt' || !FS.root) return;
+    try {
+      const p = await FS.root.requestPermission({ mode: 'readwrite' });
+      if (p === 'granted'){ FS.state = 'granted'; await syncFromDisk(); render(false); }
+      else armAutoGrant();
+    } catch(e){ armAutoGrant(); }
+  };
+  window.addEventListener('pointerdown', go, true); window.addEventListener('keydown', go, true);
+}
+/* Pasta de dados: Documentos\Agenda Inicial. O Windows só deixa o navegador gravar
+   numa pasta que a pessoa autorize; a janela já abre em Documentos e a agenda cria
+   a subpasta "Agenda Inicial" sozinha. */
+async function connectFolder(){
+  if (!fsSupported){ toast('Use o Google Chrome ou o Microsoft Edge para gravar no computador.'); return; }
+  try {
+    let h = await window.showDirectoryPicker({ id: 'agendaInicial', mode: 'readwrite', startIn: FS.root || 'documents' });
+    let hasData = false;
+    try { await (await h.getDirectoryHandle('dados')).getFileHandle('agenda.json'); hasData = true; } catch(e){}
+    if (h.name !== FOLDER_NAME && !hasData) h = await h.getDirectoryHandle(FOLDER_NAME, { create: true });
+    FS.root = h; FS.state = 'granted'; await idbSet('root', h);
+    await dirAt('dados'); await dirAt('arquivos');
+    await syncFromDisk(true);
+    toast(`Tudo certo: seus dados ficam na pasta "${h.name}".`, 4000);
+    render();
+  } catch(e){ if (e.name !== 'AbortError') toast('Não foi possível autorizar a pasta.'); }
+}
+/* Traz dados e anexos de uma agenda anterior (por exemplo, a pasta "Agenda Cagece"). */
+async function importOldFolder(){
+  if (FS.state !== 'granted'){ await connectFolder(); if (FS.state !== 'granted') return; }
+  try {
+    const old = await window.showDirectoryPicker({ id: 'agendaAntiga', mode: 'read', startIn: 'documents' });
+    let data;
+    try { data = JSON.parse(await (await (await (await old.getDirectoryHandle('dados')).getFileHandle('agenda.json')).getFile()).text()); }
+    catch(e){ alert('Não encontrei dados/agenda.json nessa pasta. Escolha a pasta da agenda anterior (a que tinha o arquivo Agenda Cagece.html).'); return; }
+    if (S.entries.length && !confirm('Substituir o conteúdo atual pelos dados da agenda anterior? Uma cópia do atual fica em dados/backups.')) return;
+    try { await writeRel(`dados/backups/antes-da-importacao-${Date.now()}.json`, new Blob([JSON.stringify(S)])); } catch(e){}
+    let n = 0;
+    async function copy(src, path){
+      for await (const [name, h] of src.entries()){
+        if (h.kind === 'directory') await copy(h, path + '/' + name);
+        else { await writeRel(path + '/' + name, await h.getFile()); n++; }
+      }
+    }
+    try { await copy(await old.getDirectoryHandle('arquivos'), 'arquivos'); } catch(e){}
+    S = migrate(data); resetHolidayCache(); save();
+    toast(`Agenda anterior importada: ${S.entries.length} registros e ${n} arquivo(s).`, 5000);
+  } catch(e){ if (e.name !== 'AbortError') toast('Importação não concluída: ' + e.message); }
+}
+async function writeRel(path, data){
+  const parts = path.split('/'); const name = parts.pop();
+  const dir = await dirAt(parts.join('/'), true);
+  const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(data); await w.close();
+}
+async function reconnectFolder(){
+  if (!FS.root) return connectFolder();
+  try {
+    const p = await FS.root.requestPermission({ mode: 'readwrite' });
+    if (p === 'granted'){ FS.state = 'granted'; await syncFromDisk(); render(); }
+  } catch(e){ connectFolder(); }
+}
+async function dirAt(path, create = true){
+  let d = FS.root;
+  for (const part of path.split('/').filter(Boolean)) d = await d.getDirectoryHandle(part, { create });
+  return d;
+}
+async function syncFromDisk(isFirst = false){
+  try {
+    const dir = await dirAt('dados');
+    let disk = null, lm = 0;
+    try { const fh = await dir.getFileHandle('agenda.json'); const f = await fh.getFile(); lm = f.lastModified; disk = JSON.parse(await f.text()); } catch(e){}
+    if (disk && (disk.updatedAt || 0) > (S.updatedAt || 0)){
+      S = migrate(disk); localStorage.setItem(LS_KEY, JSON.stringify(S)); FS.lastWrite = lm;
+    } else {
+      await writeDisk();
+    }
+  } catch(e){ console.warn(e); }
+}
+async function writeDisk(){
+  if (!FS.root || FS.state !== 'granted') return;
+  try {
+    const dir = await dirAt('dados');
+    const fh = await dir.getFileHandle('agenda.json', { create: true });
+    const w = await fh.createWritable(); await w.write(JSON.stringify(S, null, 1)); await w.close();
+    FS.lastWrite = (await fh.getFile()).lastModified;
+    const k = 'agendaInicial.lastBackup';
+    if (localStorage.getItem(k) !== today()){
+      const b = await dirAt('dados/backups');
+      const bh = await b.getFileHandle(`agenda-${today()}.json`, { create: true });
+      const bw = await bh.createWritable(); await bw.write(JSON.stringify(S)); await bw.close();
+      localStorage.setItem(k, today());
+    }
+  } catch(e){
+    if (e.name === 'NotAllowedError'){ FS.state = 'prompt'; renderSide(); }
+    console.warn('Gravação na pasta falhou', e);
+  }
+}
+async function checkDiskChanged(){
+  if (FS.state !== 'granted') return;
+  try {
+    const fh = await (await dirAt('dados')).getFileHandle('agenda.json');
+    const f = await fh.getFile();
+    if (f.lastModified > FS.lastWrite + 1000){
+      const disk = JSON.parse(await f.text());
+      if ((disk.updatedAt || 0) > (S.updatedAt || 0)){ S = migrate(disk); localStorage.setItem(LS_KEY, JSON.stringify(S)); FS.lastWrite = f.lastModified; render(); toast('Agenda atualizada a partir da pasta.'); }
+    }
+  } catch(e){}
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkDiskChanged(); if (ui.date !== today() && ui._lastToday !== today()) { ui._lastToday = today(); render(); } } });
+
+async function uniqueName(dir, name){
+  const dot = name.lastIndexOf('.'); const base = dot > 0 ? name.slice(0, dot) : name; const ext = dot > 0 ? name.slice(dot) : '';
+  let n = name, i = 2;
+  while (true){ try { await dir.getFileHandle(n); n = `${base} (${i++})${ext}`; } catch(e){ return n; } }
+}
+async function storeFile(file, sub){
+  if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') throw new Error('sem pasta'); }
+  const dir = await dirAt(sub);
+  const name = await uniqueName(dir, file.name.replace(/[\\/:*?"<>|]/g, '_'));
+  const fh = await dir.getFileHandle(name, { create: true });
+  const w = await fh.createWritable(); await w.write(file); await w.close();
+  return { name, path: `${sub}/${name}`, size: file.size };
+}
+async function needFolder(){
+  if (FS.state === 'prompt') return reconnectFolder();
+  if (confirm('Para guardar arquivos, a agenda precisa da autorização da pasta Documentos (ela cria a pasta Agenda Inicial lá).\n\nAutorizar agora?')) return connectFolder();
+}
+async function uploadFiles(fileList, link = '', entry = ''){
+  const files = [...fileList]; if (!files.length) return;
+  let ok = 0;
+  for (const f of files){
+    try {
+      const r = await storeFile(f, `arquivos/${today().slice(0,7)}`);
+      S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entry });
+      ok++;
+    } catch(e){ if (e.message !== 'sem pasta') toast('Falha ao gravar ' + f.name); break; }
+  }
+  if (ok){ save(); toast(ok === 1 ? 'Arquivo salvo na pasta Agenda Inicial.' : `${ok} arquivos salvos na pasta Agenda Inicial.`); }
+}
+const relHref = p => p.split('/').map(encodeURIComponent).join('/');
+function baseHref(){ const p = (S.settings.winPath || '').trim().replace(/\\/g, '/').replace(/\/?$/, '/'); return p.length > 3 ? 'file:///' + encodeURI(p) : ''; }
+function officeUri(p){
+  if (!baseHref()) return '';
+  const e = extOf(p);
+  const app = ['doc','docx','docm','dotx','rtf','odt'].includes(e) ? 'ms-word' : ['xls','xlsx','xlsm','xltx','csv','ods'].includes(e) ? 'ms-excel' : ['ppt','pptx'].includes(e) ? 'ms-powerpoint' : '';
+  if (!app) return '';
+  return `${app}:ofe|u|${baseHref()}${relHref(p)}`;
+}
+function openPath(p){
+  const o = officeUri(p);
+  if (o) { location.href = o; return; }
+  openViewer([{ name: p.split('/').pop(), path: p }], 0);
+}
+
+/* ---------------- Feriados e dias úteis ---------------- */
+function easter(y){ const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1; return new Date(y,mo-1,da); }
+const _hol = {};
+function holidays(y){
+  if (_hol[y]) return _hol[y];
+  const m = {};
+  const fix = [[1,1,'Confraternização Universal'],[4,21,'Tiradentes'],[5,1,'Dia do Trabalho'],[9,7,'Independência'],[10,12,'N. Sra. Aparecida'],[11,2,'Finados'],[11,15,'Proclamação da República'],[11,20,'Consciência Negra'],[12,25,'Natal']];
+  const ce = [[3,19,'São José (CE)'],[3,25,'Data Magna do Ceará'],[8,15,'N. Sra. da Assunção (Fortaleza)']];
+  for (const [mo,d,n] of fix.concat(S.settings.cityHolidays ? ce : [])) m[`${y}-${pad(mo)}-${pad(d)}`] = n;
+  const e = easter(y), add = (n, name) => { const d = new Date(e); d.setDate(d.getDate()+n); m[ymd(d)] = name; };
+  add(-48,'Carnaval'); add(-47,'Carnaval'); add(-2,'Sexta-feira Santa'); add(60,'Corpus Christi');
+  for (const h of S.settings.extraHolidays) if (h.date && h.date.startsWith(y+'-')) m[h.date] = h.name || 'Feriado';
+  return (_hol[y] = m);
+}
+const holidayName = s => holidays(+s.slice(0,4))[s] || '';
+const isBusiness = s => { const w = parse(s).getDay(); return w !== 0 && w !== 6 && !holidayName(s); };
+function firstBusinessDay(monthKey){ let s = monthKey + '-01'; while (!isBusiness(s)) s = addDays(s, 1); return s; }
+function resetHolidayCache(){ for (const k in _hol) delete _hol[k]; }
+
+/* ---------------- Ponto ---------------- */
+function pontoInfo(){
+  const t = today(), mk = t.slice(0,7), fbd = firstBusinessDay(mk);
+  const done = S.ponto.done || {};
+  const pending = t >= fbd && !done[mk];
+  const nextKey = t < fbd ? mk : addMonths(mk, 1);
+  const next = pending ? fbd : firstBusinessDay(nextKey);
+  const refOf = k => S.ponto.ref === 'anterior' ? addMonths(k, -1) : k;
+  return { pending, fbd, mk, next, nextKey: pending ? mk : nextKey, refOf, linked: !!(S.ponto.kind === 'url' ? S.ponto.url : S.ponto.file) };
+}
+async function pontoOpen(){
+  const P = S.ponto;
+  if (P.kind === 'url'){ if (P.url) window.open(P.url, '_blank'); else go('ponto'); return; }
+  if (!P.file){ go('ponto'); toast('Vincule primeiro o arquivo do ponto.'); return; }
+  let path = P.file.path;
+  if (P.monthlyCopy){
+    if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') return; }
+    try {
+      const info = pontoInfo(); const ref = info.refOf(info.pending ? info.mk : info.nextKey);
+      const src = await (await dirAt(P.file.path.split('/').slice(0,-1).join('/'), false)).getFileHandle(P.file.name);
+      const dot = P.file.name.lastIndexOf('.'); const base = dot > 0 ? P.file.name.slice(0, dot) : P.file.name; const ext = dot > 0 ? P.file.name.slice(dot) : '';
+      const name = `${base} - ${ref}${ext}`;
+      const dir = await dirAt('arquivos/Ponto');
+      let exists = true; try { await dir.getFileHandle(name); } catch(e){ exists = false; }
+      if (!exists){ const f = await src.getFile(); const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(f); await w.close(); toast(`Cópia do mês criada: ${name}`); }
+      path = `arquivos/Ponto/${name}`;
+    } catch(e){ toast('Não consegui criar a cópia do mês. Abrindo o arquivo original.'); }
+  }
+  openPath(path);
+}
+function pontoMark(k, v = true){ if (v) S.ponto.done[k] = Date.now(); else delete S.ponto.done[k]; save(); }
+
+/* ---------------- Google Agenda (Apps Script) ---------------- */
+const G = { byDate: {}, loaded: {}, busy: false, error: '' };
+function gOn(){ return S.google.enabled && S.google.url && S.google.token; }
+function gCall(params, timeout = 25000){
+  return new Promise((resolve, reject) => {
+    const cb = 'gcb_' + uid(); const s = document.createElement('script');
+    const q = new URLSearchParams(Object.assign({ token: S.google.token, callback: cb }, params));
+    const done = () => { delete window[cb]; s.remove(); clearTimeout(t); };
+    const t = setTimeout(() => { done(); reject(new Error('Tempo esgotado')); }, timeout);
+    window[cb] = d => { done(); d && d.ok ? resolve(d) : reject(new Error((d && d.error) || 'Erro')); };
+    s.onerror = () => { done(); reject(new Error('Falha de rede ou URL inválida')); };
+    s.src = S.google.url.trim() + (S.google.url.includes('?') ? '&' : '?') + q.toString();
+    document.head.appendChild(s);
+  });
+}
+async function gLoad(startKey, endKey, force = false){
+  if (!gOn()) return;
+  const k = startKey + '|' + endKey; if (G.loaded[k] && !force) return; G.loaded[k] = true;
+  try {
+    const d = await gCall({ action: 'list', start: startKey, end: endKey });
+    for (let s = startKey; s <= endKey; s = addDays(s, 1)) G.byDate[s] = [];
+    for (const ev of d.events){ (G.byDate[ev.date] = G.byDate[ev.date] || []).push(ev); }
+    G.error = ''; S.google.lastOk = Date.now();
+    render(false);
+  } catch(e){ G.loaded[k] = false; G.error = e.message; renderSide(); }
+}
+function gEvents(s){ const linked = new Set(S.entries.filter(e => e.gId).map(e => e.gId)); return (G.byDate[s] || []).filter(ev => !linked.has(ev.id)); }
+function gPayload(e){
+  const p = { title: e.text, date: e.date, description: 'Criado na Agenda Inicial (uso pessoal).' };
+  if (e.time){ p.start = e.time; p.end = e.end || addMinutes(e.time, 60); } else p.allDay = '1';
+  return p;
+}
+function addMinutes(hm, n){ const [h,m] = hm.split(':').map(Number); const t = Math.min(h*60+m+n, 23*60+59); return `${pad(Math.floor(t/60))}:${pad(t%60)}`; }
+async function gPush(e, quiet){
+  if (!gOn()) return;
+  try {
+    const d = await gCall(Object.assign({ action: e.gId ? 'update' : 'create', id: e.gId || '' }, gPayload(e)));
+    e.gId = d.event.id; save(false); if (!quiet) toast(`Enviado ao Google Agenda (${S.google.calName || 'Cagece'}).`);
+    resetG(); render();
+  } catch(err){ toast('Google Agenda: ' + err.message); }
+}
+async function gDelete(id){ if (!gOn() || !id) return; try { await gCall({ action: 'delete', id }); resetG(); } catch(err){ toast('Google Agenda: ' + err.message); } }
+function resetG(){ G.loaded = {}; G.byDate = {}; }
+function gScript(token){
+return `// Agenda Inicial — integração com o Google Agenda (uso pessoal)
+// Lê e grava eventos na agenda chamada "${(S.google.calName || 'Cagece').replace(/'/g, '')}". Se ela não existir, é criada.
+const TOKEN = '${token}';
+const NOME_AGENDA = '${(S.google.calName || 'Cagece').replace(/'/g, '')}';
+
+function agenda_() {
+  const l = CalendarApp.getCalendarsByName(NOME_AGENDA);
+  if (l.length) return l[0];
+  const c = CalendarApp.createCalendar(NOME_AGENDA);
+  try { c.setColor('#B08524'); } catch (e) {}
+  return c;
+}
+function dia_(s) { const a = s.split('-').map(Number); return new Date(a[0], a[1] - 1, a[2]); }
+function hora_(dia, hm) { const d = dia_(dia); const h = hm.split(':').map(Number); d.setHours(h[0], h[1], 0, 0); return d; }
+function ev_(e) {
+  const tz = Session.getScriptTimeZone();
+  const all = e.isAllDayEvent();
+  const ini = all ? e.getAllDayStartDate() : e.getStartTime();
+  return {
+    id: e.getId(), title: e.getTitle(), allDay: all,
+    date: Utilities.formatDate(ini, tz, 'yyyy-MM-dd'),
+    start: all ? '' : Utilities.formatDate(e.getStartTime(), tz, 'HH:mm'),
+    end: all ? '' : Utilities.formatDate(e.getEndTime(), tz, 'HH:mm'),
+    location: e.getLocation(), description: e.getDescription()
+  };
+}
+function grava_(e, p) {
+  e.setTitle(p.title || '(sem título)');
+  if (p.allDay === '1') e.setAllDayDate(dia_(p.date));
+  else e.setTime(hora_(p.date, p.start), hora_(p.date, p.end || p.start));
+  if (p.description !== undefined) e.setDescription(p.description);
+  return e;
+}
+function doGet(req) {
+  const p = (req && req.parameter) || {};
+  let r;
+  try {
+    if (p.token !== TOKEN) throw new Error('Token inválido');
+    const c = agenda_();
+    switch (p.action) {
+      case 'ping':
+        r = { ok: true, calendar: c.getName(), id: c.getId(), tz: Session.getScriptTimeZone() }; break;
+      case 'list': {
+        const ini = dia_(p.start), fim = dia_(p.end); fim.setDate(fim.getDate() + 1);
+        r = { ok: true, events: c.getEvents(ini, fim).map(ev_) }; break;
+      }
+      case 'create': {
+        const e = p.allDay === '1'
+          ? c.createAllDayEvent(p.title || '(sem título)', dia_(p.date))
+          : c.createEvent(p.title || '(sem título)', hora_(p.date, p.start), hora_(p.date, p.end || p.start));
+        if (p.description) e.setDescription(p.description);
+        r = { ok: true, event: ev_(e) }; break;
+      }
+      case 'update': {
+        const e = c.getEventById(p.id);
+        if (!e) throw new Error('Evento não encontrado');
+        r = { ok: true, event: ev_(grava_(e, p)) }; break;
+      }
+      case 'delete': {
+        const e = c.getEventById(p.id);
+        if (e) e.deleteEvent();
+        r = { ok: true }; break;
+      }
+      case 'bulk': {
+        const itens = JSON.parse(p.items || '[]');
+        itens.forEach(function (it) { const e = c.createAllDayEvent(it.title, dia_(it.date)); if (it.description) e.setDescription(it.description); });
+        r = { ok: true, count: itens.length }; break;
+      }
+      default: throw new Error('Ação desconhecida');
+    }
+  } catch (err) {
+    r = { ok: false, error: String(err && err.message || err) };
+  }
+  const s = JSON.stringify(r);
+  if (p.callback) return ContentService.createTextOutput(p.callback + '(' + s + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  return ContentService.createTextOutput(s).setMimeType(ContentService.MimeType.JSON);
+}
+`;
+}
+
+/* ---------------- Entradas ---------------- */
+const SYM = { task: '•', event: '○', note: '–' };
+function bulletOf(e){
+  if (e.status === 'done') return e.type === 'event' ? '◉' : '×';
+  if (e.status === 'migrated') return '>';
+  if (e.status === 'scheduled') return '<';
+  return SYM[e.type] || '•';
+}
+function parseQuick(raw){
+  let text = raw.trim(), type = null, prio = false, time = '';
+  const m1 = text.match(/^([*!])\s+/); if (m1){ prio = true; text = text.slice(m1[0].length); }
+  const m2 = text.match(/^(o|-|\.)\s+/i); if (m2){ type = m2[1].toLowerCase() === 'o' ? 'event' : m2[1] === '-' ? 'note' : 'task'; text = text.slice(m2[0].length); }
+  const m3 = text.match(/^(\d{1,2})[:h](\d{2})?\s+/); if (m3){ const h = +m3[1], mi = +(m3[2] || 0); if (h < 24 && mi < 60){ time = `${pad(h)}:${pad(mi)}`; text = text.slice(m3[0].length); } }
+  return { text, type, prio, time };
+}
+let _seq = 0;
+function addEntry(o){
+  const par = o.parent ? byId(o.parent) : null;
+  const e = Object.assign({ id: uid(), type: 'task', text: '', date: par ? par.date : null, month: null, time: '', status: 'open', prio: false, gId: '', parent: '', createdAt: Date.now() + (_seq++ % 1000) / 1000 }, o);
+  if (e.date) e.month = e.date.slice(0,7);
+  S.entries.push(e); return e;
+}
+const byId = id => S.entries.find(e => e.id === id);
+function sortEntries(list){
+  return list.slice().sort((a,b) => (a.time ? 0 : 1) - (b.time ? 0 : 1) || (a.time || '').localeCompare(b.time || '') || a.createdAt - b.createdAt);
+}
+const entriesOn = s => sortEntries(S.entries.filter(e => e.date === s && !e.parent));
+
+/* Subtarefas: até MAXSUB níveis abaixo da tarefa principal */
+const MAXSUB = 3;
+const filesOf = id => S.files.filter(f => f.entry === id);
+function moveFiles(fromId, toId, date){ for (const f of filesOf(fromId)){ f.entry = toId; if (date) f.link = date; } }
+const kids = id => S.entries.filter(e => e.parent === id).sort((a,b) => a.createdAt - b.createdAt);
+function depthOf(e){ let d = 0, p = e; while (p && p.parent){ p = byId(p.parent); d++; } return d; }
+function subtree(e){ const out = []; (function w(x){ for (const k of kids(x.id)){ out.push(k); w(k); } })(e); return out; }
+function heightOf(e){ let h = 0; for (const k of kids(e.id)) h = Math.max(h, 1 + heightOf(k)); return h; }
+function progressOf(e){
+  const s = subtree(e).filter(x => x.type === 'task' && !['cancelled','migrated','scheduled'].includes(x.status));
+  return s.length ? { done: s.filter(x => x.status === 'done').length, total: s.length } : null;
+}
+function renderTree(e, opt = {}, depth = 0){
+  let h = entryRow(e, Object.assign({}, opt, { depth }));
+  for (const k of kids(e.id)) h += renderTree(k, {}, depth + 1);
+  if (ui.subFor === e.id) h += `<li class="subadd" style="--d:${depth + 1}"><span></span><span class="bul">•</span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="Subtarefa de nível ${depth + 1} · Enter adiciona · Esc encerra" autocomplete="off"></li>`;
+  return h;
+}
+function completeEntry(e){
+  e.status = 'done';
+  const open = subtree(e).filter(x => x.status === 'open' && x.type === 'task');
+  if (open.length && confirm(open.length === 1 ? 'Concluir também a subtarefa em aberto?' : `Concluir também as ${open.length} subtarefas em aberto?`)) open.forEach(x => x.status = 'done');
+}
+function deleteEntry(e){
+  const st = subtree(e);
+  if (st.length && !confirm(`Excluir "${e.text}" e ${st.length === 1 ? 'a sua subtarefa' : `as suas ${st.length} subtarefas`}?`)) return false;
+  if (e.gId && confirm(`Excluir também do Google Agenda (${S.google.calName || 'Cagece'})?`)) gDelete(e.gId);
+  const ids = new Set([e.id, ...st.map(x => x.id)]);
+  S.entries = S.entries.filter(x => !ids.has(x.id));
+  for (const f of S.files) if (ids.has(f.entry)) f.entry = '';
+  return true;
+}
+function migrateTo(e, date, asSchedule){
+  const copy = addEntry({ type: e.type, text: e.text, date, time: e.time, end: e.end, prio: e.prio, from: e.id, gId: '' });
+  if (e.gId){ copy.gId = e.gId; e.gId = ''; }
+  const map = { [e.id]: copy.id };
+  for (const k of subtree(e)){
+    if (k.status !== 'open' || !map[k.parent]) continue;
+    const c = addEntry({ type: k.type, text: k.text, date, parent: map[k.parent], prio: k.prio, from: k.id });
+    map[k.id] = c.id; moveFiles(k.id, c.id, date); k.status = asSchedule ? 'scheduled' : 'migrated'; k.to = date;
+  }
+  moveFiles(e.id, copy.id, date);
+  e.status = asSchedule ? 'scheduled' : 'migrated'; e.to = date;
+  if (copy.gId && copy.type === 'event') gPush(copy, true);
+  return copy;
+}
+function indentEntry(e, dir){
+  if (dir > 0){
+    const sibs = e.parent ? kids(e.parent) : entriesOn(e.date);
+    const prev = sibs[sibs.indexOf(e) - 1];
+    if (!prev){ toast('Não há item acima para servir de tarefa principal.'); return false; }
+    if (depthOf(prev) + 1 + heightOf(e) > MAXSUB){ toast(`O limite é de ${MAXSUB} níveis de subtarefa.`); return false; }
+    e.parent = prev.id; e.date = prev.date; e.month = prev.month; e.createdAt = Date.now();
+  } else {
+    if (!e.parent) return false;
+    const p = byId(e.parent); e.parent = p.parent || ''; e.createdAt = p.createdAt + 0.0005;
+  }
+  save(); return true;
+}
+
+function entryRow(e, opt = {}){
+  const depth = opt.depth || 0;
+  const cls = ['entry', e.type, e.status, depth ? 'child' : ''].join(' ');
+  const acts = [];
+  if (e.type === 'task' && e.status === 'open') acts.push(['done','Concluir',I.check]);
+  if (e.status === 'done') acts.push(['reopen','Reabrir',I.sync]);
+  if (e.type === 'task' && e.status === 'open' && depth < MAXSUB) acts.push(['sub', `Adicionar subtarefa (nível ${depth + 1} de ${MAXSUB})`, I.subtask]);
+  if (!depth && e.status === 'open' && e.type !== 'note') acts.push(['tomorrow','Migrar para o próximo dia útil',I.migrate], ['sched','Agendar para outra data',I.sched]);
+  if (!depth && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
+  if (e.status === 'open' && e.date) acts.push(['attach','Anexar arquivo a esta tarefa',I.clip]);
+  acts.push(['prio','Prioridade',I.star]);
+  if (!depth && e.type !== 'note' && gOn() && e.date && !e.gId && e.status === 'open') acts.push(['gpush',`Enviar ao Google Agenda (${S.google.calName || 'Cagece'})`,I.g]);
+  if (e.status === 'open' || e.status === 'cancelled') acts.push(['cancel', e.status === 'cancelled' ? 'Restaurar' : 'Cancelar (irrelevante)', I.strike]);
+  acts.push(['del','Excluir',I.trash]);
+  const meta = [];
+  const pr = progressOf(e);
+  if (pr) meta.push(`<span class="tag ${pr.done === pr.total ? '' : 'acc'}" title="Subtarefas concluídas">${pr.done}/${pr.total}</span>`);
+  if (opt.showDate && e.date) meta.push(`<span>${shortDate(e.date)}</span>`);
+  if ((e.status === 'migrated' || e.status === 'scheduled') && e.to) meta.push(`<span>→ ${shortDate(e.to)}</span>`);
+  if (e.gId) meta.push('<span class="tag g" title="Sincronizado com o Google Agenda">Google</span>');
+  return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">
+    <span class="sig" data-act="e-prio" title="Prioridade">${e.prio ? '*' : ''}</span>
+    <span class="bul" data-act="e-bullet" title="${e.type === 'task' ? 'Clique para concluir / reabrir' : e.type === 'event' ? 'Evento' : 'Nota'}">${bulletOf(e)}</span>
+    <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${esc(e.text)}</span></span>
+    <span class="meta">${meta.join('')}</span>
+    ${(fs => fs.length ? `<span class="fchips">${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="Visualizar ${esc(f.name)}">${I.clip}<span>${esc(f.name)}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
+    <span class="acts">${acts.map(([a,t,ic]) => `<button data-act="e-${a}" title="${t}">${ic}</button>`).join('')}</span>
+  </li>`;
+}
+function gRow(ev, showDate){
+  return `<li class="entry event g" title="Evento do Google Agenda (${S.google.calName || 'Cagece'})">
+    <span class="sig"></span><span class="bul" style="color:var(--accent)">○</span>
+    <span class="txt">${ev.start ? `<span class="time">${ev.start}–${ev.end}</span>` : ''}${esc(ev.title)}${ev.location ? ` <span class="muted small">· ${esc(ev.location)}</span>` : ''}</span>
+    <span class="meta">${showDate ? `<span>${shortDate(ev.date)}</span>` : ''}<span class="tag g">Google</span></span>
+  </li>`;
+}
+
+/* ---------------- Interface: estrutura ---------------- */
+function themeIcon(){ return S.settings.theme === 'dark' ? I.moon : S.settings.theme === 'light' ? I.sun : I.auto; }
+function applyTheme(){ document.documentElement.dataset.theme = S.settings.theme || 'auto'; }
+function logoHTML(){
+  if (S.settings.logo && S.settings.logoWide) return '';
+  return S.settings.logo ? `<img src="${S.settings.logo}" alt="Logo">` : '<span>C</span>';
+}
+function storageLine(){
+  if (FS.state === 'granted') return `<span title="Documentos\\${esc(FS.root.name)}"><span class="dot ok"></span>Salvo em ${esc(FS.root.name)}</span>`;
+  if (FS.state === 'prompt') return '<span title="O acesso volta sozinho no primeiro clique"><span class="dot warn"></span>Pasta: reconecta no 1º clique</span>';
+  if (FS.state === 'unsupported') return '<span title="Use o Chrome ou o Edge para gravar no computador"><span class="dot warn"></span>Salvo só neste navegador</span>';
+  return '<a href="#" data-act="fs-connect"><span class="dot warn"></span>Autorizar pasta Documentos</a>';
+}
+function renderSide(){
+  const p = pontoInfo();
+  const nav = (v, ic, label, extra = '') => `<a class="${ui.view === v ? 'on' : ''}" data-act="go" data-v="${v}">${I[ic]}<span>${label}</span>${extra}</a>`;
+  const openToday = S.entries.filter(e => e.date === today() && e.type === 'task' && e.status === 'open').length;
+  $('#side').innerHTML = `
+    <div class="brand">
+      <div class="mark">${ICON_SVG}</div>
+      <div><b>Agenda Inicial</b><small>Uso pessoal${S.profile.setor ? ' · ' + esc(S.profile.setor) : ''} · v${APP_RELEASE}</small></div>
+    </div>
+    ${S.settings.logo ? `<div class="logo-wide"><img src="${S.settings.logo}" alt="Logo"></div>` : ''}
+    <nav class="nav">
+      ${nav('hoje','today','Hoje', openToday ? `<span class="cnt">${openToday}</span>` : '')}
+      ${nav('cal','cal','Calendário')}
+      ${nav('futuro','future','Registro futuro')}
+      ${nav('arquivos','files','Arquivos', S.files.length ? `<span class="cnt">${S.files.length}</span>` : '')}
+      ${nav('ponto','ponto','Ponto', p.pending ? '<span class="pill">pendente</span>' : '')}
+      <div class="grp">Listas</div>
+      ${S.lists.map(l => `<a class="${ui.view === 'lista' && ui.listId === l.id ? 'on' : ''}" data-act="go-list" data-id="${l.id}">${I.list}<span>${esc(l.title || 'Sem título')}</span><span class="cnt">${l.items.filter(i => !i.done).length || ''}</span></a>`).join('')}
+      <a data-act="list-new">${I.plus}<span class="muted">Nova lista</span></a>
+      <div class="grp">Sistema</div>
+      ${nav('perfil','user','Perfil e PDFs')}
+      ${nav('config','gear','Configurações')}
+    </nav>
+    ${UP.newer ? `<div class="install"><button class="btn primary" data-act="up-check">Nova versão ${esc(UP.newer.version)} · recarregar</button></div>` : ''}
+    ${window._bip && !isStandalone() ? `<div class="install"><button class="btn" data-act="pwa-install">${I.dl}Instalar a Agenda Inicial</button></div>` : ''}
+    <div class="side-foot">
+      <div class="who" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil"><b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</div>
+      <div class="row">${storageLine()}<button class="btn icon ghost" data-act="theme" title="Tema: ${S.settings.theme === 'auto' ? 'automático' : S.settings.theme === 'dark' ? 'escuro' : 'claro'}">${themeIcon()}</button></div>
+      ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
+    </div>`;
+}
+function topbar(crumb, tools = ''){ return `<div class="topbar"><div class="crumbs">Agenda / <b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
+function render(withG = true){
+  applyTheme(); renderSide();
+  const v = VIEWS[ui.view] || VIEWS.hoje;
+  const main = $('#main'); const st = main.scrollTop;
+  ui.rendering = true;
+  main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME)}; nada é enviado para a internet.</div></div>`;
+  ui.rendering = false;
+  main.scrollTop = st;
+  if (ui.focusItem){ const el = $(`.check[data-iid="${ui.focusItem}"] .txt`); ui.focusItem = null; if (el){ el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); } }
+  if (ui.subFor && $('#subtext') && ui.focusSub){ ui.focusSub = false; $('#subtext').focus(); }
+  $$('textarea.autosize', main).forEach(autosize);
+  if (withG) loadGForView();
+}
+function loadGForView(){
+  if (!gOn()) return;
+  if (ui.view === 'hoje') gLoad(addDays(ui.date, -1), addDays(ui.date, 8));
+  else if (ui.view === 'cal'){ const s = calStart(ui.month); gLoad(s, addDays(s, 41)); }
+  else if (ui.view === 'futuro'){ gLoad(today(), addDays(today(), 60)); }
+}
+function autosize(t){ t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight + 2, 120) + 'px'; }
+function go(v){ ui.view = v; if (v === 'hoje' && !ui.keepDate) ui.date = today(); ui.keepDate = false; render(); $('#main').scrollTop = 0; }
+
+/* ---------------- Visões ---------------- */
+const VIEWS = {};
+
+VIEWS.hoje = () => {
+  const d = ui.date, isToday = d === today(), hol = holidayName(d), wd = parse(d).getDay();
+  const p = pontoInfo();
+  const list = entriesOn(d), gl = gEvents(d);
+  const pend = isToday ? sortEntries(S.entries.filter(e => e.date && e.date < d && !e.parent && e.type === 'task' && e.status === 'open')) : [];
+  const files = S.files.filter(f => f.link === d);
+  const notes = (S.days[d] && S.days[d].notes) || '';
+  const isFbd = d === firstBusinessDay(d.slice(0,7));
+  let upcoming = '';
+  if (isToday){
+    const rows = [];
+    for (let i = 1; i <= 7; i++){
+      const s = addDays(d, i);
+      const es = entriesOn(s).filter(e => e.status === 'open' && e.type !== 'note'); const gs = gEvents(s);
+      const pt = s === firstBusinessDay(s.slice(0,7)) && !S.ponto.done[s.slice(0,7)];
+      if (es.length || gs.length || pt) rows.push(`<div class="daylabel">${longDate(s)}${holidayName(s) ? ' · ' + esc(holidayName(s)) : ''}</div><ul class="entries">${pt ? `<li class="entry"><span class="sig"></span><span class="bul" style="color:var(--accent)">!</span><span class="txt"><b>Registrar o ponto</b> <span class="muted">· 1º dia útil do mês</span></span><span></span></li>` : ''}${es.map(e => entryRow(e)).join('')}${gs.map(ev => gRow(ev)).join('')}</ul>`);
+    }
+    upcoming = `<div class="sec"><div class="sec-h"><h2>Próximos 7 dias</h2><div class="tools"><button class="btn ghost" data-act="go" data-v="futuro">Ver registro futuro</button></div></div>${rows.join('') || '<div class="empty">Nada agendado para a próxima semana.</div>'}</div>`;
+  }
+  return topbar(isToday ? 'Hoje' : brDate(d), `
+      <button class="btn icon ghost" data-act="day-prev" title="Dia anterior">${I.left}</button>
+      <button class="btn ghost" data-act="day-today" ${isToday ? 'disabled' : ''}>Hoje</button>
+      <button class="btn icon ghost" data-act="day-next" title="Próximo dia">${I.right}</button>
+      <button class="btn icon ghost" data-act="day-pick" title="Ir para data">${I.cal}</button>
+      <button class="btn ghost" data-act="pdf-day" title="Exportar a página do dia em PDF">${I.pdf}PDF</button>`) + `
+  <div class="page">
+    <div class="kicker">${isToday ? 'Registro de hoje' : 'Registro diário'}</div>
+    <h1 class="title">${longDate(d)}</h1>
+    <p class="sub">${parse(d).getFullYear()} · Semana ${weekNo(d)}${hol ? ` · <span class="tag acc">${esc(hol)}</span>` : (wd === 0 || wd === 6) ? ' · Fim de semana' : ' · Dia útil'}${isFbd ? ' · <span class="tag acc">1º dia útil — ponto</span>' : ''}</p>
+    ${FS.state === 'none' ? `<div class="banner"><div><b>Autorize a pasta Documentos (só uma vez)</b><span class="muted">A janela abre em Documentos: clique em <b>Selecionar pasta</b> e depois em <b>Permitir</b>. A agenda cria sozinha a pasta <b>${esc(FOLDER_NAME)}</b> e guarda lá seus dados e anexos.</span></div><div class="tools"><button class="btn primary" data-act="fs-connect">${I.folder}Autorizar</button></div></div>` : ''}
+    ${isToday && p.pending ? `<div class="banner"><div><b>Registrar o ponto de ${MES[parse(p.refOf(p.mk)+'-01').getMonth()]}</b><span class="muted">Hoje ${p.fbd === d ? 'é' : 'já passou'} o 1º dia útil de ${MES[parse(d).getMonth()]} (${shortDate(p.fbd)}).${p.linked ? '' : ' Nenhum arquivo vinculado ainda.'}</span></div><div class="tools">${p.linked ? `<button class="btn primary" data-act="ponto-open">${I.open}Abrir o ponto</button>` : `<button class="btn primary" data-act="go" data-v="ponto">Vincular arquivo</button>`}<button class="btn" data-act="ponto-done" data-k="${p.mk}">${I.check}Feito</button></div></div>` : ''}
+
+    <div>
+      <div class="qlog">
+        <div class="typebtns">
+          <button data-act="qtype" data-t="task" class="${ui.qtype === 'task' ? 'on' : ''}" title="Tarefa">•</button>
+          <button data-act="qtype" data-t="event" class="${ui.qtype === 'event' ? 'on' : ''}" title="Evento / compromisso">○</button>
+          <button data-act="qtype" data-t="note" class="${ui.qtype === 'note' ? 'on' : ''}" title="Nota">–</button>
+          <button data-act="qprio" class="${ui.qprio ? 'on' : ''}" title="Prioridade">*</button>
+        </div>
+        <input class="txt" id="qtext" placeholder="Registro rápido: tarefa, compromisso ou nota…" autocomplete="off">
+        <input class="inp time" id="qtime" type="time" title="Horário (opcional)">
+        ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
+        <button class="btn primary" data-act="qadd">Adicionar</button>
+      </div>
+      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no marcador para concluir. Para subtarefas, use o botão ${'<span class="kbd">↳</span>'} da tarefa ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Registro do dia</h2><div class="tools">${gOn() ? `<button class="btn ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}Atualizar</button>` : ''}</div></div>
+      <ul class="entries">${list.map(e => renderTree(e)).join('')}${gl.map(ev => gRow(ev)).join('')}</ul>
+      ${!list.length && !gl.length ? '<div class="empty">Nada registrado neste dia.</div>' : ''}
+    </div>
+
+    ${pend.length ? `<div class="sec"><div class="sec-h"><h2>Pendências de dias anteriores (${pend.length})</h2><div class="tools"><button class="btn" data-act="migrate-all">${I.migrate}Migrar todas para hoje</button></div></div>
+      <ul class="entries">${pend.map(e => renderTree(e, { showDate: true }).replace('data-act="e-tomorrow" title="Migrar para o próximo dia útil"', 'data-act="e-totoday" title="Migrar para hoje"')).join('')}</ul></div>` : ''}
+
+    <div class="sec">
+      <div class="sec-h"><h2>Anotações</h2></div>
+      <textarea class="notes autosize dotgrid" id="daynotes" placeholder="Escreva livremente: o que aconteceu, ideias, despachos, telefonemas…">${esc(notes)}</textarea>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Anexos do dia</h2><div class="tools"><button class="btn ghost" data-act="attach-day">${I.clip}Anexar arquivo</button></div></div>
+      ${files.length ? fileTable(files, true) : '<div class="empty">Nenhum arquivo vinculado a este dia. Para anexar direto numa tarefa, use o botão de clipe dela. Os arquivos ficam na pasta <i>arquivos</i> do sistema.</div>'}
+    </div>
+    ${upcoming}
+  </div>`;
+};
+
+function calStart(mk){ const d = parse(mk + '-01'); d.setDate(1 - d.getDay()); return ymd(d); }
+VIEWS.cal = () => {
+  const mk = ui.month, start = calStart(mk), t = today();
+  const cells = [];
+  for (let i = 0; i < 42; i++){
+    const s = addDays(start, i), dd = parse(s), out = s.slice(0,7) !== mk, w = dd.getDay();
+    if (i >= 35 && out && s > mk + '-31') break;
+    const es = entriesOn(s).filter(e => e.status !== 'migrated' && e.status !== 'scheduled');
+    const gs = gEvents(s); const hol = holidayName(s);
+    const items = [];
+    if (s === firstBusinessDay(s.slice(0,7))) items.push(`<div class="it ponto">${S.ponto.done[s.slice(0,7)] ? '✓ ' : ''}Ponto</div>`);
+    for (const e of es) items.push(`<div class="it ${e.type === 'event' ? 'ev' : ''} ${e.status === 'done' || e.status === 'cancelled' ? 'done' : ''}"><span class="b">${bulletOf(e)}</span>${e.time ? e.time + ' ' : ''}${esc(e.text)}${(p => p ? ` <span class="faint">${p.done}/${p.total}</span>` : '')(progressOf(e))}</div>`);
+    for (const g of gs) items.push(`<div class="it ev g"><span class="b">○</span>${g.start ? g.start + ' ' : ''}${esc(g.title)}</div>`);
+    const max = 4, more = items.length - max;
+    cells.push(`<div class="cell ${out ? 'out' : ''} ${s === t ? 'today' : ''} ${(w === 0 || w === 6) && !out ? 'wkend' : ''}" data-act="cal-day" data-d="${s}">
+      <div class="hd"><span class="n">${dd.getDate()}</span>${hol ? `<span class="hol" title="${esc(hol)}">${esc(hol)}</span>` : ''}</div>
+      ${items.slice(0, more > 0 ? max - 1 : max).join('')}${more > 0 ? `<div class="more">+${more + 1} itens</div>` : ''}
+    </div>`);
+  }
+  return topbar('Calendário', `
+      <button class="btn icon ghost" data-act="m-prev" title="Mês anterior">${I.left}</button>
+      <button class="btn ghost" data-act="m-today">Hoje</button>
+      <button class="btn icon ghost" data-act="m-next" title="Próximo mês">${I.right}</button>
+      <button class="btn ghost" data-act="pdf-month" title="Exportar a agenda do mês em PDF">${I.pdf}PDF do mês</button>
+      ${gOn() ? `<button class="btn icon ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}</button>` : ''}`) + `
+  <div class="page wide">
+    <div class="kicker">Calendário mensal</div>
+    <h1 class="title">${monthName(mk)}</h1>
+    <p class="sub">1º dia útil: ${longDate(firstBusinessDay(mk))} · clique em um dia para abrir a página dele</p>
+    <div class="cal">${WDS.map(w => `<div class="wd">${w}</div>`).join('')}${cells.join('')}</div>
+    <div class="legend"><span><b>•</b>tarefa</span><span><b>×</b>concluída</span><span><b>○</b>evento</span><span><b>–</b>nota</span><span><b>&gt;</b>migrada</span><span><b>&lt;</b>agendada</span><span><b>*</b>prioridade</span><span style="color:var(--accent-strong)"><b style="color:inherit">○</b>Google Agenda</span></div>
+  </div>`;
+};
+
+VIEWS.futuro = () => {
+  const base = today().slice(0,7), t = today();
+  const months = Array.from({ length: 6 }, (_, i) => addMonths(base, i));
+  const block = mk => {
+    const es = S.entries.filter(e => e.month === mk && !e.parent && e.status !== 'migrated' && e.status !== 'scheduled' && (e.date ? (e.date >= t && (e.type !== 'note')) : true))
+      .sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999') || (a.time || '').localeCompare(b.time || '') || a.createdAt - b.createdAt);
+    const fbd = firstBusinessDay(mk);
+    return `<div class="fcell"><h3>${monthName(mk)}<small>ponto: ${shortDate(fbd)}</small></h3>
+      <ul class="entries">${es.map(e => entryRow(e, { prefix: e.date ? `<span class="d">${pad(parse(e.date).getDate())}</span>` : '' })).join('') || '<li class="empty">Sem registros.</li>'}</ul>
+      <div class="fadd"><select class="inp" data-fday="${mk}" title="Dia (opcional)"><option value="">Dia</option>${Array.from({ length: new Date(+mk.slice(0,4), +mk.slice(5,7), 0).getDate() }, (_, i) => `<option>${i+1}</option>`).join('')}</select><input class="inp" data-fadd="${mk}" placeholder="Adicionar… (Enter)"></div>
+    </div>`;
+  };
+  const upRows = [];
+  for (let i = 0; i <= 60; i++){
+    const s = addDays(t, i);
+    const es = entriesOn(s).filter(e => e.status === 'open' && (e.type === 'event' || e.time)); const gs = gEvents(s);
+    if (es.length || gs.length) upRows.push(`<div class="daylabel">${longDate(s)}${i === 0 ? ' · hoje' : ''}</div><ul class="entries">${es.map(e => entryRow(e)).join('')}${gs.map(g => gRow(g)).join('')}</ul>`);
+  }
+  return topbar('Registro futuro', gOn() ? `<button class="btn ghost" data-act="g-refresh">${I.sync}Atualizar do Google</button>` : '') + `
+  <div class="page wide">
+    <div class="kicker">Próximos seis meses</div>
+    <h1 class="title">Registro futuro</h1>
+    <p class="sub">Seis meses à frente, como no bullet journal. Escolha o dia para agendar; sem dia, o item fica no mês até você definir a data.</p>
+    <div class="fgrid">${months.map(block).join('')}</div>
+    <div class="sec"><div class="sec-h"><h2>Agendamentos — próximos 60 dias</h2></div>${upRows.join('') || '<div class="empty">Nenhum compromisso com data ou horário nos próximos 60 dias.</div>'}</div>
+  </div>`;
+};
+
+function listRange(items, i){ let j = i + 1; while (j < items.length && items[j].level > items[i].level) j++; return j; }
+function normLevels(items){ items.forEach((it, i) => { it.level = Math.max(0, Math.min(it.level || 0, i ? items[i-1].level + 1 : 0, MAXSUB)); }); }
+const curList = () => S.lists.find(x => x.id === ui.listId);
+VIEWS.lista = () => {
+  const l = curList() || S.lists[0];
+  if (!l){ ui.view = 'hoje'; return VIEWS.hoje(); }
+  ui.listId = l.id;
+  const items = l.items, open = items.filter(i => !i.done).length, done = items.length - open;
+  const rows = items.map((it, i) => {
+    if (ui.hideDone && it.done) return '';
+    const sub = items.slice(i + 1, listRange(items, i));
+    const pr = sub.length ? `<span class="tag ${sub.every(x => x.done) ? '' : 'acc'}" title="Subitens concluídos">${sub.filter(x => x.done).length}/${sub.length}</span>` : '';
+    return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}"><input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span><span class="meta">${pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
+  }).join('');
+  return topbar(esc(l.title || 'Lista'), `<button class="btn ghost" data-act="li-hide">${ui.hideDone ? 'Mostrar concluídos' : 'Ocultar concluídos'}</button><button class="btn ghost" data-act="li-todays" title="Copiar os itens em aberto, com a hierarquia, para o registro de hoje">${I.migrate}Levar para hoje</button><button class="btn ghost" data-act="pdf-list">${I.pdf}PDF</button><button class="btn icon ghost danger" data-act="list-del" title="Excluir lista">${I.trash}</button>`) + `
+  <div class="page">
+    <div class="kicker">Lista</div>
+    <input class="title-edit" id="ltitle" value="${esc(l.title)}" placeholder="Sem título">
+    <p class="sub">${open} em aberto · ${done} concluído${done === 1 ? '' : 's'}</p>
+    <div class="qlog" style="grid-template-columns:1fr auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)"><button class="btn primary" data-act="li-add">Adicionar</button></div>
+    <div class="hint">Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.</div>
+    <div class="sec">${rows || '<div class="empty">Lista vazia.</div>'}</div>
+    ${done ? `<div style="margin-top:var(--s2)"><button class="btn ghost" data-act="li-clear">Limpar concluídos</button></div>` : ''}
+    <div class="sec"><div class="sec-h"><h2>Notas</h2></div><textarea class="notes autosize dotgrid" id="lnotes" placeholder="Anotações desta lista…">${esc(l.notes)}</textarea></div>
+  </div>`;
+};
+
+/* ---------------- Perfil ---------------- */
+function initials(n){ const w = (n || '?').trim().split(/\s+/); return ((w[0] || '?')[0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase(); }
+function weekRange(s){ const dow = (parse(s).getDay() + 6) % 7; const a = addDays(s, -dow); return [a, addDays(a, 6)]; }
+function monthRange(mk){ const d = parse(mk + '-01'); return [mk + '-01', ymd(new Date(d.getFullYear(), d.getMonth() + 1, 0))]; }
+VIEWS.perfil = () => {
+  const P = S.profile, f = P.pdf;
+  const fld = (k, label, ph = '', w = '') => `<span class="muted">${label}</span><input class="inp" data-prof="${k}" value="${esc(P[k] || '')}" placeholder="${ph}"${w ? ` style="width:${w}"` : ''}>`;
+  const chk = (k, label) => `<label class="chk"><input type="checkbox" data-pdf="${k}" ${f[k] ? 'checked' : ''}>${label}</label>`;
+  const [wa, wb] = weekRange(today());
+  return topbar('Perfil e PDFs', '') + `
+  <div class="page">
+    <div style="display:flex;gap:var(--s3);align-items:center;margin-top:var(--s3)">
+      <div class="avatar" id="pf-av">${esc(initials(P.name))}</div>
+      <div style="min-width:0"><h1 class="title" style="margin:0" id="pf-name">${esc(P.name || 'Seu nome')}</h1><div class="muted" id="pf-line">${esc([P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo')}</div></div>
+    </div>
+    <p class="sub" style="margin-top:var(--s3)">Sem login e sem senha. Estes dados ficam só na pasta do sistema e servem para identificar você no cabeçalho e na assinatura dos PDFs.</p>
+
+    <div class="sec"><div class="sec-h"><h2>Dados</h2></div>
+      <div class="form">
+        ${fld('name', 'Nome completo')}
+        ${fld('cargo', 'Cargo ou função', 'Ex.: Advogado, Analista…')}
+        ${fld('matricula', 'Matrícula', '', '160px')}
+        ${fld('email', 'E-mail institucional')}
+        ${fld('telefone', 'Telefone ou ramal', '(85) …', '220px')}
+        ${fld('setor', 'Setor', 'Ex.: CGPAR', '220px')}
+        ${fld('unidade', 'Unidade ou diretoria', 'Ex.: Diretoria…')}
+        ${fld('registro', 'Registro profissional', 'Ex.: OAB/CE nº …', '220px')}
+      </div>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>O que aparece nos PDFs</h2></div>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4)">${chk('mat', 'Matrícula')}${chk('email', 'E-mail')}${chk('tel', 'Telefone')}${chk('reg', 'Registro profissional')}${chk('sign', 'Linha de assinatura ao final')}</div>
+      <p class="hint">Nome, cargo, setor e unidade aparecem sempre que preenchidos. A logo usada é a escolhida em Configurações; sem ela, entra o ícone da agenda.</p>
+      <div class="prev rp" id="rp-prev" style="margin-top:var(--s2)">${rpHeader('Registro do dia', `${longDate(today())} de ${today().slice(0,4)}`)}</div>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Exportar em PDF</h2></div>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s2)">
+        <button class="btn" data-act="pdf-quick" data-k="dia">${I.pdf}Hoje</button>
+        <button class="btn" data-act="pdf-quick" data-k="semana">${I.pdf}Esta semana</button>
+        <button class="btn" data-act="pdf-quick" data-k="mes">${I.pdf}Este mês</button>
+        <button class="btn" data-act="pdf-quick" data-k="mesant">${I.pdf}Mês anterior</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s3)">
+        <span class="muted">Período de</span><input class="inp" type="date" id="pa" value="${wa}"><span class="muted">a</span><input class="inp" type="date" id="pb" value="${wb}">
+        <label class="chk"><input type="checkbox" id="pn" checked>Incluir anotações</label>
+        <button class="btn primary" data-act="pdf-period">${I.pdf}Exportar período</button>
+      </div>
+      <p class="hint">Na janela de impressão, escolha <b>Salvar como PDF</b>. O nome do arquivo já vem sugerido. As listas têm o seu próprio botão PDF.</p>
+    </div>
+  </div>`;
+};
+
+/* ---------------- Relatórios em PDF ---------------- */
+function rpHeader(title, sub){
+  const P = S.profile, f = P.pdf || {};
+  const info = [P.cargo && esc(P.cargo), P.setor && esc(P.setor) + (P.unidade ? ' · ' + esc(P.unidade) : ''), !P.setor && P.unidade && esc(P.unidade), f.mat && P.matricula && 'Matrícula ' + esc(P.matricula), f.reg && P.registro && esc(P.registro), f.email && P.email && esc(P.email), f.tel && P.telefone && esc(P.telefone)].filter(Boolean);
+  return `<div class="rp-h"><div class="rp-logo">${S.settings.logo ? `<img src="${S.settings.logo}" alt="">` : ICON_SVG}</div><div><div class="rp-k">Agenda Inicial · uso pessoal</div><h1>${esc(title)}</h1><div class="rp-s">${sub}</div></div></div><div class="rp-p"><b>${esc(P.name)}</b>${info.map(x => `<span>${x}</span>`).join('')}</div>`;
+}
+function rpFoot(){
+  const P = S.profile, now = new Date();
+  return `${P.pdf && P.pdf.sign ? `<div class="sign"><b>${esc(P.name)}</b><br>${esc([P.cargo, P.matricula && 'Matrícula ' + P.matricula].filter(Boolean).join(' · '))}</div>` : ''}<div class="foot">Emitido em ${brDate(ymd(now))} às ${pad(now.getHours())}:${pad(now.getMinutes())} · Agenda Inicial, ferramenta de uso pessoal, sem caráter oficial.</div>`;
+}
+function rpEntry(e, d = 0){
+  const p = progressOf(e);
+  let h = `<li class="${e.status}" style="--d:${d}"><span class="b">${bulletOf(e)}</span><span class="x">${e.prio ? '<b>*</b> ' : ''}${e.time ? `<span class="t">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}${esc(e.text)}</span><span class="m">${(e.status === 'migrated' || e.status === 'scheduled') && e.to ? '→ ' + shortDate(e.to) : ''}${p ? ` ${p.done}/${p.total}` : ''}</span></li>`;
+  const fs = filesOf(e.id);
+  if (fs.length) h += `<li style="--d:${d}"><span class="b"></span><span class="x" style="font-size:8.5pt;color:#555">Anexos: ${fs.map(f => esc(f.name)).join(' · ')}</span><span class="m"></span></li>`;
+  for (const k of kids(e.id)) h += rpEntry(k, d + 1);
+  return h;
+}
+function rpItems(d){
+  const es = entriesOn(d), gs = gEvents(d);
+  if (!es.length && !gs.length) return '';
+  return `<ul>${es.map(e => rpEntry(e)).join('')}${gs.map(g => `<li><span class="b">○</span><span class="x">${g.start ? `<span class="t">${g.start}–${g.end}</span>` : ''}${esc(g.title)}</span><span class="m">Google</span></li>`).join('')}</ul>`;
+}
+function rpStats(a, b){
+  const list = S.entries.filter(e => e.date && e.date >= a && e.date <= b && !['migrated','scheduled'].includes(e.status));
+  const t = list.filter(e => e.type === 'task'), dn = t.filter(e => e.status === 'done').length, op = t.filter(e => e.status === 'open').length;
+  let ev = list.filter(e => e.type === 'event').length;
+  for (let d = a; d <= b; d = addDays(d, 1)) ev += gEvents(d).length;
+  return `<div class="sum"><div><b>${t.length}</b>tarefas e subtarefas</div><div><b>${dn}</b>concluídas</div><div><b>${op}</b>em aberto</div><div><b>${ev}</b>compromissos</div></div>`;
+}
+function rpBullets(){ return '<p style="font-size:8pt;color:#777;margin:10px 0 0">• tarefa · × concluída · ○ compromisso · – nota · &gt; migrada · &lt; agendada · * prioridade</p>'; }
+function doPrint(html, name){
+  const pr = $('#print'); pr.innerHTML = `<div class="rp">${html}</div>`;
+  document.body.classList.add('printing'); const old = document.title; document.title = name;
+  const fin = () => { document.body.classList.remove('printing'); document.title = old; pr.innerHTML = ''; window.removeEventListener('afterprint', fin); };
+  window.addEventListener('afterprint', fin);
+  setTimeout(() => window.print(), 60);
+}
+const fileBase = () => S.profile.name ? ' - ' + S.profile.name : '';
+async function exportDay(d){
+  if (gOn()) await gLoad(d, d);
+  const hol = holidayName(d), notes = S.days[d] && S.days[d].notes, files = S.files.filter(f => f.link === d);
+  const items = rpItems(d);
+  doPrint(rpHeader('Registro do dia', `${longDate(d)} de ${d.slice(0,4)}${hol ? ' · ' + esc(hol) : ''}`) + rpStats(d, d)
+    + `<h2>Tarefas, compromissos e notas</h2>${items || '<p class="vazio">Nada registrado neste dia.</p>'}`
+    + (notes ? `<h2>Anotações</h2><div class="notes">${esc(notes)}</div>` : '')
+    + (files.length ? `<h2>Anexos</h2><table><thead><tr><th>Arquivo</th><th>Local</th></tr></thead><tbody>${files.map(f => `<tr><td>${esc(f.name)}</td><td>${esc(f.path)}</td></tr>`).join('')}</tbody></table>` : '')
+    + rpBullets() + rpFoot(), `Agenda ${d}${fileBase()}`);
+}
+async function exportPeriod(a, b, withNotes){
+  if (b < a) [a, b] = [b, a];
+  if (gOn()) await gLoad(a, b);
+  let body = '', n = 0;
+  for (let d = a; d <= b; d = addDays(d, 1)){
+    const items = rpItems(d), notes = withNotes && S.days[d] && S.days[d].notes;
+    if (!items && !notes) continue;
+    n++; const hol = holidayName(d);
+    body += `<h3>${longDate(d)}${hol ? ` <span style="font-weight:400;color:#777">· ${esc(hol)}</span>` : ''}</h3>${items}${notes ? `<div class="notes">${esc(notes)}</div>` : ''}`;
+  }
+  doPrint(rpHeader('Agenda do período', `${brDate(a)} a ${brDate(b)}`) + rpStats(a, b) + `<h2>Dia a dia</h2>` + (body || '<p class="vazio">Nenhum registro no período.</p>') + rpBullets() + rpFoot(), `Agenda ${a} a ${b}${fileBase()}`);
+}
+function exportList(l){
+  const done = l.items.filter(i => i.done).length;
+  const items = l.items.map(it => `<li class="${it.done ? 'done' : ''}" style="--d:${it.level || 0}"><span class="b">${it.done ? '☑' : '☐'}</span><span class="x">${esc(it.text)}</span><span class="m"></span></li>`).join('');
+  doPrint(rpHeader(l.title || 'Lista', `${l.items.length - done} em aberto · ${done} concluído${done === 1 ? '' : 's'}`) + `<h2>Itens</h2>${items ? `<ul>${items}</ul>` : '<p class="vazio">Lista vazia.</p>'}` + (l.notes ? `<h2>Notas</h2><div class="notes">${esc(l.notes)}</div>` : '') + rpFoot(), `${l.title || 'Lista'}${fileBase()}`);
+}
+
+function taskSelect(f){
+  const opts = [];
+  (function walk(list, d){ for (const e of list){ if (e.type !== 'note' && !['migrated','scheduled'].includes(e.status)) opts.push(`<option value="${e.id}" ${f.entry === e.id ? 'selected' : ''}>${' '.repeat(d)}${d ? '↳ ' : ''}${esc(e.text.length > 48 ? e.text.slice(0, 47) + '…' : e.text)}</option>`); walk(kids(e.id), d + 1); } })(entriesOn(f.link || ui.date), 0);
+  return `<select class="inp mini" data-fentry title="Vincular este anexo a uma tarefa do dia"><option value="">— nenhuma —</option>${opts.join('')}</select>`;
+}
+function fileTable(files, compact){
+  return `<table class="t"><thead><tr><th>Nome</th>${compact ? '<th>Tarefa</th>' : '<th>Dia vinculado</th>'}<th>Enviado</th><th>Tamanho</th><th></th></tr></thead><tbody>${files.map(f => {
+    const off = officeUri(f.path);
+    return `<tr data-fid="${f.id}"><td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
+      ${compact ? `<td>${taskSelect(f)}</td>` : `<td class="num">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${brDate(f.link)}</a>` : '—'}</td>`}
+      <td class="num">${brDate(f.date)}</td><td class="num">${fmtSize(f.size || 0)}</td>
+      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar">${I.eye}</button>${off ? `<a class="btn ghost" href="${off}" title="Abrir no aplicativo do Office">Abrir no Office</a>` : ''}<button class="btn icon ghost" data-act="f-link" title="Vincular a um dia">${I.sched}</button><button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+VIEWS.arquivos = () => {
+  const q = (ui.fq || '').toLowerCase();
+  const files = S.files.filter(f => !q || f.name.toLowerCase().includes(q)).sort((a,b) => b.addedAt - a.addedAt);
+  return topbar('Arquivos', `<button class="btn ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}Visualizar do computador</button><button class="btn ghost" data-act="f-scan" title="Incluir no índice arquivos copiados manualmente para a pasta arquivos">${I.sync}Reindexar pasta</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
+  <div class="page">
+    <div class="kicker">Biblioteca</div>
+    <h1 class="title">Arquivos</h1>
+    <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta do sistema.</p>
+    ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? 'Abra a agenda no Chrome ou no Edge para enviar arquivos.' : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
+    <div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>
+    <div class="sec"><div class="sec-h"><h2>${S.files.length} arquivo${S.files.length === 1 ? '' : 's'}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
+    ${files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
+  </div>`;
+};
+
+VIEWS.ponto = () => {
+  const p = pontoInfo(), P = S.ponto, t = today();
+  const hist = [];
+  for (let i = -3; i <= 6; i++){
+    const k = addMonths(t.slice(0,7), i), f = firstBusinessDay(k), done = P.done[k];
+    const before = k < (S.since || k);
+    const st = done ? `<span class="tag" style="color:var(--ok);border-color:var(--ok)">feito em ${brDate(ymd(new Date(done)))}</span>` : before ? '<span class="faint small">antes da agenda</span>' : f > t ? '<span class="tag">a vencer</span>' : '<span class="tag acc">pendente</span>';
+    hist.push(`<tr><td>${monthName(k)}</td><td class="num">${brDate(f)} (${WDS[parse(f).getDay()]})</td><td class="num">${monthName(p.refOf(k))}</td><td>${st}</td><td class="acts">${f <= t && !before ? (done ? `<button class="btn ghost" data-act="ponto-undo" data-k="${k}">Desfazer</button>` : `<button class="btn ghost" data-act="ponto-done" data-k="${k}">Marcar feito</button>`) : ''}</td></tr>`);
+  }
+  const fileOpts = S.files.map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('');
+  return topbar('Ponto', '') + `
+  <div class="page">
+    <div class="kicker">Rotina mensal</div>
+    <h1 class="title">Registro do ponto</h1>
+    <p class="sub">Lembrete automático no 1º dia útil de cada mês, considerando fins de semana e feriados nacionais${S.settings.cityHolidays ? ', do Ceará e de Fortaleza' : ''}.</p>
+    ${p.pending ? `<div class="banner"><div><b>Ponto pendente desde ${brDate(p.fbd)}</b><span class="muted">Referência: ${monthName(p.refOf(p.mk))}</span></div><div class="tools">${p.linked ? `<button class="btn primary" data-act="ponto-open">${I.open}Abrir o ponto</button>` : ''}<button class="btn" data-act="ponto-done" data-k="${p.mk}">${I.check}Marcar como feito</button></div></div>` : ''}
+    <div class="grid3 sec" style="margin-top:var(--s3)">
+      <div class="card stat"><b>${shortDate(p.next)}</b><span>${p.pending ? 'Prazo vencido em' : 'Próximo preenchimento'} · ${WD[parse(p.next).getDay()]}</span></div>
+      <div class="card stat"><b>${p.pending ? 'Pendente' : 'Em dia'}</b><span>Situação de ${MES[parse(t).getMonth()]}</span></div>
+      <div class="card stat"><b>${p.linked ? (P.kind === 'url' ? 'Endereço' : 'Arquivo') : '—'}</b><span>${p.linked ? 'Vinculado' : 'Nada vinculado ainda'}</span></div>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Arquivo do ponto</h2></div>
+      <div class="form">
+        <span class="muted">Tipo</span>
+        <div><div class="seg"><button data-act="ponto-kind" data-k="file" class="${P.kind === 'file' ? 'on' : ''}">Arquivo na pasta</button><button data-act="ponto-kind" data-k="url" class="${P.kind === 'url' ? 'on' : ''}">Endereço web</button></div></div>
+        ${P.kind === 'file' ? `
+          <span class="muted">Arquivo</span>
+          <div style="display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap">${P.file ? `<span class="ext">${esc(extOf(P.file.name))}</span><b>${esc(P.file.name)}</b><span class="muted small">${esc(P.file.path)}</span>` : '<span class="muted">Nenhum</span>'}</div>
+          <span></span>
+          <div style="display:flex;gap:var(--s2);flex-wrap:wrap">
+            <button class="btn" data-act="ponto-pick">${I.folder}${P.file ? 'Trocar arquivo' : 'Escolher arquivo do computador'}</button>
+            ${S.files.length ? `<select class="inp" id="ponto-from"><option value="">ou usar um arquivo já enviado…</option>${fileOpts}</select>` : ''}
+            ${P.file ? `<button class="btn" data-act="ponto-view">${I.eye}Visualizar</button><button class="btn primary" data-act="ponto-open">${I.open}Abrir</button>` : ''}
+          </div>
+          <span class="muted">Cópia mensal</span>
+          <label class="chk"><input type="checkbox" id="ponto-copy" ${P.monthlyCopy ? 'checked' : ''}>Usar o arquivo como modelo e criar uma cópia por mês (ex.: <i>Ponto - 2026-11.xlsx</i>)</label>`
+        : `
+          <span class="muted">Endereço</span>
+          <div style="display:flex;gap:var(--s2)"><input class="inp" id="ponto-url" style="flex:1" placeholder="https://…" value="${esc(P.url)}"><button class="btn primary" data-act="ponto-open" ${P.url ? '' : 'disabled'}>${I.open}Abrir</button></div>`}
+        <span class="muted">Mês de referência</span>
+        <div><div class="seg"><button data-act="ponto-ref" data-k="anterior" class="${P.ref === 'anterior' ? 'on' : ''}">Mês anterior</button><button data-act="ponto-ref" data-k="atual" class="${P.ref === 'atual' ? 'on' : ''}">Mês corrente</button></div></div>
+      </div>
+      <p class="hint">O arquivo escolhido é copiado para <b>arquivos/Ponto/</b>, dentro da pasta do sistema. Arquivos do Word e do Excel abrem direto no aplicativo.</p>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Calendário do ponto</h2>${gOn() ? `<div class="tools"><button class="btn ghost" data-act="ponto-g">${I.g}Criar lembretes no Google (12 meses)</button></div>` : ''}</div>
+      <table class="t"><thead><tr><th>Mês</th><th>1º dia útil</th><th>Referência</th><th>Situação</th><th></th></tr></thead><tbody>${hist.join('')}</tbody></table>
+    </div>
+  </div>`;
+};
+
+VIEWS.config = () => {
+  const g = S.google;
+  if (!g.token){ g.token = (crypto.randomUUID ? crypto.randomUUID() : uid() + uid()).replace(/-/g, ''); localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+  return topbar('Configurações', '') + `
+  <div class="page">
+    <div class="kicker">Sistema</div>
+    <h1 class="title">Configurações</h1>
+    <p class="sub">Tudo fica salvo na pasta do sistema, junto com este HTML.</p>
+
+    <div class="sec"><div class="sec-h"><h2>Aplicativo</h2></div>
+      <div class="appcard">${ICON_SVG}<div><b style="font-family:var(--serif);font-size:17px">Agenda Inicial · versão ${APP_RELEASE}</b><div class="muted small">${isStandalone() ? 'Instalada como aplicativo.' : 'Aberta no navegador.'} As versões novas chegam sozinhas: ao abrir a agenda com internet, ela já carrega a mais recente. Seus dados nunca saem do computador.</div>
+        <div style="display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s2)">
+          ${window._bip ? `<button class="btn primary" data-act="pwa-install">Instalar aplicativo</button>` : ''}
+          <button class="btn" data-act="up-check">${I.sync}Verificar versão</button>
+        </div>
+        ${!isStandalone() && !window._bip ? '<p class="hint">Para instalar: no Chrome, menu ⋮ › Transmitir, salvar e compartilhar › Instalar página como app (ou o ícone de instalação na barra de endereço).</p>' : ''}
+      </div></div>
+      ${S.settings.notesSeen === APP_RELEASE && UP.notes ? `<div class="card" style="margin-top:var(--s2)"><b>Novidades da versão ${APP_RELEASE}</b><ul style="margin:6px 0 0;padding-left:20px">${UP.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : ''}
+      <p class="hint">Seus dados pessoais e as opções dos PDFs ficam em <a href="#" data-act="go" data-v="perfil">Perfil e PDFs</a>.</p>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Pasta de dados</h2></div>
+      <dl class="kv">
+        <dt>Situação</dt><dd>${storageLine()}</dd>
+        <dt>Local</dt><dd>${FS.state === 'granted' ? `Documentos › <b>${esc(FS.root.name)}</b>` : '<span class="muted">ainda não autorizada</span>'}</dd>
+        <dt>Conteúdo</dt><dd><span class="muted">dados/agenda.json · dados/backups/ (cópia diária) · arquivos/ (anexos)</span></dd>
+        <dt>Navegador</dt><dd>${fsSupported ? 'Compatível' : '<span style="color:var(--danger)">Este navegador não grava no computador. Use Chrome ou Edge.</span>'}</dd>
+      </dl>
+      <div class="form" style="margin-top:var(--s2)">
+        <span class="muted">Caminho no Windows</span>
+        <input class="inp" id="win-path" placeholder="Ex.: C:\Users\seu-usuario\Documents\Agenda Inicial" value="${esc(S.settings.winPath || '')}">
+      </div>
+      <p class="hint">Opcional: com o caminho da pasta, os arquivos do Word, Excel e PowerPoint ganham o botão "Abrir no Office". Copie o endereço na barra do Explorador de Arquivos, dentro da pasta ${esc(FOLDER_NAME)}.</p>
+      <div style="display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap">
+        ${fsSupported ? `<button class="btn" data-act="fs-connect">${I.folder}${FS.root ? 'Trocar pasta' : 'Autorizar pasta Documentos'}</button>` : ''}
+        ${fsSupported ? `<button class="btn" data-act="import-old" title="Traz os registros e anexos da pasta Agenda Cagece">Trazer dados da agenda anterior</button>` : ''}
+        <button class="btn" data-act="export">Exportar cópia (.json)</button>
+        <button class="btn" data-act="import">Importar cópia</button>
+      </div>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Google Agenda · agenda "${esc(S.google.calName || 'Cagece')}"</h2></div>
+      <dl class="kv"><dt>Situação</dt><dd>${gOn() ? `<span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Erro: ' + esc(G.error) : 'Conectado'}` : '<span class="dot"></span>Não conectado'}</dd></dl>
+      <div class="card" style="margin-top:var(--s2)">
+        <ol class="steps">
+          <li>Copie o código abaixo (ele já leva a sua chave pessoal) <button class="btn" data-act="g-copy" style="height:24px;margin-left:6px">Copiar código</button></li>
+          <li>Abra <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> com a conta Google onde está (ou ficará) a agenda <b>${esc(S.google.calName || 'Cagece')}</b>, apague o conteúdo e cole.</li>
+          <li>Clique em <b>Implantar › Nova implantação › App da Web</b>. Executar como: <b>Eu</b>. Quem pode acessar: <b>Qualquer pessoa</b>. Autorize o acesso à agenda quando o Google pedir.</li>
+          <li>Copie a URL que termina em <b>/exec</b>, cole aqui e clique em Conectar. Se a agenda ${esc(S.google.calName || 'Cagece')} não existir, ela é criada automaticamente.</li>
+        </ol>
+        <div style="display:flex;gap:var(--s2);align-items:center;margin-top:var(--s2)"><span class="muted small">Nome da agenda no Google</span><input class="inp" id="g-cal" value="${esc(S.google.calName || 'Cagece')}" style="width:200px"><span class="muted small">(mude antes de copiar o código)</span></div>
+        <div style="display:flex;gap:var(--s2);margin-top:var(--s2)"><input class="inp" id="g-url" style="flex:1" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(g.url)}"><button class="btn primary" data-act="g-connect">Conectar</button>${gOn() ? '<button class="btn" data-act="g-off">Desconectar</button>' : ''}</div>
+        <label class="chk" style="margin-top:var(--s2)"><input type="checkbox" id="g-push" ${g.pushDefault ? 'checked' : ''}>Marcar "Google" por padrão no registro rápido</label>
+        <details style="margin-top:var(--s2)"><summary class="small muted" style="cursor:pointer">Ver o código</summary><pre class="code">${esc(gScript(g.token))}</pre></details>
+        <p class="hint">A chave impede que outra pessoa use a URL. Só a sua agenda ${esc(S.google.calName || 'Cagece')} é lida ou alterada; as demais agendas da conta não são tocadas.</p>
+      </div>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Aparência</h2></div>
+      <div class="form">
+        <span class="muted">Tema</span>
+        <div><div class="seg"><button data-act="set-theme" data-k="light" class="${S.settings.theme === 'light' ? 'on' : ''}">Claro</button><button data-act="set-theme" data-k="dark" class="${S.settings.theme === 'dark' ? 'on' : ''}">Escuro</button><button data-act="set-theme" data-k="auto" class="${S.settings.theme === 'auto' ? 'on' : ''}">Automático</button></div></div>
+        <span class="muted">Logo institucional</span>
+        <div style="display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap">
+          ${S.settings.logo ? `<img src="${S.settings.logo}" alt="" style="max-height:32px;max-width:160px;border:1px solid var(--border);padding:2px;background:#fff">` : '<span class="muted">Nenhuma imagem</span>'}
+          <button class="btn" data-act="logo-pick">${S.settings.logo ? 'Trocar' : 'Escolher imagem'}</button>
+          ${S.settings.logo ? `<button class="btn ghost" data-act="logo-del">Remover</button>` : ''}
+        </div>
+      </div>
+      <p class="hint">A imagem é copiada para <i>assets/</i> na pasta do sistema. Ela aparece na barra lateral e no cabeçalho dos PDFs. A agenda indica em todas as telas que é de uso pessoal.</p>
+    </div>
+
+    <div class="sec"><div class="sec-h"><h2>Feriados</h2></div>
+      <label class="chk"><input type="checkbox" id="city-hol" ${S.settings.cityHolidays ? 'checked' : ''}>Considerar feriados do Ceará (19/3 e 25/3) e de Fortaleza (15/8)</label>
+      <p class="hint" style="margin-bottom:var(--s2)">Já considerados: feriados nacionais, Carnaval, Sexta-feira Santa e Corpus Christi. Inclua abaixo pontos facultativos ou recessos da Companhia.</p>
+      <table class="t"><tbody>${S.settings.extraHolidays.map((h, i) => `<tr><td class="num">${brDate(h.date)}</td><td>${esc(h.name)}</td><td class="acts"><button class="btn icon ghost" data-act="hol-del" data-i="${i}">${I.trash}</button></td></tr>`).join('')}</tbody></table>
+      <div style="display:flex;gap:var(--s2);margin-top:var(--s2)"><input class="inp" type="date" id="hol-date"><input class="inp" id="hol-name" placeholder="Descrição" style="flex:1"><button class="btn" data-act="hol-add">Adicionar</button></div>
+    </div>
+  </div>`;
+};
+
+/* ---------------- Versões ---------------- */
+const UP = { notes: null, checked: 0, error: '', newer: null };
+const verNum = v => String(v || '0').split('.').map(n => parseInt(n, 10) || 0).reduce((a, n) => a * 1000 + n, 0);
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches;
+async function checkUpdate(manual){
+  if (!/^https?:$/.test(location.protocol)) return;
+  try {
+    const r = await fetch('versao.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('versão indisponível');
+    const m = await r.json(); UP.checked = Date.now(); UP.error = '';
+    if (m.version === APP_RELEASE) UP.notes = m.notes || [];
+    UP.newer = verNum(m.version) > verNum(APP_RELEASE) ? m : null;
+    if (UP.newer){ const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); }
+    if (manual) toast(UP.newer ? `Versão ${m.version} disponível. Recarregando…` : `Você está na versão mais recente (${APP_RELEASE}).`);
+    if (UP.newer && manual) setTimeout(() => location.reload(), 800);
+    if (S.settings.notesSeen !== APP_RELEASE && UP.notes){ const had = !!S.settings.notesSeen || S.entries.length > 0; S.settings.notesSeen = APP_RELEASE; save(false); if (had) toast(`Agenda atualizada para a versão ${APP_RELEASE}. Veja as novidades em Configurações.`, 5000); }
+  } catch(e){ UP.error = e.message; if (manual) toast('Sem conexão para verificar agora.'); }
+  renderSide(); if (ui.view === 'config') render(false);
+}
+
+/* ---------------- Visualizador de arquivos ---------------- */
+const LIBS = { jszip: 'assets/lib/jszip.min.js', docx: 'assets/lib/docx-preview.min.js', xlsx: 'assets/lib/xlsx.full.min.js', pptx: 'assets/lib/pptx-preview.umd.js' };
+const _libs = {};
+function lib(k){
+  return _libs[k] || (_libs[k] = new Promise((res, rej) => {
+    const sc = document.createElement('script'); sc.src = LIBS[k];
+    sc.onload = res; sc.onerror = () => { delete _libs[k]; rej(new Error(`Não encontrei ${LIBS[k]} na pasta do sistema.`)); };
+    document.head.appendChild(sc);
+  }));
+}
+const VT = {
+  pdf: ['pdf'],
+  docx: ['docx','docm','dotx'],
+  sheet: ['xlsx','xlsm','xls','xlsb','ods','csv','tsv','xltx','numbers'],
+  pptx: ['pptx','ppsx','potx'],
+  image: ['png','jpg','jpeg','gif','webp','bmp','svg','ico','avif'],
+  text: ['txt','md','json','xml','log','ini','cfg','js','css','sql','yml','yaml','eml','rtf','gs','ps1','cmd','bat','html','htm'],
+  audio: ['mp3','wav','ogg','m4a','aac','flac','opus'],
+  video: ['mp4','webm','mov','m4v','ogv']
+};
+const MIME = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', bmp: 'image/bmp', svg: 'image/svg+xml', ico: 'image/x-icon', avif: 'image/avif', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4' };
+const kindOf = n => { const e = extOf(n); for (const k in VT) if (VT[k].includes(e)) return k; return ''; };
+const V = { list: [], i: 0, url: '', zoom: 1, cleanup: null, token: 0 };
+
+async function fileOf(item){
+  if (item.file) return item.file;
+  if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') throw new Error('A pasta do sistema não está conectada.'); }
+  const parts = item.path.split('/'); const name = parts.pop();
+  const dir = await dirAt(parts.join('/'), false);
+  return (await dir.getFileHandle(name)).getFile();
+}
+function openViewer(list, i = 0){ V.list = list; V.i = i; $('#viewer').hidden = false; document.body.style.overflow = 'hidden'; showViewer(); }
+function closeViewer(){ vCleanup(); $('#viewer').hidden = true; $('#vbody').innerHTML = ''; $('#vtabs').innerHTML = ''; document.body.style.overflow = ''; }
+function vCleanup(){ if (V.cleanup){ try { V.cleanup(); } catch(e){} V.cleanup = null; } if (V.url){ URL.revokeObjectURL(V.url); V.url = ''; } }
+function vBar(item, extra = ''){
+  const off = item.path ? officeUri(item.path) : '';
+  const n = V.list.length;
+  $('#vbar').innerHTML = `<span class="ext">${esc(extOf(item.name))}</span>
+    <div class="nm" title="${esc(item.path || item.name)}">${esc(item.name)}<small>${item.path ? esc(item.path) : 'arquivo do computador (não enviado)'}</small></div>
+    <div class="tools">
+      ${n > 1 ? `<button class="btn icon ghost" data-act="v-prev" title="Anterior (←)">${I.left}</button><span class="zv">${V.i + 1}/${n}</span><button class="btn icon ghost" data-act="v-next" title="Próximo (→)">${I.right}</button><span class="sep"></span>` : ''}
+      ${extra}
+      ${off ? `<a class="btn ghost" href="${off}" title="Abrir no aplicativo do Office">Abrir no Office</a>` : ''}
+      <button class="btn icon ghost" data-act="v-tab" title="Abrir em nova aba">${I.open}</button>
+      <button class="btn icon ghost" data-act="v-dl" title="Baixar uma cópia">${I.dl}</button>
+      <span class="sep"></span>
+      <button class="btn icon ghost" data-act="v-close" title="Fechar (Esc)">${I.x}</button>
+    </div>`;
+}
+const zoomTools = () => `<button class="btn icon ghost" data-act="v-zout" title="Diminuir (−)">${I.zout}</button><span class="zv" id="vz">${Math.round(V.zoom * 100)}%</span><button class="btn icon ghost" data-act="v-zin" title="Aumentar (+)">${I.zin}</button><span class="sep"></span>`;
+function applyZoom(){ const z = $('#vbody .vzoom'); if (z) z.style.zoom = V.zoom; const l = $('#vz'); if (l) l.textContent = Math.round(V.zoom * 100) + '%'; }
+function vMsg(title, text, item){
+  const off = item && item.path ? officeUri(item.path) : '';
+  $('#vbody').innerHTML = `<div class="vmsg"><div><b>${title}</b>${text}<div class="tools">${off ? `<a class="btn primary" href="${off}">Abrir no Office</a>` : ''}<button class="btn" data-act="v-tab">${I.open}Abrir em nova aba</button></div></div></div>`;
+}
+async function showViewer(){
+  vCleanup();
+  const item = V.list[V.i], kind = kindOf(item.name), tok = ++V.token;
+  const body = $('#vbody'), tabs = $('#vtabs');
+  body.className = 'vbody'; tabs.innerHTML = ''; V.zoom = 1;
+  vBar(item, ['docx','sheet','pptx','image','text'].includes(kind) ? zoomTools() : '');
+  body.innerHTML = '<div class="vload">Carregando…</div>';
+  let file;
+  try { file = await fileOf(item); } catch(e){ if (tok === V.token) vMsg('Não consegui abrir o arquivo', esc(e.message), item); return; }
+  if (tok !== V.token) return;
+  V.file = file;
+  const ext = extOf(item.name);
+  try {
+    if (kind === 'pdf'){
+      body.classList.add('flush');
+      V.url = URL.createObjectURL(new Blob([file], { type: 'application/pdf' }));
+      body.innerHTML = `<iframe src="${V.url}#view=FitH" title="${esc(item.name)}"></iframe>`;
+    }
+    else if (kind === 'image'){
+      V.url = URL.createObjectURL(new Blob([file], { type: MIME[ext] || file.type }));
+      body.innerHTML = `<div class="vimg vzoom"><img src="${V.url}" alt="${esc(item.name)}" data-act="v-imgfull" title="Clique para ver em tamanho real"></div>`;
+    }
+    else if (kind === 'audio' || kind === 'video'){
+      V.url = URL.createObjectURL(new Blob([file], { type: MIME[ext] || file.type }));
+      body.innerHTML = `<div class="vmedia">${kind === 'video' ? `<video src="${V.url}" controls autoplay></video>` : `<audio src="${V.url}" controls autoplay></audio>`}</div>`;
+    }
+    else if (kind === 'text'){
+      let t = await file.text();
+      if (ext === 'html' || ext === 'htm'){
+        body.classList.add('flush');
+        V.url = URL.createObjectURL(new Blob([t], { type: 'text/html' }));
+        body.innerHTML = `<iframe sandbox="" src="${V.url}" title="${esc(item.name)}"></iframe>`;
+      } else {
+        if (ext === 'json'){ try { t = JSON.stringify(JSON.parse(t), null, 2); } catch(e){} }
+        if (t.length > 2e6) t = t.slice(0, 2e6) + '\n\n[… arquivo muito grande, exibidos os primeiros 2 MB]';
+        body.innerHTML = `<pre class="vtext vzoom">${esc(t)}</pre>`;
+      }
+    }
+    else if (kind === 'docx'){
+      await lib('jszip'); await lib('docx');
+      if (tok !== V.token) return;
+      body.innerHTML = '<div class="vdocx vzoom"><div id="vdoc"></div></div>';
+      await window.docx.renderAsync(await file.arrayBuffer(), $('#vdoc'), null, { className: 'docx', inWrapper: true, breakPages: true, renderHeaders: true, renderFooters: true, renderFootnotes: true, renderEndnotes: true, useBase64URL: true, experimental: true });
+    }
+    else if (kind === 'sheet'){
+      await lib('xlsx');
+      if (tok !== V.token) return;
+      const data = ext === 'csv' || ext === 'tsv' ? await file.text() : await file.arrayBuffer();
+      const wb = window.XLSX.read(data, { type: typeof data === 'string' ? 'string' : 'array', cellDates: true, dense: false, FS: ext === 'tsv' ? '\t' : undefined });
+      V.wb = wb; V.sheet = 0;
+      tabs.innerHTML = wb.SheetNames.map((n, i) => `<button data-act="v-sheet" data-i="${i}" class="${i ? '' : 'on'}">${esc(n)}</button>`).join('');
+      renderSheet();
+    }
+    else if (kind === 'pptx'){
+      await lib('jszip'); await lib('pptx');
+      if (tok !== V.token) return;
+      const buf = await file.arrayBuffer();
+      let ratio = 9 / 16;
+      try { const zx = await window.JSZip.loadAsync(buf); const px = await zx.file('ppt/presentation.xml').async('string'); const m = px.match(/<p:sldSz[^>]*cx="(\d+)"[^>]*cy="(\d+)"/); if (m) ratio = +m[2] / +m[1]; } catch(e){}
+      const w = Math.min(1100, body.clientWidth - 64);
+      body.innerHTML = '<div class="vpptx vzoom"><div id="vppt"></div></div>';
+      const pv = window.pptxPreview.init($('#vppt'), { width: w, height: Math.round(w * ratio), mode: 'list' });
+      V.cleanup = () => pv.destroy && pv.destroy();
+      await pv.preview(buf);
+    }
+    else if (['doc','ppt','pps','odt','odp','rtf','msg','pub','vsd','vsdx'].includes(ext)){
+      vMsg('Este formato não tem visualização dentro da agenda', 'Arquivos .' + esc(ext) + ' abrem melhor no aplicativo de origem.', item);
+    }
+    else vMsg('Formato sem visualização', 'Não há visualizador para arquivos .' + esc(ext || '?') + '. Você pode abri-lo no aplicativo do computador.', item);
+  } catch(e){
+    console.warn(e);
+    if (tok === V.token) vMsg('Não consegui exibir este arquivo', esc(e.message || 'O arquivo pode estar corrompido ou protegido por senha.'), item);
+  }
+}
+function renderSheet(){
+  const X = window.XLSX, ws = V.wb.Sheets[V.wb.SheetNames[V.sheet]];
+  $$('#vtabs button').forEach((b, i) => b.classList.toggle('on', i === V.sheet));
+  if (!ws || !ws['!ref']){ $('#vbody').innerHTML = '<div class="vmsg"><div><b>Planilha vazia</b></div></div>'; return; }
+  const r = X.utils.decode_range(ws['!ref']); const MAXR = 3000, MAXC = 200;
+  const r2 = Math.min(r.e.r, r.s.r + MAXR - 1), c2 = Math.min(r.e.c, r.s.c + MAXC - 1);
+  const skip = new Set(), span = {};
+  for (const m of ws['!merges'] || []){
+    span[m.s.r + ',' + m.s.c] = [m.e.r - m.s.r + 1, m.e.c - m.s.c + 1];
+    for (let R = m.s.r; R <= m.e.r; R++) for (let C = m.s.c; C <= m.e.c; C++) if (R !== m.s.r || C !== m.s.c) skip.add(R + ',' + C);
+  }
+  const cols = ws['!cols'] || [];
+  let h = '<table><thead><tr><th></th>';
+  for (let C = r.s.c; C <= c2; C++) h += `<th style="min-width:${Math.max(48, Math.min(360, ((cols[C] && (cols[C].wpx || (cols[C].wch || 0) * 7)) || 72)))}px">${X.utils.encode_col(C)}</th>`;
+  h += '</tr></thead><tbody>';
+  for (let R = r.s.r; R <= r2; R++){
+    h += `<tr><th>${R + 1}</th>`;
+    for (let C = r.s.c; C <= c2; C++){
+      const k = R + ',' + C; if (skip.has(k)) continue;
+      const cell = ws[X.utils.encode_cell({ r: R, c: C })];
+      const sp = span[k] ? ` rowspan="${span[k][0]}" colspan="${span[k][1]}"` : '';
+      let txt = '', cls = '';
+      if (cell){
+        if (cell.f && (cell.v === undefined || cell.v === '')){ txt = '=' + cell.f; cls = 'f'; }
+        else if (cell.w !== undefined) txt = cell.w;
+        else if (cell.v instanceof Date) txt = cell.v.toLocaleDateString('pt-BR');
+        else if (cell.v !== undefined) txt = String(cell.v);
+        else if (cell.f){ txt = '=' + cell.f; cls = 'f'; }
+        if (cell.t === 'n' && !cls) cls = 'n';
+      }
+      h += `<td class="${cls}"${sp} title="${esc(cell && cell.f ? '=' + cell.f : txt)}">${esc(txt)}</td>`;
+    }
+    h += '</tr>';
+  }
+  h += '</tbody></table>';
+  if (r.e.r > r2 || r.e.c > c2) h += `<div class="more">Exibindo as primeiras ${r2 - r.s.r + 1} linhas e ${c2 - r.s.c + 1} colunas. Para ver tudo, abra no Excel.</div>`;
+  $('#vbody').innerHTML = `<div class="vsheet vzoom">${h}</div>`;
+  applyZoom();
+}
+
+/* ---------------- Seletor de data ---------------- */
+function pickDate(cb, initial, ev){
+  const dp = $('#dp'); dp.value = initial || '';
+  if (ev){ dp.style.left = ev.clientX + 'px'; dp.style.top = ev.clientY + 'px'; }
+  dp.onchange = () => { if (dp.value) cb(dp.value); dp.onchange = null; };
+  try { dp.showPicker(); } catch(e){ const v = prompt('Data (AAAA-MM-DD):', initial || today()); if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) cb(v); }
+}
+function nextBusiness(s){ let d = addDays(s, 1); while (!isBusiness(d)) d = addDays(d, 1); return d; }
+
+/* ---------------- Ações ---------------- */
+function quickAdd(){
+  const inp = $('#qtext'); if (!inp) return;
+  const raw = inp.value; if (!raw.trim()) return;
+  const q = parseQuick(raw);
+  const type = q.type || ui.qtype, time = q.time || $('#qtime').value || '';
+  const e = addEntry({ type, text: q.text, date: ui.date, time, prio: q.prio || ui.qprio });
+  inp.value = ''; $('#qtime').value = ''; ui.qprio = false;
+  const push = $('#qg') && $('#qg').checked && type === 'event';
+  save();
+  if (push) gPush(e);
+  setTimeout(() => $('#qtext') && $('#qtext').focus(), 0);
+}
+const ACT = {
+  'go': a => go(a.dataset.v),
+  'go-list': a => { ui.listId = a.dataset.id; ui.view = 'lista'; render(); },
+  'list-new': () => { const l = { id: uid(), title: '', items: [], notes: '', createdAt: Date.now() }; S.lists.push(l); ui.listId = l.id; ui.view = 'lista'; save(); setTimeout(() => $('#ltitle') && $('#ltitle').focus(), 0); },
+  'list-del': () => { const l = S.lists.find(x => x.id === ui.listId); if (l && confirm(`Excluir a lista "${l.title || 'Sem título'}"?`)){ S.lists = S.lists.filter(x => x !== l); ui.view = 'hoje'; save(); } },
+  'theme': () => { const o = ['auto','light','dark']; S.settings.theme = o[(o.indexOf(S.settings.theme) + 1) % 3]; save(); },
+  'set-theme': a => { S.settings.theme = a.dataset.k; save(); },
+  'fs-connect': (a, ev) => { ev.preventDefault(); connectFolder(); },
+  'fs-reconnect': (a, ev) => { ev.preventDefault(); reconnectFolder(); },
+  'print': () => window.print(),
+  'pdf-day': () => exportDay(ui.date),
+  'pdf-month': () => { const [a, b] = monthRange(ui.month); exportPeriod(a, b, true); },
+  'pdf-list': () => { const l = curList(); if (l) exportList(l); },
+  'pdf-period': () => { const a = $('#pa').value, b = $('#pb').value; if (!a || !b) return toast('Informe as duas datas.'); exportPeriod(a, b, $('#pn').checked); },
+  'pdf-quick': a => { const k = a.dataset.k, t = today(); if (k === 'dia') return exportDay(t); const r = k === 'semana' ? weekRange(t) : monthRange(k === 'mes' ? t.slice(0,7) : addMonths(t.slice(0,7), -1)); exportPeriod(r[0], r[1], true); },
+  'up-check': () => checkUpdate(true),
+  'import-old': () => importOldFolder(),
+  'pwa-install': async () => { if (!window._bip) return; window._bip.prompt(); await window._bip.userChoice; window._bip = null; render(false); },
+  'f-view': (a, ev) => {
+    ev && ev.preventDefault();
+    const tb = a.closest('tbody'); const ids = tb ? $$('tr[data-fid]', tb).map(r => r.dataset.fid) : [];
+    const list = ids.map(id => S.files.find(f => f.id === id)).filter(Boolean);
+    const id = a.closest('tr').dataset.fid; openViewer(list, Math.max(0, list.findIndex(f => f.id === id)));
+  },
+  'ponto-view': () => { if (S.ponto.file) openViewer([S.ponto.file], 0); },
+  'v-local': () => $('#vpick').click(),
+  'v-close': () => closeViewer(),
+  'v-prev': () => { V.i = (V.i - 1 + V.list.length) % V.list.length; showViewer(); },
+  'v-next': () => { V.i = (V.i + 1) % V.list.length; showViewer(); },
+  'v-zin': () => { V.zoom = Math.min(3, Math.round((V.zoom + .1) * 10) / 10); applyZoom(); },
+  'v-zout': () => { V.zoom = Math.max(.3, Math.round((V.zoom - .1) * 10) / 10); applyZoom(); },
+  'v-sheet': a => { V.sheet = +a.dataset.i; renderSheet(); $('#vbody').scrollTop = 0; },
+  'v-imgfull': a => a.closest('.vimg').classList.toggle('full'),
+  'v-tab': () => { if (!V.file) return; const u = URL.createObjectURL(new Blob([V.file], { type: MIME[extOf(V.list[V.i].name)] || V.file.type || 'application/octet-stream' })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); },
+  'v-dl': () => { if (!V.file) return; const a = document.createElement('a'); a.href = URL.createObjectURL(V.file); a.download = V.list[V.i].name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 10000); },
+  'e-sub': a => { ui.subFor = a.closest('.entry').dataset.id; ui.focusSub = true; render(false); },
+  'day-prev': () => { ui.date = addDays(ui.date, -1); render(); },
+  'day-next': () => { ui.date = addDays(ui.date, 1); render(); },
+  'day-today': () => { ui.date = today(); render(); },
+  'day-pick': (a, ev) => pickDate(v => { ui.date = v; render(); }, ui.date, ev),
+  'qtype': a => { ui.qtype = a.dataset.t; $$('.typebtns [data-act="qtype"]').forEach(b => b.classList.toggle('on', b === a)); $('#qtext').focus(); },
+  'qprio': a => { ui.qprio = !ui.qprio; a.classList.toggle('on', ui.qprio); $('#qtext').focus(); },
+  'qadd': quickAdd,
+  'migrate-all': () => { const t = today(); S.entries.filter(e => e.date && e.date < t && !e.parent && e.type === 'task' && e.status === 'open').forEach(e => migrateTo(e, t)); save(); toast('Pendências migradas para hoje.'); },
+  'cal-day': a => { ui.date = a.dataset.d; ui.keepDate = true; go('hoje'); },
+  'm-prev': () => { ui.month = addMonths(ui.month, -1); render(); },
+  'm-next': () => { ui.month = addMonths(ui.month, 1); render(); },
+  'm-today': () => { ui.month = today().slice(0,7); render(); },
+  'g-refresh': () => { resetG(); render(); toast('Atualizando do Google…'); },
+  'attach-day': () => { const p = $('#fpick'); p.dataset.link = ui.date; p.dataset.entry = ''; p.click(); },
+  'e-attach': a => { const e = byId(a.closest('.entry').dataset.id); const p = $('#fpick'); p.dataset.link = e.date || ''; p.dataset.entry = e.id; p.click(); },
+  'f-chip': (a, ev) => { ev.preventDefault(); const e = byId(a.dataset.e); const list = filesOf(e.id); openViewer(list, Math.max(0, list.findIndex(f => f.id === a.dataset.fid))); },
+  'f-up': (a, ev) => { ev && ev.preventDefault(); const p = $('#fpick'); p.dataset.link = ''; p.dataset.entry = ''; p.click(); },
+  'f-goday': (a, ev) => { ev.preventDefault(); ui.date = a.dataset.d; ui.keepDate = true; go('hoje'); },
+  'f-link': (a, ev) => { const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); pickDate(v => { f.link = v; save(); toast('Arquivo vinculado a ' + brDate(v) + '.'); }, f.link || today(), ev); },
+  'f-del': async a => {
+    const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); if (!f) return;
+    const also = FS.state === 'granted' && confirm(`Remover "${f.name}" da agenda.\n\nOK = apagar também o arquivo da pasta\nCancelar = escolher outra opção`);
+    if (!also && !confirm(`Remover "${f.name}" apenas do índice da agenda, mantendo o arquivo na pasta?`)) return;
+    if (also){ try { const parts = f.path.split('/'); const dir = await dirAt(parts.slice(0,-1).join('/'), false); await dir.removeEntry(parts.pop()); } catch(e){ toast('Não consegui apagar o arquivo da pasta.'); } }
+    S.files = S.files.filter(x => x !== f); save();
+  },
+  'f-scan': async () => {
+    if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') return; }
+    const known = new Set(S.files.map(f => f.path)); let n = 0;
+    async function walk(dir, path){
+      for await (const [name, h] of dir.entries()){
+        const p = path + '/' + name;
+        if (h.kind === 'directory') await walk(h, p);
+        else if (!known.has(p)){ const f = await h.getFile(); S.files.push({ id: uid(), name, path: p, size: f.size, date: ymd(new Date(f.lastModified)), addedAt: f.lastModified, link: '' }); n++; }
+      }
+    }
+    try { await walk(await dirAt('arquivos'), 'arquivos'); } catch(e){}
+    save(); toast(n ? `${n} arquivo(s) incluído(s) no índice.` : 'Nenhum arquivo novo na pasta.');
+  },
+  'li-add': () => { const i = $('#litext'); if (!i.value.trim()) return; curList().items.push({ id: uid(), text: i.value.trim(), done: false, level: 0 }); i.value = ''; save(); setTimeout(() => $('#litext').focus(), 0); },
+  'li-toggle': a => { const items = curList().items, idx = items.findIndex(x => x.id === a.closest('.check').dataset.iid); const it = items[idx]; it.done = !it.done; if (it.done) items.slice(idx + 1, listRange(items, idx)).forEach(x => x.done = true); save(); },
+  'li-del': a => { const items = curList().items, idx = items.findIndex(x => x.id === a.closest('.check').dataset.iid); const end = listRange(items, idx); if (end - idx > 1 && !confirm(`Excluir o item e os seus ${end - idx - 1} subitens?`)) return; items.splice(idx, end - idx); normLevels(items); save(); },
+  'li-sub': a => { const items = curList().items, idx = items.findIndex(x => x.id === a.closest('.check').dataset.iid); const it = items[idx]; if ((it.level || 0) >= MAXSUB) return toast(`O limite é de ${MAXSUB} níveis.`); const n = { id: uid(), text: '', done: false, level: (it.level || 0) + 1 }; items.splice(listRange(items, idx), 0, n); ui.focusItem = n.id; ui.hideDone = false; save(); },
+  'li-hide': () => { ui.hideDone = !ui.hideDone; render(false); },
+  'li-clear': () => { const l = curList(); l.items = l.items.filter(x => !x.done); normLevels(l.items); save(); },
+  'li-todays': () => {
+    const l = curList(), stack = []; let n = 0;
+    l.items.forEach(it => { const lv = it.level || 0; if (it.done){ stack.length = lv; return; } let par = ''; for (let k = lv - 1; k >= 0; k--) if (stack[k]){ par = stack[k]; break; } const e = addEntry({ type: 'task', text: it.text, date: today(), parent: par }); stack[lv] = e.id; stack.length = lv + 1; n++; });
+    if (!n) return toast('Nenhum item em aberto.'); save(); toast(`${n} item(ns) levados para o registro de hoje, com as subtarefas.`);
+  },
+  'ponto-open': () => pontoOpen(),
+  'ponto-done': a => { pontoMark(a.dataset.k); toast('Ponto marcado como feito.'); },
+  'ponto-undo': a => pontoMark(a.dataset.k, false),
+  'ponto-kind': a => { S.ponto.kind = a.dataset.k; save(); },
+  'ponto-ref': a => { S.ponto.ref = a.dataset.k; save(); },
+  'ponto-pick': () => $('#fpick1').click(),
+  'ponto-g': async () => {
+    const items = []; let k = today().slice(0,7);
+    for (let i = 0; i < 12; i++){ const f = firstBusinessDay(k); if (f >= today()) items.push({ title: 'Registrar o ponto', date: f, description: 'Lembrete da Agenda Inicial: 1º dia útil do mês.' }); k = addMonths(k, 1); }
+    if (!confirm(`Criar ${items.length} lembretes de dia inteiro na agenda ${esc(S.google.calName || 'Cagece')} do Google, no 1º dia útil de cada mês?`)) return;
+    try { const d = await gCall({ action: 'bulk', items: JSON.stringify(items) }, 60000); resetG(); toast(`${d.count} lembretes criados no Google.`); render(); } catch(e){ toast('Google Agenda: ' + e.message); }
+  },
+  'g-copy': async () => { try { await navigator.clipboard.writeText(gScript(S.google.token)); toast('Código copiado.'); } catch(e){ toast('Não consegui copiar. Abra "Ver o código" e copie manualmente.'); } },
+  'g-connect': async () => {
+    const u = $('#g-url').value.trim();
+    if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(u)) return toast('Cole a URL do App da Web, terminada em /exec.');
+    S.google.url = u; S.google.enabled = true; save(false);
+    try { const d = await gCall({ action: 'ping' }); G.error = ''; S.google.calId = d.id; resetG(); save(); toast(`Conectado à agenda "${d.calendar}".`); }
+    catch(e){ G.error = e.message; S.google.enabled = false; save(); toast('Não conectou: ' + e.message); }
+  },
+  'g-off': () => { S.google.enabled = false; resetG(); save(); },
+  'logo-pick': () => $('#logopick').click(),
+  'logo-del': () => { S.settings.logo = ''; save(); },
+  'hol-add': () => { const d = $('#hol-date').value, n = $('#hol-name').value.trim(); if (!d) return; S.settings.extraHolidays.push({ date: d, name: n || 'Feriado' }); S.settings.extraHolidays.sort((a,b) => a.date.localeCompare(b.date)); resetHolidayCache(); save(); },
+  'hol-del': a => { S.settings.extraHolidays.splice(+a.dataset.i, 1); resetHolidayCache(); save(); },
+  'export': () => { const b = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `agenda-cagece-${today()}.json`; a.click(); },
+  'import': () => $('#importpick').click(),
+
+  /* entradas */
+  'e-bullet': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (e.type === 'task' || e.type === 'event'){ if (e.status === 'open') completeEntry(e); else if (e.status === 'done') e.status = 'open'; else return; save(); } },
+  'e-done': a => { const e = byId(a.closest('.entry').dataset.id); completeEntry(e); save(); },
+  'e-reopen': a => { const e = byId(a.closest('.entry').dataset.id); e.status = 'open'; save(); },
+  'e-prio': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; e.prio = !e.prio; save(); },
+  'e-cancel': a => { const e = byId(a.closest('.entry').dataset.id); e.status = e.status === 'cancelled' ? 'open' : 'cancelled'; save(); },
+  'e-tomorrow': a => { const e = byId(a.closest('.entry').dataset.id); const d = nextBusiness(e.date || today()); migrateTo(e, d); save(); toast('Migrada para ' + longDate(d).toLowerCase() + '.'); },
+  'e-totoday': a => { const e = byId(a.closest('.entry').dataset.id); migrateTo(e, today()); save(); },
+  'e-sched': (a, ev) => { const e = byId(a.closest('.entry').dataset.id); pickDate(v => { if (!e.date){ e.date = v; e.month = v.slice(0,7); for (const x of [e, ...subtree(e)]){ x.date = v; x.month = e.month; moveFiles(x.id, x.id, v); } if (e.gId) gPush(e, true); } else migrateTo(e, v, true); save(); toast('Agendada para ' + brDate(v) + '.'); }, e.date || today(), ev); },
+  'e-time': a => { const e = byId(a.closest('.entry').dataset.id); const v = prompt('Horário (ex.: 14:30 ou 14:30-15:30). Deixe vazio para remover.', e.time ? e.time + (e.end ? '-' + e.end : '') : ''); if (v === null) return; const m = v.trim().match(/^(\d{1,2})[:h]?(\d{2})?\s*(?:[-–a]\s*(\d{1,2})[:h]?(\d{2})?)?$/); if (!v.trim()){ e.time = ''; e.end = ''; } else if (m){ e.time = `${pad(+m[1])}:${pad(+(m[2] || 0))}`; e.end = m[3] ? `${pad(+m[3])}:${pad(+(m[4] || 0))}` : ''; } else return toast('Horário não reconhecido.'); save(); if (e.gId) gPush(e, true); },
+  'e-gpush': a => { const e = byId(a.closest('.entry').dataset.id); gPush(e); },
+  'e-del': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (deleteEntry(e)) save(); },
+  'e-edit': (a, ev) => {
+    if (ev.target.closest('[data-act="e-time"]')) return ACT['e-time'](a);
+    const li = a.closest('.entry'), e = byId(li.dataset.id); if (!e) return;
+    const t = $('.t', li); if (t.isContentEditable) return;
+    t.contentEditable = 'true'; a.setAttribute('contenteditable', 'false'); t.focus();
+    const r = document.createRange(); r.selectNodeContents(t); r.collapse(false); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    const fin = keep => { t.contentEditable = 'false'; const v = t.textContent.trim(); if (keep && v && v !== e.text){ e.text = v; save(); if (e.gId) gPush(e, true); } else render(false); };
+    t.onkeydown = k => {
+      if (k.key === 'Enter'){ k.preventDefault(); t.onblur = null; fin(true); }
+      if (k.key === 'Escape'){ t.onblur = null; fin(false); }
+      if (k.key === 'Tab'){ k.preventDefault(); t.onblur = null; const v = t.textContent.trim(); if (v) e.text = v; if (!indentEntry(e, k.shiftKey ? -1 : 1)) fin(true); }
+    };
+    t.onblur = () => { if (!ui.rendering) fin(true); };
+  }
+};
+document.addEventListener('click', ev => {
+  if (ev.target.id === 'viewer'){ closeViewer(); return; }
+  const a = ev.target.closest('[data-act]'); if (!a) return;
+  const fn = ACT[a.dataset.act]; if (!fn) return;
+  if (a.tagName === 'A' && a.getAttribute('href') === '#') ev.preventDefault();
+  if (a.tagName === 'INPUT' && a.type === 'checkbox'){ fn(a, ev); return; }
+  fn(a, ev);
+});
+document.addEventListener('keydown', ev => {
+  const t = ev.target;
+  if (!$('#viewer').hidden){
+    if (ev.key === 'Escape'){ ev.preventDefault(); closeViewer(); return; }
+    if (ev.key === 'ArrowLeft' && V.list.length > 1 && t.tagName !== 'INPUT'){ ev.preventDefault(); ACT['v-prev'](); return; }
+    if (ev.key === 'ArrowRight' && V.list.length > 1 && t.tagName !== 'INPUT'){ ev.preventDefault(); ACT['v-next'](); return; }
+    if ((ev.key === '+' || ev.key === '=') && !ev.ctrlKey){ ev.preventDefault(); ACT['v-zin'](); return; }
+    if (ev.key === '-' && !ev.ctrlKey){ ev.preventDefault(); ACT['v-zout'](); return; }
+    return;
+  }
+  if (t.id === 'qtext' && ev.key === 'Enter'){ ev.preventDefault(); quickAdd(); }
+  if (t.id === 'litext' && ev.key === 'Enter'){ ev.preventDefault(); ACT['li-add'](); }
+  if (t.dataset && t.dataset.fadd && ev.key === 'Enter'){
+    ev.preventDefault(); const mk = t.dataset.fadd; const raw = t.value.trim(); if (!raw) return;
+    const day = $(`[data-fday="${mk}"]`).value; const q = parseQuick(raw);
+    const date = day ? `${mk}-${pad(+day)}` : null;
+    addEntry({ type: q.type || (date ? 'event' : 'task'), text: q.text, date, month: mk, time: q.time, prio: q.prio });
+    save(); setTimeout(() => { const n = $(`[data-fadd="${mk}"]`); n && n.focus(); }, 0);
+  }
+  if (t.id === 'subtext'){
+    if (ev.key === 'Escape' || (ev.key === 'Enter' && !t.value.trim())){ ev.preventDefault(); ui.subFor = null; render(false); return; }
+    if (ev.key === 'Enter'){ ev.preventDefault(); const q = parseQuick(t.value); addEntry({ type: 'task', text: q.text, parent: t.dataset.parent, prio: q.prio }); ui.focusSub = true; save(); return; }
+  }
+  if (t.hasAttribute && t.hasAttribute('data-li-edit') && ['Enter','Tab','Backspace'].includes(ev.key)){
+    const items = curList().items, idx = items.findIndex(x => x.id === t.closest('.check').dataset.iid), it = items[idx]; if (!it) return;
+    const v = t.textContent.trim();
+    if (ev.key === 'Enter'){ ev.preventDefault(); if (!v){ t.blur(); return; } it.text = v; const n = { id: uid(), text: '', done: false, level: it.level || 0 }; items.splice(listRange(items, idx), 0, n); ui.focusItem = n.id; save(); }
+    else if (ev.key === 'Tab'){
+      ev.preventDefault(); if (v) it.text = v;
+      const end = listRange(items, idx), block = items.slice(idx, end), lv = it.level || 0;
+      if (ev.shiftKey){ if (!lv) return; block.forEach(x => x.level--); }
+      else { const prev = items[idx - 1]; if (lv >= MAXSUB) return toast(`O limite é de ${MAXSUB} níveis.`); if (!prev) return toast('Não há item acima para servir de principal.'); if (lv > (prev.level || 0)) return toast('Este item já está um nível abaixo do item de cima.'); if (Math.max(...block.map(x => x.level || 0)) + 1 > MAXSUB) return toast(`O limite é de ${MAXSUB} níveis.`); block.forEach(x => x.level = (x.level || 0) + 1); }
+      ui.focusItem = it.id; save();
+    }
+    else if (ev.key === 'Backspace' && !v && listRange(items, idx) === idx + 1){ ev.preventDefault(); const prev = items[idx - 1]; items.splice(idx, 1); if (prev) ui.focusItem = prev.id; save(); }
+  }
+  if (!['INPUT','TEXTAREA','SELECT'].includes(t.tagName) && !t.isContentEditable && !ev.ctrlKey && !ev.metaKey && !ev.altKey){
+    if (ev.key === 'n' && ui.view === 'hoje'){ ev.preventDefault(); $('#qtext').focus(); }
+    if (ev.key === 'ArrowLeft' && ui.view === 'hoje') ACT['day-prev']();
+    if (ev.key === 'ArrowRight' && ui.view === 'hoje') ACT['day-next']();
+    if (ev.key === 't'){ ui.date = today(); go('hoje'); }
+  }
+});
+document.addEventListener('input', ev => {
+  const t = ev.target;
+  if (t.id === 'daynotes'){ autosize(t); (S.days[ui.date] = S.days[ui.date] || {}).notes = t.value; if (!t.value) delete S.days[ui.date]; save(false); }
+  if (t.id === 'lnotes'){ autosize(t); S.lists.find(x => x.id === ui.listId).notes = t.value; save(false); }
+  if (t.id === 'ltitle'){ S.lists.find(x => x.id === ui.listId).title = t.value; save(false); renderSide(); }
+  if (t.dataset && t.dataset.prof){ S.profile[t.dataset.prof] = t.value; save(false); renderSide(); refreshProfilePreview(); }
+  if (t.id === 'fq'){ ui.fq = t.value; const pos = t.selectionStart; render(false); const n = $('#fq'); n.focus(); n.setSelectionRange(pos, pos); }
+  if (t.id === 'win-path'){ S.settings.winPath = t.value.trim(); save(false); }
+  if (t.id === 'g-cal'){ S.google.calName = t.value.trim() || 'Cagece'; save(false); }
+  if (t.id === 'ponto-url'){ S.ponto.url = t.value.trim(); save(false); }
+});
+function refreshProfilePreview(){
+  const P = S.profile, pv = $('#rp-prev'); if (!pv) return;
+  pv.innerHTML = rpHeader('Registro do dia', `${longDate(today())} de ${today().slice(0,4)}`);
+  $('#pf-av').textContent = initials(P.name); $('#pf-name').textContent = P.name || 'Seu nome';
+  $('#pf-line').textContent = [P.cargo, P.setor, P.unidade].filter(Boolean).join(' · ') || 'Complete o perfil abaixo';
+}
+document.addEventListener('focusout', ev => {
+  const t = ev.target;
+  if (ui.rendering) return;
+  if (t.hasAttribute && t.hasAttribute('data-li-edit')){
+    const l = curList(); if (!l) return; const idx = l.items.findIndex(x => x.id === t.closest('.check').dataset.iid); const it = l.items[idx]; if (!it) return;
+    const v = t.textContent.trim();
+    if (!v && listRange(l.items, idx) === idx + 1){ l.items.splice(idx, 1); normLevels(l.items); setTimeout(() => save(), 0); }
+    else if (v !== it.text){ it.text = v; save(false); }
+  }
+});
+document.addEventListener('change', async ev => {
+  const t = ev.target;
+  if (t.id === 'fpick'){ await uploadFiles(t.files, t.dataset.link || '', t.dataset.entry || ''); t.value = ''; }
+  if (t.dataset && t.dataset.fentry !== undefined){ const f = S.files.find(x => x.id === t.closest('tr').dataset.fid); if (f){ f.entry = t.value; if (t.value){ const e = byId(t.value); if (e && e.date) f.link = e.date; } save(); toast(t.value ? 'Anexo vinculado à tarefa.' : 'Vínculo com a tarefa removido.'); } }
+  if (t.id === 'fpick1' && t.files[0]){
+    try { const r = await storeFile(t.files[0], 'arquivos/Ponto'); S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link: '' }); S.ponto.file = { name: r.name, path: r.path }; S.ponto.kind = 'file'; save(); toast('Arquivo do ponto vinculado.'); } catch(e){ if (e.message !== 'sem pasta') toast('Não consegui gravar o arquivo.'); }
+    t.value = '';
+  }
+  if (t.id === 'ponto-from' && t.value){ const f = S.files.find(x => x.id === t.value); S.ponto.file = { name: f.name, path: f.path }; save(); toast('Arquivo do ponto vinculado.'); }
+  if (t.id === 'ponto-copy'){ S.ponto.monthlyCopy = t.checked; save(); }
+  if (t.id === 'g-push'){ S.google.pushDefault = t.checked; save(false); }
+  if (t.id === 'city-hol'){ S.settings.cityHolidays = t.checked; resetHolidayCache(); save(); }
+  if (t.dataset && t.dataset.pdf){ S.profile.pdf[t.dataset.pdf] = t.checked; save(false); refreshProfilePreview(); }
+  if (t.id === 'logopick' && t.files[0]){
+    const f = t.files[0];
+    const data = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
+    S.settings.logo = data; const im = new Image(); im.onload = () => { S.settings.logoWide = im.width / im.height > 1.6; save(); }; im.src = data;
+    if (FS.state === 'granted'){ try { const d = await dirAt('assets'); const fh = await d.getFileHandle('logo-cagece.' + (extOf(f.name) || 'png'), { create: true }); const w = await fh.createWritable(); await w.write(f); await w.close(); } catch(e){} }
+    t.value = '';
+  }
+  if (t.id === 'vpick' && t.files[0]){ const f = t.files[0]; openViewer([{ name: f.name, file: f }], 0); t.value = ''; }
+  if (t.id === 'importpick' && t.files[0]){
+    try { const d = JSON.parse(await t.files[0].text()); if (!d.entries) throw 0; if (!confirm('Substituir os dados atuais pelos do arquivo importado?')) return; S = migrate(d); resetHolidayCache(); save(); toast('Cópia importada.'); } catch(e){ toast('Arquivo inválido.'); }
+    t.value = '';
+  }
+});
+// Arrastar e soltar arquivos
+document.addEventListener('dragover', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d){ ev.preventDefault(); d.classList.add('over'); } });
+document.addEventListener('dragleave', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d) d.classList.remove('over'); });
+document.addEventListener('drop', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d){ ev.preventDefault(); d.classList.remove('over'); uploadFiles(ev.dataTransfer.files); } });
+$('#main').addEventListener('scroll', () => { const tb = $('.topbar'); tb && tb.classList.toggle('scrolled', $('#main').scrollTop > 4); });
+window.addEventListener('storage', ev => { if (ev.key === LS_KEY && ev.newValue){ S = migrate(JSON.parse(ev.newValue)); render(false); } });
+// Virada do dia com a agenda aberta
+setInterval(() => { if (ui._today !== today()){ const was = ui._today; ui._today = today(); if (was && ui.view === 'hoje' && ui.date === was){ ui.date = today(); } render(); } }, 60000);
+
+/* ---------------- Início ---------------- */
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window._bip = e; renderSide(); if (ui.view === 'config') render(false); });
+window.addEventListener('appinstalled', () => { window._bip = null; renderSide(); toast('Agenda Inicial instalada. Ela agora abre como aplicativo, com ícone próprio.', 5000); });
+if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && UP.newer){ reloaded = true; location.reload(); } });
+}
+(async function start(){
+  ui._today = today();
+  { const h = location.hash.slice(1); if (['hoje','cal','futuro','arquivos','ponto','perfil','config'].includes(h)) ui.view = h; }
+  applyTheme();
+  render(false);
+  await initFS();
+  render();
+  if (pontoInfo().pending) document.title = '• Ponto pendente · Agenda Cagece';
+  setTimeout(() => checkUpdate(), 1500);
+  setInterval(() => checkUpdate(), 6 * 3600 * 1000);
+})();
+</script>
+</body>
+</html>
