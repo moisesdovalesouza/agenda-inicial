@@ -459,7 +459,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.9.0';    // versão do programa
+const APP_RELEASE = '1.10.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1659,10 +1659,14 @@ VIEWS.config = () => {
         <dt>Conta</dt><dd>${esc(CLOUD.user.email || '')}</dd>
         <dt>Situação</dt><dd>${cloudLine().replace('<div class="row">', '').replace(/<\/div>$/, '')}</dd>
       </dl>
-      <div style="display:flex;gap:var(--s2);margin-top:var(--s2)"><button class="btn" data-act="cloud-sync">${I.sync}Sincronizar agora</button><button class="btn ghost" data-act="cloud-out">Sair da conta</button></div>
+      <div style="display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap"><button class="btn" data-act="cloud-sync">${I.sync}Sincronizar agora</button>${CLOUD.via === 'ponte' && !CLOUD.sb ? '' : `<button class="btn" data-act="ponte-gerar">Chave para a rede do trabalho</button>`}<button class="btn ghost" data-act="cloud-out">Sair da conta</button></div>
+      ${ui.chaveNova ? `<div style="margin-top:var(--s3)"><p class="muted small" style="margin:0 0 var(--s1)">Já copiada. No computador do trabalho, abra a agenda, vá em Configurações › Conta e nuvem e cole no campo "Chave da rede do trabalho". Envie para você mesmo por e-mail ou WhatsApp; não compartilhe com ninguém.</p><div style="display:flex;gap:var(--s2)"><input class="inp" readonly value="${esc(ui.chaveNova)}" style="flex:1;font-family:var(--mono,monospace);font-size:12px" onfocus="this.select()"><button class="btn" data-act="ponte-copiar">Copiar</button></div></div>` : ''}
+      ${CLOUD.via === 'ponte' ? `<p class="hint">Esta rede bloqueia o servidor da nuvem; a agenda está sincronizando pela ponte do Google.</p>` : ''}
       <p class="hint">Registros, listas, cadernos, anotações, perfil, ponto e ajustes ficam na nuvem e chegam a qualquer aparelho em que você entrar com esta conta. Os arquivos anexados continuam na pasta deste computador; na nuvem vão só os nomes.</p>`
       : `<p class="muted" style="margin:0 0 var(--s2)">Entre com a mesma conta Google do Termo Inicial para ter a agenda em qualquer lugar. Tudo o que já está aqui é enviado na primeira entrada, e a agenda continua funcionando sem internet.</p>
-      <button class="btn primary" data-act="cloud-in">${I.g}Entrar com Google</button>`}
+      <button class="btn primary" data-act="cloud-in">${I.g}Entrar com Google</button>
+      <p class="muted small" style="margin:var(--s4) 0 var(--s2)">Na rede do trabalho o login não abre. Gere a chave em outro computador já conectado (Configurações › Conta e nuvem › Chave para a rede do trabalho) e cole aqui:</p>
+      <div style="display:flex;gap:var(--s2)"><input class="inp" id="ponteIn" placeholder="Chave da rede do trabalho" style="flex:1" autocomplete="off"><button class="btn" data-act="ponte-in">Conectar</button></div>`}
     </div>
 
     <div class="sec"><div class="sec-h"><h2>Pasta de dados</h2></div>
@@ -1726,9 +1730,19 @@ VIEWS.config = () => {
 const SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 const SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';   // chave pública; o acesso é protegido por usuário no banco
 const SYNC_KEY = 'agendaInicial.nuvem';
+const PONTE_URL = 'https://script.google.com/macros/s/AKfycbz9AptPJVY6JVxkSCEjuwkdPwzVzCvTVrcFgxx5gPC9g0OG8q3OduYQ_lyZdtne-80G/exec';   // Google Apps Script que repassa ao Supabase quando a rede bloqueia o supabase.co
+const PONTE_KEY = 'agendaInicial.ponte';
+const ponteChave = () => { try { return localStorage.getItem(PONTE_KEY) || ''; } catch(e){ return ''; } };
+async function ponte(op, extra){
+  const r = await fetch(PONTE_URL, { method: 'POST', body: JSON.stringify(Object.assign({ op, chave: ponteChave() }, extra)) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.erro || 'falha na ponte');
+  return j.dados;
+}
+const netError = e => e && (e.name === 'TypeError' || /fetch|network|Load failed|conex/i.test(e.message || ''));
 const DEVICE_SETTINGS = ['openerOn', 'openerFiles', 'winPath', 'basePath', 'notesSeen'];
 const DEVICE_FIELDS = new Set(['fileTime', 'renamedFrom']);
-const CLOUD = { sb: null, user: null, state: 'off', last: 0, error: '', timer: null, busy: false, again: false };
+const CLOUD = { sb: null, user: null, via: 'direto', state: 'off', last: 0, error: '', timer: null, busy: false, again: false };
 let SYNC = (() => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch(e){ return {}; } })();
 SYNC.sent = SYNC.sent || {}; SYNC.pulled = SYNC.pulled || '1970-01-01T00:00:00Z';
 const saveSync = () => { try { localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); } catch(e){} };
@@ -1772,8 +1786,35 @@ async function cloudLogin(){
 }
 async function cloudLogout(){
   if (!confirm('Sair da conta nesta agenda? Os dados continuam neste computador e na nuvem; só a sincronização para.')) return;
-  try { await (await cloudClient()).auth.signOut(); } catch(e){}
-  CLOUD.user = null; CLOUD.state = 'off'; SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; saveSync(); render();
+  if (CLOUD.via !== 'ponte'){ try { await (await cloudClient()).auth.signOut(); } catch(e){} }
+  try { localStorage.removeItem(PONTE_KEY); } catch(e){}
+  CLOUD.user = null; CLOUD.via = 'direto'; ui.chaveNova = ''; CLOUD.state = 'off'; SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; saveSync(); render();
+}
+async function ponteConectar(chave){
+  chave = (chave || '').trim();
+  if (chave.length < 40) return toast('Cole a chave inteira, como veio do outro computador.');
+  try { localStorage.setItem(PONTE_KEY, chave); } catch(e){}
+  try {
+    const d = await ponte('ler', { desde: new Date().toISOString(), limite: 1 });
+    if (SYNC.user && SYNC.user !== d.usuario) SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' };
+    SYNC.user = d.usuario; saveSync();
+    CLOUD.via = 'ponte'; CLOUD.user = { id: d.usuario, email: 'conectada pela ponte do Google' };
+    toast('Conectado. Sincronizando…'); render(); cloudSync(true);
+  } catch(e){
+    try { localStorage.removeItem(PONTE_KEY); } catch(_){}
+    toast(netError(e) ? 'A ponte do Google também não respondeu nesta rede.' : 'Chave não aceita: ' + e.message, 7000);
+  }
+}
+async function ponteGerar(){
+  try {
+    const b = crypto.getRandomValues(new Uint8Array(36));
+    const chave = 'AI-' + btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const { error } = await (await cloudClient()).rpc('agendainicial_definir_chave', { p_chave: chave });
+    if (error) throw error;
+    try { localStorage.setItem(PONTE_KEY, chave); } catch(e){}
+    ui.chaveNova = chave; render(false);
+    try { await navigator.clipboard.writeText(chave); toast('Chave copiada. Cole no computador do trabalho.'); } catch(e){}
+  } catch(e){ toast('Não consegui gerar a chave: ' + e.message, 6000); }
 }
 function cloudSchedule(delay = 2500){ if (!CLOUD.user) return; clearTimeout(CLOUD.timer); CLOUD.timer = setTimeout(() => cloudSync(), delay); }
 function applyRow(r){
@@ -1808,12 +1849,22 @@ async function cloudSync(full){
   if (CLOUD.busy){ CLOUD.again = true; return; }
   CLOUD.busy = true; CLOUD.state = 'sync'; renderSide();
   try {
-    const sb = await cloudClient();
+    const viaPonte = CLOUD.via === 'ponte';
+    const sb = viaPonte ? null : await cloudClient();
+    const ler = async from => {
+      if (viaPonte){ const d = await ponte('ler', { desde: from, limite: 500 }); return d.itens || []; }
+      const { data, error } = await sb.from('agendainicial_itens').select('tipo,id,dados,excluido,alterado_em,atualizado').gt('atualizado', from).order('atualizado', { ascending: true }).limit(500);
+      if (error) throw error; return data;
+    };
+    const gravar = async rows => {
+      if (viaPonte) return ponte('gravar', { itens: rows });
+      const { error } = await sb.from('agendainicial_itens').upsert(rows, { onConflict: 'usuario,tipo,id' });
+      if (error) throw error;
+    };
     // 1. buscar o que mudou em outros aparelhos
     let changed = false, from = full && !SYNC.done ? '1970-01-01T00:00:00Z' : SYNC.pulled;
     for (;;){
-      const { data, error } = await sb.from('agendainicial_itens').select('tipo,id,dados,excluido,alterado_em,atualizado').gt('atualizado', from).order('atualizado', { ascending: true }).limit(500);
-      if (error) throw error;
+      const data = await ler(from);
       const items = cloudItems();
       for (const r of data){
         const key = r.tipo + ':' + r.id, local = items.get(key);
@@ -1837,15 +1888,15 @@ async function cloudSync(full){
     for (const key of Object.keys(SYNC.sent)) if (!items.has(key) && SYNC.sent[key] !== '×'){ const [tipo, ...rest] = key.split(':'); up.push({ tipo, id: rest.join(':'), dados: {}, excluido: true, alterado_em: now, _h: '×', _k: key }); }
     for (let i = 0; i < up.length; i += 200){
       const chunk = up.slice(i, i + 200);
-      const { error } = await sb.from('agendainicial_itens').upsert(chunk.map(({ _h, _k, ...row }) => row), { onConflict: 'usuario,tipo,id' });
-      if (error) throw error;
+      await gravar(chunk.map(({ _h, _k, ...row }) => row));
       for (const r of chunk) SYNC.sent[r._k] = r._h;
     }
     SYNC.done = true; saveSync();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
     if (changed && !(ui.view === 'caderno' && NB.dirty)) render(false);
   } catch(e){
-    CLOUD.state = 'erro'; CLOUD.error = e.message || String(e);
+    if (CLOUD.via === 'direto' && netError(e) && ponteChave()){ CLOUD.via = 'ponte'; CLOUD.busy = false; return cloudSync(full); }
+    CLOUD.state = 'erro'; CLOUD.error = netError(e) ? 'sem conexão com o servidor' : (e.message || String(e));
     console.warn('Sincronização', e);
   } finally {
     CLOUD.busy = false; renderSide();
@@ -2398,6 +2449,9 @@ const ACT = {
   'f-folder': a => localAction('pasta', a.dataset.p),
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'cloud-in': () => cloudLogin(),
+  'ponte-in': () => ponteConectar((document.getElementById('ponteIn') || {}).value),
+  'ponte-gerar': () => ponteGerar(),
+  'ponte-copiar': () => { navigator.clipboard.writeText(ui.chaveNova).then(() => toast('Chave copiada.')); },
   'cloud-out': () => cloudLogout(),
   'cloud-sync': () => { cloudSync(); toast('Sincronizando…'); },
   'm-close': () => { closeModal(); ui.pick = null; ui.pickFor = null; },
@@ -2697,7 +2751,8 @@ if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
   if (pontoInfo().pending) document.title = '• Ponto pendente · Agenda Inicial';
   setTimeout(() => checkUpdate(), 1500);
   setInterval(() => checkUpdate(), 6 * 3600 * 1000);
-  if (/^https?:$/.test(location.protocol) && (localStorage.getItem('agendaInicial.sessao') || /[?&]code=/.test(location.search))){
+  if (ponteChave() && !localStorage.getItem('agendaInicial.sessao') && SYNC.user){ CLOUD.via = 'ponte'; CLOUD.user = { id: SYNC.user, email: 'conectada pela ponte do Google' }; cloudSync(); }
+  else if (/^https?:$/.test(location.protocol) && (localStorage.getItem('agendaInicial.sessao') || /[?&]code=/.test(location.search))){
     try { const sb = await cloudClient(); const { data } = await sb.auth.getSession(); if (data && data.session && !CLOUD.user){ CLOUD.user = data.session.user; SYNC.user = CLOUD.user.id; saveSync(); cloudSync(true); } } catch(e){ console.warn(e); }
   }
 })();

@@ -1,10 +1,10 @@
 {
- "version": "1.9.0",
+ "version": "1.10.0",
  "date": "2026-11-24",
  "notes": [
+  "Funciona na rede do trabalho: gere a chave em Configurações › Conta e nuvem num computador já conectado e cole no computador do trabalho; a agenda sincroniza pela ponte do Google quando o servidor da nuvem está bloqueado",
   "Agenda em qualquer lugar: entre com a conta Google em Configurações › Conta e nuvem e seus registros, listas, cadernos e ajustes sincronizam com outros aparelhos (os arquivos anexados continuam no computador)",
   "Recolher e expandir os itens dentro de qualquer registro (setinha na margem) e nas listas; botão para recolher tudo",
-  "Arquivos e cadernos: mostrar na pasta e compartilhar (copiar o arquivo para colar no WhatsApp/Teams/e-mail, enviar por e-mail no Outlook, ou pelo compartilhamento do Windows)",
-  "Qualquer registro aceita itens dentro: tarefa, evento, nota ou prioridade (até 3 níveis)"
+  "Arquivos e cadernos: mostrar na pasta e compartilhar (copiar o arquivo para colar no WhatsApp/Teams/e-mail, enviar por e-mail no Outlook, ou pelo compartilhamento do Windows)"
  ]
 }
