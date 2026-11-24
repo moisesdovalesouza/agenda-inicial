@@ -18,7 +18,7 @@
   --border:#e6e2d8; --hover:#efece4; --accent:#a87d1e; --accent-strong:#87630f; --accent-bg:#f6eed8; --on-accent:#ffffff;
   --danger:#a9432f; --ok:#4f7a4b; --shadow:0 1px 2px rgba(40,35,25,.06),0 6px 18px rgba(40,35,25,.07);
   --r:4px; --s1:4px; --s2:8px; --s3:16px; --s4:24px; --s5:32px; --s6:48px; --s7:64px;
-  --page-x:96px; --content:720px; --row:28px; --side-w:240px; --edge:16px;
+  --page-x:clamp(24px, 5vw, 80px); --content:960px; --row:28px; --side-w:240px; --edge:16px;
   --fs:14px; --fs-s:12px; --fs-h1:30px; --fs-h2:16px;
   --font:"Segoe UI Variable Text","Segoe UI",-apple-system,ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;
   --mono:"Cascadia Mono",Consolas,ui-monospace,monospace;
@@ -77,7 +77,7 @@ a{color:inherit}
 .crumbs b{color:var(--text);font-weight:500}
 .tools{display:flex;gap:var(--s1);align-items:center}
 .page{max-width:calc(var(--content) + 2 * var(--page-x));margin:0 auto;padding:var(--s5) var(--page-x) 120px}
-.page.wide{max-width:none}
+.page.wide{}
 h1.title{font-family:var(--serif);font-size:40px;line-height:1.2;font-weight:600;margin:0;letter-spacing:-.015em}
 .kicker{margin:var(--s4) 0 var(--s2);font-size:11px;line-height:16px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .sub{color:var(--muted);font-size:14px;line-height:22px;margin:var(--s3) 0 var(--s5)}
@@ -195,7 +195,7 @@ label.chk input{accent-color:var(--accent)}
 .fadd{display:grid;grid-template-columns:72px 1fr;gap:var(--s1);margin-top:var(--s2)}
 
 /* ---------- Tables ---------- */
-table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
 table.t th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;border-bottom:1px solid var(--border);padding:6px var(--s2);height:var(--row)}
 table.t td{border-bottom:1px solid var(--border);padding:6px var(--s2);vertical-align:middle;height:40px}
 table.t th:first-child,table.t td:first-child{padding-left:0}
@@ -203,7 +203,25 @@ table.t th:last-child,table.t td:last-child{padding-right:0}
 table.t tr:hover td{background:var(--bg2)}
 table.t td.num{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
 table.t td.acts{text-align:right;white-space:nowrap}
-.fname{display:flex;align-items:center;gap:var(--s2)}
+.fname{display:flex;align-items:center;gap:var(--s2);min-width:0}
+.fname a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.t td{overflow:hidden}
+table.t .acts .btn.icon{width:26px;height:26px}
+.ftags{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.ftag{display:inline-flex;align-items:center;gap:4px;max-width:100%;height:22px;padding:0 2px 0 6px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);font-size:12px;line-height:20px;cursor:pointer}
+.ftag:hover{border-color:var(--accent)}
+.ftag .b{font-family:var(--mono);color:var(--muted)}
+.ftag .tx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.ftag button{border:0;background:transparent;color:var(--faint);cursor:pointer;width:18px;height:18px;display:grid;place-items:center;border-radius:2px;padding:0}
+.ftag button:hover{color:var(--danger);background:var(--hover)}
+.ftag.day{cursor:default;color:var(--muted)}
+.addlink{width:22px!important;height:22px!important;padding:0!important;justify-content:center}
+.picklist{max-height:50vh;overflow:auto;border:1px solid var(--border);border-radius:var(--r);padding:var(--s1) 0;margin:0 0 var(--s3)}
+.pick{display:grid;grid-template-columns:20px 18px 1fr;gap:var(--s1);align-items:center;min-height:var(--row);padding:0 var(--s2) 0 calc(var(--s2) + var(--d,0) * 20px);cursor:pointer}
+.pick:hover{background:var(--hover)}
+.pick input{accent-color:var(--accent);margin:0}
+.pick .b{font-family:var(--mono);color:var(--muted);text-align:center}
+.pickhead{display:flex;align-items:center;gap:var(--s2);margin:0 0 var(--s2);color:var(--muted);font-size:13px}
 .ext{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;width:38px;text-align:center;border:1px solid var(--border);border-radius:var(--r);color:var(--muted);line-height:18px;flex:none}
 
 /* ---------- Dropzone ---------- */
@@ -352,7 +370,8 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .rp .vazio{color:#888;font-style:italic}
 @page{size:A4;margin:16mm 15mm 18mm;@bottom-right{content:"Página " counter(page) " de " counter(pages);font-size:8pt;color:#777}}
 @media print{body.printing .app,body.printing .toast,body.printing #dp{display:none!important}body.printing #print{display:block}body.printing{background:#fff;color:#111}body.printing,body.printing html{height:auto}}
-@media (max-width:1100px){:root{--page-x:48px}}
+@media (max-width:1180px){table.t .c-size,table.t .c-date{display:none}}
+@media (max-width:1024px){.cal .cell{min-height:88px}.fgrid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.page{padding:var(--s4) var(--s3)}.fgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}}
 @media print{.side,.topbar,.qlog,.hint,.acts{display:none!important}.app{display:block}.page{padding:0}}
 </style>
@@ -382,7 +401,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.5.3';    // versão do programa
+const APP_RELEASE = '1.6.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -447,6 +466,12 @@ const I = {
   zin:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 4v8M4 8h8"/></svg>',
   zout:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 8h8"/></svg>',
   dl:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"/></svg>',
+  word:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M4.9 5.6l1.1 4.8 2-3.6 2 3.6 1.1-4.8"/></svg>',
+  excel:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M5.7 5.7l4.6 4.6M10.3 5.7l-4.6 4.6"/></svg>',
+  powerpoint:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M6.3 10.8V5.3h2.2a1.7 1.7 0 0 1 0 3.4H6.3"/></svg>',
+  computer:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="8" rx="1"/><path d="M6 13.5h4M8 11v2.5"/></svg>',
+  link:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 3.5v9M3.5 8h9"/></svg>',
+  eyeoff:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 13.5l11-11"/></svg>',
   print:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 6V2.5h7V6M4.5 11.5h-2V6h11v5.5h-2M4.5 9.5h7v4h-7z"/></svg>'
 };
 
@@ -479,6 +504,7 @@ function migrate(s){
   if (!s.ponto.done) s.ponto.done = {};
   s.profile.pdf = Object.assign({}, d.profile.pdf, s.profile.pdf || {});
   for (const l of s.lists) for (const it of l.items) if (it.level === undefined) it.level = 0;
+  for (const f of s.files || []){ if (!Array.isArray(f.entries)) f.entries = f.entry ? [f.entry] : []; delete f.entry; }
   if (!Array.isArray(s.settings.extraHolidays)) s.settings.extraHolidays = [];
   return s;
 }
@@ -647,7 +673,7 @@ async function uploadFiles(fileList, link = '', entry = ''){
   for (const f of files){
     try {
       const r = await storeFile(f, `arquivos/${today().slice(0,7)}`);
-      S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entry });
+      S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entries: entry ? [entry] : [] });
       ok++;
     } catch(e){ if (e.message !== 'sem pasta') toast('Falha ao gravar ' + f.name); break; }
   }
@@ -666,9 +692,10 @@ function officeUri(p){
   return `ms-${app}:ofe|u|${baseHref()}${relHref(p)}`;
 }
 /* Botão "Abrir no Word/Excel/PowerPoint": abre o arquivo onde ele está, sem baixar. */
-function officeBtn(p, cls = 'btn ghost'){
-  const app = officeApp(p);
-  return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}" title="Abre o arquivo direto da pasta, no programa do computador, sem baixar">${app ? 'Abrir no ' + OFFICE_NAME[app] : 'Abrir no computador'}</button>`;
+function officeBtn(p, cls = 'btn icon ghost'){
+  const app = officeApp(p), name = app ? OFFICE_NAME[app] : 'programa do computador';
+  if (cls.includes('primary')) return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}">${I[app || 'computer']}Abrir no ${name}</button>`;
+  return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}" title="Abrir no ${name}, direto da pasta, sem baixar">${I[app || 'computer']}</button>`;
 }
 /* Abrir no computador: atalho "agendainicial://" registrado no Windows uma única vez
    pelo arquivo sistema\Ativar abrir arquivos.cmd, que a própria agenda grava na pasta.
@@ -934,8 +961,9 @@ const entriesOn = s => sortEntries(S.entries.filter(e => e.date === s && !e.pare
 
 /* Subtarefas: até MAXSUB níveis abaixo da tarefa principal */
 const MAXSUB = 3;
-const filesOf = id => S.files.filter(f => f.entry === id);
-function moveFiles(fromId, toId, date){ for (const f of filesOf(fromId)){ f.entry = toId; if (date) f.link = date; } }
+const filesOf = id => S.files.filter(f => (f.entries || []).includes(id));
+function moveFiles(fromId, toId, date){ for (const f of filesOf(fromId)){ f.entries = f.entries.map(x => x === fromId ? toId : x); if (date) f.link = date; } }
+const dayFiles = d => S.files.filter(f => f.link === d || (f.entries || []).some(id => { const e = byId(id); return e && e.date === d; }));
 const kids = id => S.entries.filter(e => e.parent === id).sort((a,b) => a.createdAt - b.createdAt);
 function depthOf(e){ let d = 0, p = e; while (p && p.parent){ p = byId(p.parent); d++; } return d; }
 function subtree(e){ const out = []; (function w(x){ for (const k of kids(x.id)){ out.push(k); w(k); } })(e); return out; }
@@ -964,7 +992,7 @@ function deleteEntry(e){
   if (e.gId && confirm(`Excluir também do Google Agenda (${S.google.calName || 'Cagece'})?`)) gDelete(e.gId);
   const ids = new Set([e.id, ...st.map(x => x.id)]);
   S.entries = S.entries.filter(x => !ids.has(x.id));
-  for (const f of S.files) if (ids.has(f.entry)) f.entry = '';
+  for (const f of S.files) f.entries = (f.entries || []).filter(x => !ids.has(x));
   return true;
 }
 function migrateTo(e, date, asSchedule){
@@ -1107,7 +1135,7 @@ VIEWS.hoje = () => {
   const p = pontoInfo();
   const list = entriesOn(d), gl = gEvents(d);
   const pend = isToday ? sortEntries(S.entries.filter(e => e.date && e.date < d && !e.parent && e.type === 'task' && e.status === 'open')) : [];
-  const files = S.files.filter(f => f.link === d);
+  const files = dayFiles(d);
   const notes = (S.days[d] && S.days[d].notes) || '';
   const isFbd = d === firstBusinessDay(d.slice(0,7));
   let upcoming = '';
@@ -1165,7 +1193,7 @@ VIEWS.hoje = () => {
     </div>
 
     <div class="sec">
-      <div class="sec-h"><h2>Anexos do dia</h2><div class="tools"><button class="btn ghost" data-act="attach-day">${I.clip}Anexar arquivo</button></div></div>
+      <div class="sec-h"><h2>Anexos do dia</h2><div class="tools"><button class="btn icon ghost" data-act="attach-day" title="Anexar arquivo ao dia">${I.clip}</button></div></div>
       ${files.length ? fileTable(files, true) : '<div class="empty">Nenhum arquivo vinculado a este dia. Para anexar direto numa tarefa, use o botão de clipe dela. Os arquivos ficam na pasta <i>arquivos</i> do sistema.</div>'}
     </div>
     ${upcoming}
@@ -1195,7 +1223,7 @@ VIEWS.cal = () => {
       <button class="btn icon ghost" data-act="m-prev" title="Mês anterior">${I.left}</button>
       <button class="btn ghost" data-act="m-today">Hoje</button>
       <button class="btn icon ghost" data-act="m-next" title="Próximo mês">${I.right}</button>
-      <button class="btn ghost" data-act="pdf-month" title="Exportar a agenda do mês em PDF">${I.pdf}PDF do mês</button>
+      <button class="btn ghost" data-act="pdf-month" title="Exportar a agenda do mês em PDF">${I.pdf}PDF</button>
       ${gOn() ? `<button class="btn icon ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}</button>` : ''}`) + `
   <div class="page wide">
     <div class="kicker">Calendário mensal</div>
@@ -1248,7 +1276,7 @@ VIEWS.lista = () => {
     const pr = sub.length ? `<span class="tag ${sub.every(x => x.done) ? '' : 'acc'}" title="Subitens concluídos">${sub.filter(x => x.done).length}/${sub.length}</span>` : '';
     return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}"><input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span><span class="meta">${pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
   }).join('');
-  return topbar(esc(l.title || 'Lista'), `<button class="btn ghost" data-act="li-hide">${ui.hideDone ? 'Mostrar concluídos' : 'Ocultar concluídos'}</button><button class="btn ghost" data-act="li-todays" title="Copiar os itens em aberto, com a hierarquia, para o registro de hoje">${I.migrate}Levar para hoje</button><button class="btn ghost" data-act="pdf-list">${I.pdf}PDF</button><button class="btn icon ghost danger" data-act="list-del" title="Excluir lista">${I.trash}</button>`) + `
+  return topbar(esc(l.title || 'Lista'), `<button class="btn icon ghost" data-act="li-hide" title="${ui.hideDone ? 'Mostrar concluídos' : 'Ocultar concluídos'}">${ui.hideDone ? I.eye : I.eyeoff}</button><button class="btn icon ghost" data-act="li-todays" title="Levar os itens em aberto, com a hierarquia, para o registro de hoje">${I.migrate}</button><button class="btn ghost" data-act="pdf-list" title="Exportar a lista em PDF">${I.pdf}PDF</button><button class="btn icon ghost danger" data-act="list-del" title="Excluir lista">${I.trash}</button>`) + `
   <div class="page">
     <div class="kicker">Lista</div>
     <input class="title-edit" id="ltitle" value="${esc(l.title)}" placeholder="Sem título">
@@ -1381,23 +1409,36 @@ function exportList(l){
   doPrint(rpHeader(l.title || 'Lista', `${l.items.length - done} em aberto · ${done} concluído${done === 1 ? '' : 's'}`) + `<h2>Itens</h2>${items ? `<ul>${items}</ul>` : '<p class="vazio">Lista vazia.</p>'}` + (l.notes ? `<h2>Notas</h2><div class="notes">${esc(l.notes)}</div>` : '') + rpFoot(), `${l.title || 'Lista'}${fileBase()}`);
 }
 
-function taskSelect(f){
-  const opts = [];
-  (function walk(list, d){ for (const e of list){ if (e.type !== 'note' && !['migrated','scheduled'].includes(e.status)) opts.push(`<option value="${e.id}" ${f.entry === e.id ? 'selected' : ''}>${' '.repeat(d)}${d ? '↳ ' : ''}${esc(e.text.length > 48 ? e.text.slice(0, 47) + '…' : e.text)}</option>`); walk(kids(e.id), d + 1); } })(entriesOn(f.link || ui.date), 0);
-  return `<select class="inp mini" data-fentry title="Vincular este anexo a uma tarefa do dia"><option value="">— nenhuma —</option>${opts.join('')}</select>`;
+function linkTags(f){
+  const tags = (f.entries || []).map(id => byId(id)).filter(Boolean).map(e => `<span class="ftag" data-act="fl-go" data-e="${e.id}" title="${esc(e.text)} · ${e.date ? brDate(e.date) : ''}"><span class="b">${bulletOf(e)}</span><span class="tx">${esc(e.text)}</span><button data-act="fl-del" data-e="${e.id}" title="Desvincular">${I.x}</button></span>`);
+  if (!tags.length && f.link) tags.push(`<span class="ftag day" title="Anexo do dia">${I.today ? '' : ''}dia ${shortDate(f.link)}</span>`);
+  return `<div class="ftags">${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button></div>`;
 }
 function fileTable(files, compact){
-  return `<table class="t"><thead><tr><th>Nome</th>${compact ? '<th>Tarefa</th>' : '<th>Dia vinculado</th>'}<th>Enviado</th><th>Tamanho</th><th></th></tr></thead><tbody>${files.map(f => {
-    return `<tr data-fid="${f.id}"><td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
-      ${compact ? `<td>${taskSelect(f)}</td>` : `<td class="num">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${brDate(f.link)}</a>` : '—'}</td>`}
-      <td class="num">${brDate(f.date)}</td><td class="num">${fmtSize(f.size || 0)}</td>
-      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar">${I.eye}</button>${officeBtn(f.path)}<button class="btn icon ghost" data-act="f-link" title="Vincular a um dia">${I.sched}</button><button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`;
-  }).join('')}</tbody></table>`;
+  const cols = compact ? '<col><col style="width:38%"><col class="c-size" style="width:72px"><col style="width:96px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:124px">';
+  return `<table class="t"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${files.map(f => `<tr data-fid="${f.id}">
+      <td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
+      <td>${linkTags(f)}</td>
+      ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
+      <td class="num c-size">${fmtSize(f.size || 0)}</td>
+      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
+}
+function linkPicker(fid, date){
+  const f = S.files.find(x => x.id === fid); if (!f) return;
+  if (!ui.pick || ui.pickFor !== fid){ ui.pick = new Set(f.entries || []); ui.pickFor = fid; }
+  date = date || f.link || today();
+  const rows = [];
+  (function walk(list, d){ for (const e of list){ if (!['migrated','scheduled'].includes(e.status)) rows.push(`<label class="pick" style="--d:${d}"><input type="checkbox" data-pick="${e.id}" ${ui.pick.has(e.id) ? 'checked' : ''}><span class="b">${bulletOf(e)}</span><span>${e.time ? `<span class="time">${e.time}</span> ` : ''}${esc(e.text)}</span></label>`); walk(kids(e.id), d + 1); } })(entriesOn(date), 0);
+  modal(`<h3>Vincular a registros</h3>
+    <p>${esc(f.name)}</p>
+    <div class="pickhead">Registros de <input class="inp" type="date" id="pk-date" data-fid="${fid}" value="${date}"><span>${ui.pick.size} selecionado(s)</span></div>
+    <div class="picklist">${rows.join('') || '<div class="empty" style="padding:var(--s2) var(--s3)">Nenhum registro neste dia.</div>'}</div>
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="fl-save" data-fid="${fid}">Salvar vínculos</button></div>`);
 }
 VIEWS.arquivos = () => {
   const q = (ui.fq || '').toLowerCase();
   const files = S.files.filter(f => !q || f.name.toLowerCase().includes(q)).sort((a,b) => b.addedAt - a.addedAt);
-  return topbar('Arquivos', `<button class="btn ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}Visualizar do computador</button><button class="btn ghost" data-act="f-scan" title="Incluir no índice arquivos copiados manualmente para a pasta arquivos">${I.sync}Reindexar pasta</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
+  return topbar('Arquivos', `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca</div>
     <h1 class="title">Arquivos</h1>
@@ -1776,7 +1817,11 @@ const ACT = {
   'v-local': () => $('#vpick').click(),
   'v-close': () => { if (V.only) window.close(); else closeViewer(); },
   'o-open': a => officeOpen(a.dataset.p),
-  'm-close': () => closeModal(),
+  'm-close': () => { closeModal(); ui.pick = null; ui.pickFor = null; },
+  'fl-add': a => { ui.pick = null; linkPicker(a.closest('tr').dataset.fid); },
+  'fl-save': a => { const f = S.files.find(x => x.id === a.dataset.fid); f.entries = [...ui.pick]; const first = byId(f.entries[0]); if (first && first.date && !f.link) f.link = first.date; ui.pick = null; closeModal(); save(); toast(f.entries.length ? `Anexo vinculado a ${f.entries.length} registro(s).` : 'Vínculos removidos.'); },
+  'fl-del': (a, ev) => { ev.stopPropagation(); const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); f.entries = f.entries.filter(x => x !== a.dataset.e); save(); },
+  'fl-go': a => { const e = byId(a.dataset.e); if (e && e.date){ ui.date = e.date; ui.keepDate = true; go('hoje'); } },
   'm-on': a => { S.settings.openerOn = true; save(false); closeModal(); location.href = localUri(a.dataset.p); },
   'm-win': a => { closeModal(); openWindow(S.files.find(f => f.path === a.dataset.p) || { name: a.dataset.p.split('/').pop(), path: a.dataset.p }); },
   'opener-off': () => { S.settings.openerOn = false; save(); toast('Na próxima vez, a agenda mostra de novo as instruções de ativação.'); },
@@ -1824,7 +1869,7 @@ const ACT = {
       for await (const [name, h] of dir.entries()){
         const p = path + '/' + name;
         if (h.kind === 'directory') await walk(h, p);
-        else if (!known.has(p)){ const f = await h.getFile(); S.files.push({ id: uid(), name, path: p, size: f.size, date: ymd(new Date(f.lastModified)), addedAt: f.lastModified, link: '' }); n++; }
+        else if (!known.has(p)){ const f = await h.getFile(); S.files.push({ id: uid(), name, path: p, size: f.size, date: ymd(new Date(f.lastModified)), addedAt: f.lastModified, link: '', entries: [] }); n++; }
       }
     }
     try { await walk(await dirAt('arquivos'), 'arquivos'); } catch(e){}
@@ -1898,6 +1943,7 @@ const ACT = {
 };
 document.addEventListener('click', ev => {
   if (ev.target.id === 'viewer'){ closeViewer(); return; }
+  if (ev.target.id === 'modal'){ closeModal(); ui.pick = null; return; }
   const a = ev.target.closest('[data-act]'); if (!a) return;
   const fn = ACT[a.dataset.act]; if (!fn) return;
   if (a.tagName === 'A' && a.getAttribute('href') === '#') ev.preventDefault();
@@ -1977,9 +2023,10 @@ document.addEventListener('focusout', ev => {
 document.addEventListener('change', async ev => {
   const t = ev.target;
   if (t.id === 'fpick'){ await uploadFiles(t.files, t.dataset.link || '', t.dataset.entry || ''); t.value = ''; }
-  if (t.dataset && t.dataset.fentry !== undefined){ const f = S.files.find(x => x.id === t.closest('tr').dataset.fid); if (f){ f.entry = t.value; if (t.value){ const e = byId(t.value); if (e && e.date) f.link = e.date; } save(); toast(t.value ? 'Anexo vinculado à tarefa.' : 'Vínculo com a tarefa removido.'); } }
+  if (t.id === 'pk-date'){ linkPicker(t.dataset.fid, t.value); }
+  if (t.dataset && t.dataset.pick){ if (t.checked) ui.pick.add(t.dataset.pick); else ui.pick.delete(t.dataset.pick); const h = $('.pickhead span'); if (h) h.textContent = ui.pick.size + ' selecionado(s)'; }
   if (t.id === 'fpick1' && t.files[0]){
-    try { const r = await storeFile(t.files[0], 'arquivos/Ponto'); S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link: '' }); S.ponto.file = { name: r.name, path: r.path }; S.ponto.kind = 'file'; save(); toast('Arquivo do ponto vinculado.'); } catch(e){ if (e.message !== 'sem pasta') toast('Não consegui gravar o arquivo.'); }
+    try { const r = await storeFile(t.files[0], 'arquivos/Ponto'); S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link: '', entries: [] }); S.ponto.file = { name: r.name, path: r.path }; S.ponto.kind = 'file'; save(); toast('Arquivo do ponto vinculado.'); } catch(e){ if (e.message !== 'sem pasta') toast('Não consegui gravar o arquivo.'); }
     t.value = '';
   }
   if (t.id === 'ponto-from' && t.value){ const f = S.files.find(x => x.id === t.value); S.ponto.file = { name: f.name, path: f.path }; save(); toast('Arquivo do ponto vinculado.'); }
