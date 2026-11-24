@@ -112,7 +112,7 @@ label.chk input{accent-color:var(--accent)}
 
 /* ---------- Banner ---------- */
 .banner{display:grid;grid-template-columns:1fr auto;gap:var(--s3);align-items:center;border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--accent-bg);padding:12px var(--s3);border-radius:var(--r);margin:0 0 var(--s3)}
-.banner b{display:block}
+.banner>div>b:first-child{display:block;margin-bottom:2px}
 .banner .muted{font-size:13px}
 .banner .tools{flex-wrap:wrap;justify-content:flex-end}
 .banner.info{border-left-color:var(--muted);background:var(--bg2)}
@@ -300,8 +300,8 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 /* ---------- Subtarefas ---------- */
 .entry{padding-left:calc(var(--d,0) * 24px)}
 .entry.child::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--d) * 24px - 12px);border-left:1px solid var(--border)}
-.subadd{display:grid;grid-template-columns:18px 20px 1fr;gap:2px var(--s1);align-items:center;padding:3px 0 3px calc(var(--d,1) * 24px)}
-.subadd .bul{font-family:var(--mono);color:var(--faint);text-align:center}
+.subadd{display:grid;grid-template-columns:18px auto 1fr;gap:2px var(--s2);align-items:center;padding:2px 0 2px calc(var(--d,1) * 24px)}
+.subadd .typebtns button{width:24px;height:24px;font-size:14px}
 .subadd .inp{height:26px}
 
 /* ---------- Perfil ---------- */
@@ -371,7 +371,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.5.0';    // versão do programa
+const APP_RELEASE = '1.5.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -874,7 +874,10 @@ function progressOf(e){
 function renderTree(e, opt = {}, depth = 0){
   let h = entryRow(e, Object.assign({}, opt, { depth }));
   for (const k of kids(e.id)) h += renderTree(k, {}, depth + 1);
-  if (ui.subFor === e.id) h += `<li class="subadd" style="--d:${depth + 1}"><span></span><span class="bul">•</span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="Subtarefa de nível ${depth + 1} · Enter adiciona · Esc encerra" autocomplete="off"></li>`;
+  if (ui.subFor === e.id){
+    const t = ui.subType || 'task', nm = { task: 'Subtarefa', event: 'Evento', note: 'Nota' }[t];
+    h += `<li class="subadd" style="--d:${depth + 1}"><span></span><span class="typebtns">${[['task','•','Subtarefa'],['event','○','Evento (não conta para concluir a tarefa)'],['note','–','Nota (não conta para concluir a tarefa)']].map(([k, sy, tt]) => `<button data-act="sub-type" data-t="${k}" class="${t === k ? 'on' : ''}" title="${tt}">${sy}</button>`).join('')}<button data-act="sub-prio" class="${ui.subPrio ? 'on' : ''}" title="Prioridade">*</button></span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="${nm} (nível ${depth + 1}) · Enter adiciona · Esc encerra${t === 'event' ? ' · ex.: 14h Reunião' : ''}" autocomplete="off"></li>`;
+  }
   return h;
 }
 function completeEntry(e){
@@ -925,9 +928,9 @@ function entryRow(e, opt = {}){
   const acts = [];
   if (e.type === 'task' && e.status === 'open') acts.push(['done','Concluir',I.check]);
   if (e.status === 'done') acts.push(['reopen','Reabrir',I.sync]);
-  if (e.type === 'task' && e.status === 'open' && depth < MAXSUB) acts.push(['sub', `Adicionar subtarefa (nível ${depth + 1} de ${MAXSUB})`, I.subtask]);
+  if ((e.type === 'task' || e.type === 'event') && e.status === 'open' && depth < MAXSUB) acts.push(['sub', `Adicionar item dentro (nível ${depth + 1} de ${MAXSUB}): subtarefa, nota ou evento`, I.subtask]);
   if (!depth && e.status === 'open' && e.type !== 'note') acts.push(['tomorrow','Migrar para o próximo dia útil',I.migrate], ['sched','Agendar para outra data',I.sched]);
-  if (!depth && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
+  if ((!depth || e.type === 'event') && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
   if (e.status === 'open' && e.date) acts.push(['attach','Anexar arquivo a esta tarefa',I.clip]);
   acts.push(['prio','Prioridade',I.star]);
   if (!depth && e.type !== 'note' && gOn() && e.date && !e.gId && e.status === 'open') acts.push(['gpush',`Enviar ao Google Agenda (${S.google.calName || 'Cagece'})`,I.g]);
@@ -1713,7 +1716,9 @@ const ACT = {
   'v-imgfull': a => a.closest('.vimg').classList.toggle('full'),
   'v-tab': () => { if (!V.file) return; const u = URL.createObjectURL(new Blob([V.file], { type: MIME[extOf(V.list[V.i].name)] || V.file.type || 'application/octet-stream' })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000); },
   'v-dl': () => { if (!V.file) return; const a = document.createElement('a'); a.href = URL.createObjectURL(V.file); a.download = V.list[V.i].name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 10000); },
-  'e-sub': a => { ui.subFor = a.closest('.entry').dataset.id; ui.focusSub = true; render(false); },
+  'e-sub': a => { ui.subFor = a.closest('.entry').dataset.id; ui.subType = 'task'; ui.subPrio = false; ui.focusSub = true; render(false); },
+  'sub-type': a => { ui.subType = a.dataset.t; ui.focusSub = true; const v = $('#subtext') ? $('#subtext').value : ''; render(false); if ($('#subtext')) $('#subtext').value = v; },
+  'sub-prio': () => { ui.subPrio = !ui.subPrio; ui.focusSub = true; const v = $('#subtext') ? $('#subtext').value : ''; render(false); if ($('#subtext')) $('#subtext').value = v; },
   'day-prev': () => { ui.date = addDays(ui.date, -1); render(); },
   'day-next': () => { ui.date = addDays(ui.date, 1); render(); },
   'day-today': () => { ui.date = today(); render(); },
@@ -1848,7 +1853,7 @@ document.addEventListener('keydown', ev => {
   }
   if (t.id === 'subtext'){
     if (ev.key === 'Escape' || (ev.key === 'Enter' && !t.value.trim())){ ev.preventDefault(); ui.subFor = null; render(false); return; }
-    if (ev.key === 'Enter'){ ev.preventDefault(); const q = parseQuick(t.value); addEntry({ type: 'task', text: q.text, parent: t.dataset.parent, prio: q.prio }); ui.focusSub = true; save(); return; }
+    if (ev.key === 'Enter'){ ev.preventDefault(); const q = parseQuick(t.value); addEntry({ type: q.type || ui.subType || 'task', text: q.text, parent: t.dataset.parent, prio: q.prio || ui.subPrio, time: q.time }); ui.focusSub = true; save(); return; }
   }
   if (t.hasAttribute && t.hasAttribute('data-li-edit') && ['Enter','Tab','Backspace'].includes(ev.key)){
     const items = curList().items, idx = items.findIndex(x => x.id === t.closest('.check').dataset.iid), it = items[idx]; if (!it) return;

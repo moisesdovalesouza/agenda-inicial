@@ -1,11 +1,10 @@
 {
- "version": "1.5.0",
+ "version": "1.5.1",
  "date": "2026-11-24",
  "notes": [
-  "Novo nome e nova identidade visual: Agenda Inicial",
-  "Instalável pelo Chrome como aplicativo, com ícone próprio na barra de tarefas",
-  "Atualizações automáticas, sem baixar nada",
-  "Pasta de dados criada sozinha em Documentos\\Agenda Inicial",
-  "Opção para trazer os dados e anexos da agenda anterior"
+  "Dentro de uma tarefa agora dá para criar subtarefa, nota ou evento, com ou sem prioridade",
+  "Notas e eventos dentro de uma tarefa não contam para concluí-la; só as subtarefas contam",
+  "Eventos dentro de tarefas podem ter horário (ex.: 14h Reunião)",
+  "Novo nome e identidade visual: Agenda Inicial, instalável pelo Chrome e com atualização automática"
  ]
 }
