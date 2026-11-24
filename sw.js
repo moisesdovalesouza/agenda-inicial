@@ -1,6 +1,6 @@
 // Agenda Inicial — service worker. Rede primeiro (sempre a versão mais nova quando há internet),
 // cópia local quando está offline. Os dados do usuário nunca passam por aqui.
-const CACHE = 'agenda-inicial-1.7.1';
+const CACHE = 'agenda-inicial-1.8.0';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'assets/icone-192.png', 'assets/icone-512.png', 'assets/icone.svg'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

@@ -373,6 +373,18 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .foot-note{margin-top:var(--s6);padding-top:var(--s2);border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
 /* ---------- Subtarefas ---------- */
 .entry{padding-left:calc(var(--d,0) * 24px)}
+.tog{position:absolute;top:3px;left:calc(var(--d,0) * 24px - 20px);width:18px;height:18px;padding:0;border:0;border-radius:2px;background:transparent;color:var(--faint);cursor:pointer;display:grid;place-items:center}
+.tog svg{width:12px;height:12px;transition:transform .12s ease}
+.tog.open svg{transform:rotate(90deg)}
+.tog:hover{background:var(--hover);color:var(--text)}
+.entry:not(:hover) .tog.open{opacity:.55}
+.check .tog{top:3px}
+.tag.fold{cursor:pointer}
+.mpop .it .ic{display:grid;place-items:center;color:var(--muted)}
+.mpop .it .ic svg{width:15px;height:15px}
+.mpop.menu{width:auto;min-width:260px}
+.mpop.menu .it{grid-template-columns:20px 1fr}
+.mpop .it small{display:block;color:var(--faint);font-size:11px;line-height:14px}
 .entry.child::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--d) * 24px - 12px);border-left:1px solid var(--border)}
 .subadd{display:grid;grid-template-columns:18px auto 1fr;gap:2px var(--s2);align-items:center;padding:2px 0 2px calc(var(--d,1) * 24px)}
 .subadd .typebtns button{width:24px;height:24px;font-size:14px}
@@ -447,7 +459,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.7.1';    // versão do programa
+const APP_RELEASE = '1.8.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -529,6 +541,13 @@ const I = {
   hlink:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6.8 9.2a2.6 2.6 0 0 0 3.7 0l2.2-2.2a2.6 2.6 0 0 0-3.7-3.7l-.9.9M9.2 6.8a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg>',
   eraser:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M9.5 2.8l3.7 3.7-6.2 6.2H4.2L2.6 11a1.3 1.3 0 0 1 0-1.8z"/><path d="M6 6.3l3.7 3.7M7 12.7h6.5"/></svg>',
   notepad:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 2.5h7.5l2.5 2.5v8.5H3z"/><path d="M5.5 7h5M5.5 9.3h5M5.5 11.6h3"/><path d="M5 1v2.5M8 1v2.5"/></svg>',
+  chev:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.8L10.2 8 6 12.2"/></svg>',
+  foldall:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6L8 2.8 11.5 6M4.5 10L8 13.2 11.5 10"/></svg>',
+  unfoldall:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.8L8 6l3.5-3.2M4.5 13.2L8 10l3.5 3.2"/></svg>',
+  folderOpen:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2 12.5V4h4l1.5 1.5H13V7"/><path d="M2 12.5L4 7.2h10.5l-2 5.3z"/></svg>',
+  share:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.2M5.2 5L8 2.2 10.8 5"/><path d="M5 7.2H3.5v6.3h9V7.2H11"/></svg>',
+  copy:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8.5" height="8.5" rx="1"/><path d="M11 5V3.2a.7.7 0 0 0-.7-.7H3.2a.7.7 0 0 0-.7.7v7.1c0 .4.3.7.7.7H5"/></svg>',
+  mail:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="2" y="3.5" width="12" height="9" rx="1"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg>',
   print:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 6V2.5h7V6M4.5 11.5h-2V6h11v5.5h-2M4.5 9.5h7v4h-7z"/></svg>'
 };
 
@@ -757,20 +776,31 @@ function officeBtn(p, cls = 'btn icon ghost'){
 /* Abrir no computador: atalho "agendainicial://" registrado no Windows uma única vez
    pelo arquivo sistema\Ativar abrir arquivos.cmd, que a própria agenda grava na pasta.
    O script só abre documentos que estejam dentro de Agenda Inicial\arquivos. */
-const OPENER_V = 2;
-const OPENER_PS1 = [
-  'param([string]$u)',
-  '# Agenda Inicial - abre um anexo ou caderno da pasta da agenda no programa padrao do Windows.',
-  '$base = Split-Path -Parent $PSScriptRoot',
-  "$rel = $u -replace '^agendainicial:(//)?(abrir/)?', ''",
-  "$rel = [Uri]::UnescapeDataString($rel).Trim().TrimEnd('/') -replace '/', '\\'",
-  "if ($rel -match '\\.\\.' -or $rel -match ':' -or $rel -notmatch '^(arquivos|cadernos)\\\\') { exit 1 }",
-  '$ext = [IO.Path]::GetExtension($rel).ToLower()',
-  "$ok = '.pdf .doc .docx .docm .dot .dotx .rtf .odt .xls .xlsx .xlsm .xltx .csv .ods .ppt .pptx .ppsx .potx .odp .txt .md .png .jpg .jpeg .gif .bmp .webp .tif .tiff .msg .eml .mp3 .mp4 .wav'.Split(' ')",
-  'if ($ok -notcontains $ext) { exit 1 }',
-  '$full = Join-Path $base $rel',
-  'if (Test-Path -LiteralPath $full) { Invoke-Item -LiteralPath $full }'
-].join('\r\n') + '\r\n';
+const OPENER_V = 3;
+const OPENER_PS1 = String.raw`param([string]$u)
+# Agenda Inicial - abre, mostra na pasta, copia ou envia por e-mail um arquivo da pasta da agenda.
+$base = Split-Path -Parent $PSScriptRoot
+$acao = 'abrir'
+if ($u -match '^agendainicial:(//)?(abrir|pasta|copiar|email)/') { $acao = $Matches[2] }
+$rel = $u -replace '^agendainicial:(//)?((abrir|pasta|copiar|email)/)?', ''
+$rel = [Uri]::UnescapeDataString($rel).Trim().TrimEnd('/') -replace '/', '\'
+if ($rel -match '\.\.' -or $rel -match ':' -or $rel -notmatch '^(arquivos|cadernos)\\') { exit 1 }
+$full = Join-Path $base $rel
+if (-not (Test-Path -LiteralPath $full)) { exit 1 }
+switch ($acao) {
+  'pasta'  { Start-Process explorer.exe -ArgumentList ('/select,"' + $full + '"') }
+  'copiar' { Set-Clipboard -LiteralPath $full }
+  'email'  {
+    try { $o = New-Object -ComObject Outlook.Application; $m = $o.CreateItem(0); $m.Subject = [IO.Path]::GetFileName($full); [void]$m.Attachments.Add($full); $m.Display() }
+    catch { Set-Clipboard -LiteralPath $full; Start-Process 'mailto:' }
+  }
+  default {
+    $ext = [IO.Path]::GetExtension($full).ToLower()
+    $ok = '.pdf .doc .docx .docm .dot .dotx .rtf .odt .xls .xlsx .xlsm .xltx .csv .ods .ppt .pptx .ppsx .potx .odp .txt .md .png .jpg .jpeg .gif .bmp .webp .tif .tiff .msg .eml .mp3 .mp4 .wav'.Split(' ')
+    if ($ok -notcontains $ext) { exit 1 }
+    Invoke-Item -LiteralPath $full
+  }
+}`.replace(/\r?\n/g, '\r\n') + '\r\n';
 const OPENER_ON = [
   '@echo off',
   'title Agenda Inicial - ativar abrir arquivos',
@@ -797,13 +827,46 @@ async function ensureOpenerFiles(){
 const localUri = p => 'agendainicial://abrir/' + p.split('/').map(encodeURIComponent).join('/');
 function modal(html){ $('#modalbox').innerHTML = html; $('#modal').hidden = false; }
 function closeModal(){ $('#modal').hidden = true; }
-function officeOpen(p){
-  if (S.settings.openerOn){ location.href = localUri(p); return; }
+const ACT_URI = (act, p) => `agendainicial://${act}/` + p.split('/').map(encodeURIComponent).join('/');
+const ACT_DONE = { copiar: 'Arquivo copiado. Cole com Ctrl+V no WhatsApp, no Teams, num e-mail ou numa pasta.', email: 'Abrindo um e-mail novo no Outlook com o arquivo anexado…', pasta: 'Abrindo a pasta do arquivo…' };
+function localAction(act, p){
+  const uri = ACT_URI(act, p);
+  if (S.settings.openerOn){ location.href = uri; if (ACT_DONE[act]) toast(ACT_DONE[act], 5000); return; }
   ensureOpenerFiles();
-  modal(`<h3>Abrir direto no computador</h3>
-    <p>Para os anexos abrirem no Word, Excel e demais programas sem baixar, falta uma ativação feita uma única vez neste computador:</p>
+  modal(`<h3>Usar os arquivos direto no computador</h3>
+    <p>Para abrir no Word e no Excel, mostrar na pasta, copiar e enviar por e-mail sem baixar, falta uma ativação feita uma única vez neste computador:</p>
     <ol><li>Abra a pasta <b>Documentos › ${esc(FOLDER_NAME)} › sistema</b>.</li><li>Dê dois cliques em <b>Ativar abrir arquivos</b>.</li><li>Volte aqui e clique em <b>Já ativei</b>. Se o Chrome perguntar, marque <b>Sempre permitir</b>.</li></ol>
-    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn" data-act="m-win" data-p="${esc(p)}">${I.open}Abrir em janela</button><button class="btn primary" data-act="m-on" data-p="${esc(p)}">Já ativei, abrir</button></div>`);
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button>${act === 'abrir' ? `<button class="btn" data-act="m-win" data-p="${esc(p)}">${I.open}Abrir em janela</button>` : ''}<button class="btn primary" data-act="m-on" data-u="${esc(uri)}" data-k="${act}">Já ativei, continuar</button></div>`);
+}
+function officeOpen(p){ localAction('abrir', p); }
+const SHARE_EXT = ['pdf','png','jpg','jpeg','gif','webp','bmp','svg','tif','tiff','txt','csv','mp3','mp4','m4a','wav','webm','ogg','htm','html'];
+function shareMenu(btn, p){
+  const f = S.files.find(x => x.path === p) || { name: p.split('/').pop(), path: p };
+  const canWin = 'share' in navigator && SHARE_EXT.includes(extOf(f.name));
+  const it = (k, ic, t, sub) => `<div class="it" data-sh="${k}"><span class="ic">${I[ic]}</span><span>${t}${sub ? `<small>${sub}</small>` : ''}</span></div>`;
+  let el = $('#fmenu'); if (!el){ el = document.createElement('div'); el.id = 'fmenu'; el.className = 'mpop menu'; document.body.appendChild(el); }
+  el.dataset.p = p;
+  el.innerHTML = `<div class="h">Compartilhar</div>` +
+    (canWin ? it('win', 'share', 'Compartilhar pelo Windows…', 'WhatsApp, e-mail, Teams, Nearby Share') : '') +
+    it('copiar', 'copy', 'Copiar o arquivo', 'Depois cole com Ctrl+V no WhatsApp, Teams ou e-mail') +
+    it('email', 'mail', 'Enviar por e-mail', 'Abre um e-mail novo do Outlook com o arquivo anexado') +
+    it('pasta', 'folderOpen', 'Mostrar na pasta', 'Abre o Explorador com o arquivo selecionado');
+  const r = btn.getBoundingClientRect();
+  el.style.left = Math.max(8, Math.min(r.right - 280, innerWidth - 300)) + 'px';
+  el.style.top = (r.bottom + 6 + 230 > innerHeight ? r.top - 236 : r.bottom + 6) + 'px';
+}
+function closeMenu(){ const el = $('#fmenu'); if (el) el.remove(); }
+async function shareWindows(p){
+  try {
+    const f = S.files.find(x => x.path === p) || { name: p.split('/').pop(), path: p };
+    const file = await fileOf(f);
+    const typed = new File([file], f.name, { type: MIME[extOf(f.name)] || file.type || (extOf(f.name) === 'txt' ? 'text/plain' : '') });
+    if (navigator.canShare && !navigator.canShare({ files: [typed] })) return localAction('copiar', p);
+    await navigator.share({ files: [typed], title: f.name });
+  } catch(e){ if (e.name !== 'AbortError') toast('Não foi possível compartilhar pelo Windows. Use "Copiar o arquivo".'); }
+}
+function fileActs(p){
+  return `<button class="btn icon ghost" data-act="f-folder" data-p="${esc(p)}" title="Mostrar na pasta">${I.folderOpen}</button><button class="btn icon ghost" data-act="f-share" data-p="${esc(p)}" title="Compartilhar">${I.share}</button>`;
 }
 function openPath(p){ officeOpen(p); }
 /* Janela própria do visualizador (sem download). */
@@ -1031,7 +1094,7 @@ function progressOf(e){
 }
 function renderTree(e, opt = {}, depth = 0){
   let h = entryRow(e, Object.assign({}, opt, { depth }));
-  for (const k of kids(e.id)) h += renderTree(k, {}, depth + 1);
+  if (!e.collapsed) for (const k of kids(e.id)) h += renderTree(k, {}, depth + 1);
   if (ui.subFor === e.id){
     const t = ui.subType || 'task', nm = { task: 'Subtarefa', event: 'Evento', note: 'Nota' }[t];
     h += `<li class="subadd" style="--d:${depth + 1}"><span></span><span class="typebtns">${[['task','•','Subtarefa'],['event','○','Evento (não conta para concluir a tarefa)'],['note','–','Nota (não conta para concluir a tarefa)']].map(([k, sy, tt]) => `<button data-act="sub-type" data-t="${k}" class="${t === k ? 'on' : ''}" title="${tt}">${sy}</button>`).join('')}<button data-act="sub-prio" class="${ui.subPrio ? 'on' : ''}" title="Prioridade">*</button></span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="${nm} (nível ${depth + 1}) · Enter adiciona · Esc encerra${t === 'event' ? ' · ex.: 14h Reunião' : ''}" autocomplete="off"></li>`;
@@ -1100,7 +1163,9 @@ function entryRow(e, opt = {}){
   if (opt.showDate && e.date) meta.push(`<span>${shortDate(e.date)}</span>`);
   if ((e.status === 'migrated' || e.status === 'scheduled') && e.to) meta.push(`<span>→ ${shortDate(e.to)}</span>`);
   if (e.gId) meta.push('<span class="tag g" title="Sincronizado com o Google Agenda">Google</span>');
-  return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">
+  const nk = kids(e.id).length;
+  if (nk && e.collapsed){ const n = subtree(e).length; meta.unshift(`<span class="tag fold" data-act="e-fold" title="Mostrar os itens recolhidos">+${n} ${n === 1 ? 'item' : 'itens'}</span>`); }
+  return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">${nk ? `<button class="tog ${e.collapsed ? '' : 'open'}" data-act="e-fold" title="${e.collapsed ? 'Expandir' : 'Recolher'} itens dentro">${I.chev}</button>` : ''}
     <span class="sig" data-act="e-prio" title="Prioridade">${e.prio ? '*' : ''}</span>
     <span class="bul" data-act="e-bullet" title="${e.type === 'task' ? 'Clique para concluir / reabrir' : e.type === 'event' ? 'Evento' : 'Nota'}">${bulletOf(e)}</span>
     <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${esc(e.text)}</span></span>
@@ -1238,7 +1303,7 @@ VIEWS.hoje = () => {
     </div>
 
     <div class="sec">
-      <div class="sec-h"><h2>Registro do dia</h2><div class="tools">${gOn() ? `<button class="btn ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}Atualizar</button>` : ''}</div></div>
+      <div class="sec-h"><h2>Registro do dia</h2><div class="tools">${(ps => ps.length ? `<button class="btn icon ghost" data-act="fold-all" title="${ps.some(x => !x.collapsed) ? 'Recolher todos os itens dentro' : 'Expandir tudo'}">${ps.some(x => !x.collapsed) ? I.foldall : I.unfoldall}</button>` : '')(S.entries.filter(x => x.date === d && kids(x.id).length))}${gOn() ? `<button class="btn ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}Atualizar</button>` : ''}</div></div>
       <ul class="entries">${list.map(e => renderTree(e)).join('')}${gl.map(ev => gRow(ev)).join('')}</ul>
       ${!list.length && !gl.length ? '<div class="empty">Nada registrado neste dia.</div>' : ''}
     </div>
@@ -1329,11 +1394,16 @@ VIEWS.lista = () => {
   if (!l){ ui.view = 'hoje'; return VIEWS.hoje(); }
   ui.listId = l.id;
   const items = l.items, open = items.filter(i => !i.done).length, done = items.length - open;
+  let skipBelow = -1;
   const rows = items.map((it, i) => {
+    const lv = it.level || 0;
+    if (skipBelow >= 0 && lv > skipBelow) return ''; skipBelow = -1;
+    const hasKids = listRange(items, i) > i + 1;
+    if (hasKids && it.collapsed) skipBelow = lv;
     if (ui.hideDone && it.done) return '';
     const sub = items.slice(i + 1, listRange(items, i));
     const pr = sub.length ? `<span class="tag ${sub.every(x => x.done) ? '' : 'acc'}" title="Subitens concluídos">${sub.filter(x => x.done).length}/${sub.length}</span>` : '';
-    return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}"><input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span><span class="meta">${pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
+    return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}">${hasKids ? `<button class="tog ${it.collapsed ? '' : 'open'}" data-act="li-fold" title="${it.collapsed ? 'Expandir' : 'Recolher'} subitens">${I.chev}</button>` : ''}<input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span><span class="meta">${hasKids && it.collapsed ? `<span class="tag fold" data-act="li-fold">+${sub.length}</span>` : pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
   }).join('');
   return topbar(esc(l.title || 'Lista'), `<button class="btn icon ghost" data-act="li-hide" title="${ui.hideDone ? 'Mostrar concluídos' : 'Ocultar concluídos'}">${ui.hideDone ? I.eye : I.eyeoff}</button><button class="btn icon ghost" data-act="li-todays" title="Levar os itens em aberto, com a hierarquia, para o registro de hoje">${I.migrate}</button><button class="btn ghost" data-act="pdf-list" title="Exportar a lista em PDF">${I.pdf}PDF</button><button class="btn icon ghost danger" data-act="list-del" title="Excluir lista">${I.trash}</button>`) + `
   <div class="page">
@@ -1474,13 +1544,13 @@ function linkTags(f){
   return `<div class="ftags">${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button></div>`;
 }
 function fileTable(files, compact){
-  const cols = compact ? '<col><col style="width:38%"><col class="c-size" style="width:72px"><col style="width:96px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:124px">';
+  const cols = compact ? '<col><col style="width:36%"><col class="c-size" style="width:72px"><col style="width:148px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:176px">';
   return `<table class="t"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${files.map(f => `<tr data-fid="${f.id}">
       <td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(f.name)}</a></div></td>
       <td>${linkTags(f)}</td>
       ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
       <td class="num c-size">${fmtSize(f.size || 0)}</td>
-      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
+      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
 }
 function linkPicker(fid, date){
   const f = S.files.find(x => x.id === fid); if (!f) return;
@@ -1702,6 +1772,7 @@ function vBar(item, extra = ''){
       ${n > 1 ? `<button class="btn icon ghost" data-act="v-prev" title="Anterior (←)">${I.left}</button><span class="zv">${V.i + 1}/${n}</span><button class="btn icon ghost" data-act="v-next" title="Próximo (→)">${I.right}</button><span class="sep"></span>` : ''}
       ${extra}
       ${item.path ? officeBtn(item.path) : ''}
+      ${item.path ? fileActs(item.path) : ''}
       ${V.only ? '' : `<button class="btn icon ghost" data-act="v-tab" title="Abrir em janela própria (sem baixar)">${I.open}</button>`}
       <button class="btn icon ghost" data-act="v-dl" title="Baixar uma cópia">${I.dl}</button>
       <span class="sep"></span>
@@ -2100,7 +2171,7 @@ VIEWS.caderno = () => {
     <div class="nb-doc" id="nbdoc" contenteditable="true" spellcheck="true" data-ph="Comece a escrever… Use # para título, - para lista e ## para mencionar um arquivo."></div>
   </div>`;
 };
-function officeBtnNb(f){ return `<button class="btn icon ghost" data-act="o-open" data-p="${esc(f.path)}" title="Abrir no Bloco de Notas (programa padrão para .md)">${I.notepad}</button>`; }
+function officeBtnNb(f){ return `<button class="btn icon ghost" data-act="o-open" data-p="${esc(f.path)}" title="Abrir no Bloco de Notas (programa padrão para .md)">${I.notepad}</button>${fileActs(f.path)}`; }
 
 /* ---------------- Seletor de data ---------------- */
 function pickDate(cb, initial, ev){
@@ -2164,12 +2235,17 @@ const ACT = {
   'att-upload': a => { closeModal(); const e = byId(a.dataset.e); const p = $('#fpick'); p.dataset.link = e.date || ''; p.dataset.entry = e.id; p.click(); },
   'att-newnb': async a => { const e = byId(a.dataset.e); closeModal(); const f = await nbCreate(e.text, e.id); if (f){ save(false); nbOpen(f.id); } },
   'att-save': a => { const id = a.dataset.e, e = byId(id); for (const f of S.files){ const has = (f.entries || []).includes(id), want = ui.att.has(f.id); if (want && !has){ f.entries = [...(f.entries || []), id]; if (!f.link && e.date) f.link = e.date; } if (!want && has) f.entries = f.entries.filter(x => x !== id); } ui.att = null; closeModal(); save(); toast('Anexos atualizados.'); },
+  'e-fold': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; e.collapsed = !e.collapsed; save(); },
+  'fold-all': () => { const ps = S.entries.filter(x => x.date === ui.date && kids(x.id).length); const close = ps.some(x => !x.collapsed); ps.forEach(x => x.collapsed = close); save(); },
+  'li-fold': a => { const it = curList().items.find(x => x.id === a.closest('.check').dataset.iid); it.collapsed = !it.collapsed; save(); },
+  'f-folder': a => localAction('pasta', a.dataset.p),
+  'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'm-close': () => { closeModal(); ui.pick = null; ui.pickFor = null; },
   'fl-add': a => { ui.pick = null; linkPicker(a.closest('[data-fid]').dataset.fid); },
   'fl-save': a => { const f = S.files.find(x => x.id === a.dataset.fid); f.entries = [...ui.pick]; const first = byId(f.entries[0]); if (first && first.date && !f.link) f.link = first.date; ui.pick = null; closeModal(); save(); toast(f.entries.length ? `Anexo vinculado a ${f.entries.length} registro(s).` : 'Vínculos removidos.'); },
   'fl-del': (a, ev) => { ev.stopPropagation(); const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); f.entries = f.entries.filter(x => x !== a.dataset.e); save(); },
   'fl-go': a => { const e = byId(a.dataset.e); if (e && e.date){ ui.date = e.date; ui.keepDate = true; go('hoje'); } },
-  'm-on': a => { S.settings.openerOn = true; save(false); closeModal(); location.href = localUri(a.dataset.p); },
+  'm-on': a => { S.settings.openerOn = true; save(false); closeModal(); location.href = a.dataset.u; if (ACT_DONE[a.dataset.k]) toast(ACT_DONE[a.dataset.k], 5000); },
   'm-win': a => { closeModal(); openWindow(S.files.find(f => f.path === a.dataset.p) || { name: a.dataset.p.split('/').pop(), path: a.dataset.p }); },
   'opener-off': () => { S.settings.openerOn = false; save(); toast('Na próxima vez, a agenda mostra de novo as instruções de ativação.'); },
   'v-prev': () => { V.i = (V.i - 1 + V.list.length) % V.list.length; showViewer(); },
@@ -2180,7 +2256,7 @@ const ACT = {
   'v-imgfull': a => a.closest('.vimg').classList.toggle('full'),
   'v-tab': () => openWindow(V.list[V.i]),
   'v-dl': () => { if (!V.file) return; const a = document.createElement('a'); a.href = URL.createObjectURL(V.file); a.download = V.list[V.i].name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 10000); },
-  'e-sub': a => { ui.subFor = a.closest('.entry').dataset.id; ui.subType = 'task'; ui.subPrio = false; ui.focusSub = true; render(false); },
+  'e-sub': a => { { const pe = byId(a.closest('.entry').dataset.id); if (pe && pe.collapsed){ pe.collapsed = false; save(false); } } ui.subFor = a.closest('.entry').dataset.id; ui.subType = 'task'; ui.subPrio = false; ui.focusSub = true; render(false); },
   'sub-type': a => { ui.subType = a.dataset.t; ui.focusSub = true; const v = $('#subtext') ? $('#subtext').value : ''; render(false); if ($('#subtext')) $('#subtext').value = v; },
   'sub-prio': () => { ui.subPrio = !ui.subPrio; ui.focusSub = true; const v = $('#subtext') ? $('#subtext').value : ''; render(false); if ($('#subtext')) $('#subtext').value = v; },
   'day-prev': () => { ui.date = addDays(ui.date, -1); render(); },
@@ -2290,6 +2366,9 @@ const ACT = {
   }
 };
 document.addEventListener('mousedown', ev => {
+  const sh = ev.target.closest('#fmenu .it');
+  if (sh){ ev.preventDefault(); const p = $('#fmenu').dataset.p, k = sh.dataset.sh; closeMenu(); if (k === 'win') shareWindows(p); else localAction(k, p); return; }
+  if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]')) closeMenu();
   if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
   const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
 });
@@ -2306,6 +2385,7 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('keydown', ev => {
   const t = ev.target;
+  if (ev.key === 'Escape' && $('#fmenu')){ closeMenu(); return; }
   if (t.id === 'nbdoc'){
     if (NB.pop){
       if (ev.key === 'ArrowDown'){ ev.preventDefault(); return nbPopMove(1); }
