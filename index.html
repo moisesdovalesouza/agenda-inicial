@@ -1952,7 +1952,7 @@ if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
   render(false);
   await initFS();
   render();
-  if (pontoInfo().pending) document.title = '• Ponto pendente · Agenda Cagece';
+  if (pontoInfo().pending) document.title = '• Ponto pendente · Agenda Inicial';
   setTimeout(() => checkUpdate(), 1500);
   setInterval(() => checkUpdate(), 6 * 3600 * 1000);
 })();
