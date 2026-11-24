@@ -1,10 +1,11 @@
 {
- "version": "1.6.0",
+ "version": "1.7.0",
  "date": "2026-11-24",
  "notes": [
+  "Novo menu Cadernos: notas com títulos, listas, negrito, itálico, sublinhado, tachado, links e tabelas, salvas como arquivos .md do Bloco de Notas",
+  "Digite ## e o nome de um arquivo ou caderno para mencioná-lo no texto",
+  "Cadernos podem ser anexados aos registros; o botão de anexar agora também busca arquivos e cadernos que já estão na agenda",
   "Um arquivo pode ser vinculado a vários registros (tarefas, notas, eventos); os vínculos aparecem como etiquetas",
-  "Mesma moldura em todas as telas, ajustada ao tamanho da janela; nada mais passa da margem",
-  "Ícones no lugar de textos: abrir no Word, Excel e PowerPoint, anexar, reindexar e outros",
-  "Anexos abrem direto no Word, Excel e demais programas, sem baixar, após uma ativação única no computador"
+  "Mesma moldura em todas as telas, ajustada ao tamanho da janela; nada mais passa da margem"
  ]
 }

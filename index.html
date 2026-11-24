@@ -324,6 +324,52 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .modal p{margin:0 0 var(--s3);color:var(--muted)}
 .modal ol{margin:0 0 var(--s3);padding-left:20px;line-height:1.9}
 .modal .tools{display:flex;gap:var(--s2);justify-content:flex-end;flex-wrap:wrap}
+/* ---------- Cadernos ---------- */
+.nb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--s3)}
+.nb-card{border:1px solid var(--border);border-radius:var(--r);padding:var(--s3);background:var(--bg);cursor:pointer;display:flex;flex-direction:column;gap:var(--s2);min-height:148px;transition:border-color .12s, box-shadow .12s}
+.nb-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.nb-card h3{font-family:var(--serif);font-size:18px;font-weight:600;margin:0;line-height:1.25;display:flex;gap:var(--s2);align-items:flex-start}
+.nb-card h3 svg{width:16px;height:16px;flex:none;margin-top:3px;color:var(--accent)}
+.nb-card p{margin:0;color:var(--muted);font-size:13px;line-height:20px;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.nb-card .meta{font-size:12px;color:var(--faint);display:flex;justify-content:space-between}
+.nb-card.new{border-style:dashed;align-items:center;justify-content:center;color:var(--muted);flex-direction:row}
+.nb-card.new svg{width:16px;height:16px}
+.nb-bar{position:sticky;top:44px;z-index:4;display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:6px 0;margin:var(--s3) 0 var(--s2);background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.nb-bar .sep{width:1px;height:20px;background:var(--border);margin:0 6px}
+.nb-bar .btn.icon.on{background:var(--hover);color:var(--accent-strong)}
+.nb-bar select.inp{height:28px;width:136px;font-size:13px}
+.nb-bar .grow{flex:1}
+.nb-status{font-size:12px;color:var(--faint)}
+.nb-doc{min-height:50vh;outline:none;font-size:16px;line-height:1.7;color:var(--text);padding:var(--s2) 0 var(--s6)}
+.nb-doc:empty::before,.nb-doc>p:only-child:has(>br:only-child)::before{content:attr(data-ph);color:var(--faint);position:absolute;pointer-events:none}
+.nb-doc{position:relative}
+.nb-doc>p:only-child:has(>br:only-child)::before{content:'Comece a escrever… Use # para título, - para lista e ## para mencionar um arquivo.'}
+.nb-doc>*:first-child{margin-top:0}
+.nb-doc h1{font-family:var(--serif);font-size:30px;line-height:1.25;font-weight:600;margin:32px 0 8px;letter-spacing:-.01em}
+.nb-doc h2{font-family:var(--serif);font-size:24px;line-height:1.3;font-weight:600;margin:28px 0 6px}
+.nb-doc h3{font-size:18px;line-height:1.4;font-weight:600;margin:24px 0 4px}
+.nb-doc p{margin:0 0 10px}
+.nb-doc ul,.nb-doc ol{margin:0 0 10px;padding-left:26px}
+.nb-doc li{margin:2px 0}
+.nb-doc li::marker{color:var(--accent)}
+.nb-doc a{color:var(--accent-strong);text-underline-offset:2px}
+.nb-doc table{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:14px}
+.nb-doc th,.nb-doc td{border:1px solid var(--border);padding:6px 10px;text-align:left;vertical-align:top;min-width:60px}
+.nb-doc th{background:var(--bg2);font-weight:600}
+.nb-doc .mention{display:inline-flex;align-items:center;gap:4px;padding:0 6px 0 4px;margin:0 1px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);text-decoration:none;font-size:.88em;line-height:1.5;cursor:pointer;white-space:nowrap;vertical-align:1px}
+.nb-doc .mention:hover{border-color:var(--accent)}
+.nb-doc .mention::before{content:"";width:12px;height:12px;background:var(--accent);-webkit-mask:var(--mi) center/contain no-repeat;mask:var(--mi) center/contain no-repeat}
+.nb-doc .mention{--mi:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.6'%3E%3Cpath d='M10.5 5L6 9.5a1.4 1.4 0 0 0 2 2l5-5a2.8 2.8 0 0 0-4-4L3.8 7.7a4.2 4.2 0 0 0 6 6L13.5 10'/%3E%3C/svg%3E")}
+.nb-doc .mention.nb{--mi:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.6'%3E%3Crect x='3' y='1.8' width='10.5' height='12.4' rx='1.2'/%3E%3Cpath d='M5.5 1.8v12.4'/%3E%3C/svg%3E")}
+.nb-doc .mention.missing{opacity:.55;text-decoration:line-through}
+.nb-view{background:var(--bg);min-height:100%;padding:var(--s5) var(--s6)}
+.nb-view .nb-doc{max-width:760px;margin:0 auto;min-height:0}
+.mpop{position:fixed;z-index:70;width:340px;max-height:300px;overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:4px}
+.mpop .h{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 8px 4px}
+.mpop .it{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:center;min-height:30px;padding:0 8px;border-radius:2px;cursor:pointer;font-size:13px}
+.mpop .it span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mpop .it.on,.mpop .it:hover{background:var(--hover)}
+.mpop .none{padding:8px;color:var(--faint);font-size:13px}
 .foot-note{margin-top:var(--s6);padding-top:var(--s2);border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
 /* ---------- Subtarefas ---------- */
 .entry{padding-left:calc(var(--d,0) * 24px)}
@@ -401,7 +447,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.6.0';    // versão do programa
+const APP_RELEASE = '1.7.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -472,6 +518,17 @@ const I = {
   computer:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="8" rx="1"/><path d="M6 13.5h4M8 11v2.5"/></svg>',
   link:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 3.5v9M3.5 8h9"/></svg>',
   eyeoff:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 13.5l11-11"/></svg>',
+  notebook:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="1.8" width="10.5" height="12.4" rx="1.2"/><path d="M5.5 1.8v12.4M7.8 5h3.4M7.8 7.4h3.4"/></svg>',
+  bold:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4.5 3h4a2.5 2.5 0 0 1 0 5h-4zM4.5 8h4.8a2.5 2.5 0 0 1 0 5H4.5z"/></svg>',
+  italic:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 3h5M4 13h5M9.5 3l-3 10"/></svg>',
+  underline:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4.5 2.5v5a3.5 3.5 0 0 0 7 0v-5M3.5 14h9"/></svg>',
+  strikeT:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.5 8h11M11 4.5C10.4 3.4 9.3 2.8 8 2.8c-1.8 0-3 .9-3 2.3 0 .8.4 1.4 1.2 1.8M5 11.2c.6 1.2 1.7 1.9 3.2 1.9 1.8 0 3-1 3-2.4 0-.3 0-.6-.2-.9"/></svg>',
+  ul:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6.5 4h7M6.5 8h7M6.5 12h7"/><circle cx="3" cy="4" r=".9" fill="currentColor"/><circle cx="3" cy="8" r=".9" fill="currentColor"/><circle cx="3" cy="12" r=".9" fill="currentColor"/></svg>',
+  ol:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M6.5 4h7M6.5 8h7M6.5 12h7M2.4 2.8h1v2.6M2.2 5.4h1.6M2.3 7.2c.3-.4 1.6-.4 1.6.4 0 .7-1.6 1.2-1.6 2h1.7M2.3 11.1h1.5l-.8 1 .8.1c.5.2.5 1.3-.4 1.3-.5 0-.9-.2-1.1-.5"/></svg>',
+  table:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2.5" width="12" height="11" rx="1"/><path d="M2 6.2h12M2 9.8h12M6.2 2.5v11M10 2.5v11"/></svg>',
+  hlink:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6.8 9.2a2.6 2.6 0 0 0 3.7 0l2.2-2.2a2.6 2.6 0 0 0-3.7-3.7l-.9.9M9.2 6.8a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg>',
+  eraser:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M9.5 2.8l3.7 3.7-6.2 6.2H4.2L2.6 11a1.3 1.3 0 0 1 0-1.8z"/><path d="M6 6.3l3.7 3.7M7 12.7h6.5"/></svg>',
+  notepad:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 2.5h7.5l2.5 2.5v8.5H3z"/><path d="M5.5 7h5M5.5 9.3h5M5.5 11.6h3"/><path d="M5 1v2.5M8 1v2.5"/></svg>',
   print:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4.5 6V2.5h7V6M4.5 11.5h-2V6h11v5.5h-2M4.5 9.5h7v4h-7z"/></svg>'
 };
 
@@ -648,7 +705,7 @@ async function checkDiskChanged(){
     }
   } catch(e){}
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkDiskChanged(); if (ui.date !== today() && ui._lastToday !== today()) { ui._lastToday = today(); render(); } } });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && ui.view === 'caderno' && !NB.dirty){ const f = nbById(ui.nbId); if (f) fileOf(f).then(x => { if (f.fileTime && x.lastModified > f.fileTime + 1000){ nbLoad(f.id); toast('Caderno atualizado com as alterações feitas fora da agenda.'); } }).catch(() => {}); } if (!document.hidden) { checkDiskChanged(); if (ui.date !== today() && ui._lastToday !== today()) { ui._lastToday = today(); render(); } } });
 
 async function uniqueName(dir, name){
   const dot = name.lastIndexOf('.'); const base = dot > 0 ? name.slice(0, dot) : name; const ext = dot > 0 ? name.slice(dot) : '';
@@ -700,14 +757,14 @@ function officeBtn(p, cls = 'btn icon ghost'){
 /* Abrir no computador: atalho "agendainicial://" registrado no Windows uma única vez
    pelo arquivo sistema\Ativar abrir arquivos.cmd, que a própria agenda grava na pasta.
    O script só abre documentos que estejam dentro de Agenda Inicial\arquivos. */
-const OPENER_V = 1;
+const OPENER_V = 2;
 const OPENER_PS1 = [
   'param([string]$u)',
-  '# Agenda Inicial - abre um anexo da pasta da agenda no programa padrao do Windows.',
+  '# Agenda Inicial - abre um anexo ou caderno da pasta da agenda no programa padrao do Windows.',
   '$base = Split-Path -Parent $PSScriptRoot',
   "$rel = $u -replace '^agendainicial:(//)?(abrir/)?', ''",
   "$rel = [Uri]::UnescapeDataString($rel).Trim().TrimEnd('/') -replace '/', '\\'",
-  "if ($rel -match '\\.\\.' -or $rel -match ':' -or $rel -notmatch '^arquivos\\\\') { exit 1 }",
+  "if ($rel -match '\\.\\.' -or $rel -match ':' -or $rel -notmatch '^(arquivos|cadernos)\\\\') { exit 1 }",
   '$ext = [IO.Path]::GetExtension($rel).ToLower()',
   "$ok = '.pdf .doc .docx .docm .dot .dotx .rtf .odt .xls .xlsx .xlsm .xltx .csv .ods .ppt .pptx .ppsx .potx .odp .txt .md .png .jpg .jpeg .gif .bmp .webp .tif .tiff .msg .eml .mp3 .mp4 .wav'.Split(' ')",
   'if ($ok -notcontains $ext) { exit 1 }',
@@ -1087,6 +1144,7 @@ function renderSide(){
       ${nav('hoje','today','Hoje', openToday ? `<span class="cnt">${openToday}</span>` : '')}
       ${nav('cal','cal','Calendário')}
       ${nav('futuro','future','Registro futuro')}
+      ${nav('cadernos','notebook','Cadernos', notebooks().length ? `<span class="cnt">${notebooks().length}</span>` : '')}
       ${nav('arquivos','files','Arquivos', S.files.length ? `<span class="cnt">${S.files.length}</span>` : '')}
       ${nav('ponto','ponto','Ponto', p.pending ? '<span class="pill">pendente</span>' : '')}
       <div class="grp">Listas</div>
@@ -1116,6 +1174,7 @@ function render(withG = true){
   if (ui.focusItem){ const el = $(`.check[data-iid="${ui.focusItem}"] .txt`); ui.focusItem = null; if (el){ el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); } }
   if (ui.subFor && $('#subtext') && ui.focusSub){ ui.focusSub = false; $('#subtext').focus(); }
   $$('textarea.autosize', main).forEach(autosize);
+  if (ui.view === 'caderno') nbMount();
   if (withG) loadGForView();
 }
 function loadGForView(){
@@ -1125,7 +1184,7 @@ function loadGForView(){
   else if (ui.view === 'futuro'){ gLoad(today(), addDays(today(), 60)); }
 }
 function autosize(t){ t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight + 2, 120) + 'px'; }
-function go(v){ ui.view = v; if (v === 'hoje' && !ui.keepDate) ui.date = today(); ui.keepDate = false; render(); $('#main').scrollTop = 0; }
+function go(v){ if (ui.view === 'caderno' && NB.dirty) nbSave(); nbPopClose(); ui.view = v; if (v === 'hoje' && !ui.keepDate) ui.date = today(); ui.keepDate = false; render(); $('#main').scrollTop = 0; }
 
 /* ---------------- Visões ---------------- */
 const VIEWS = {};
@@ -1601,7 +1660,7 @@ async function checkUpdate(manual){
 }
 
 /* ---------------- Visualizador de arquivos ---------------- */
-const LIBS = { jszip: 'assets/lib/jszip.min.js', docx: 'assets/lib/docx-preview.min.js', xlsx: 'assets/lib/xlsx.full.min.js', pptx: 'assets/lib/pptx-preview.umd.js' };
+const LIBS = { jszip: 'assets/lib/jszip.min.js', docx: 'assets/lib/docx-preview.min.js', xlsx: 'assets/lib/xlsx.full.min.js', pptx: 'assets/lib/pptx-preview.umd.js', marked: 'assets/lib/marked.umd.js', turndown: 'assets/lib/turndown.umd.js', gfm: 'assets/lib/turndown-plugin-gfm.js' };
 const _libs = {};
 function lib(k){
   return _libs[k] || (_libs[k] = new Promise((res, rej) => {
@@ -1616,7 +1675,8 @@ const VT = {
   sheet: ['xlsx','xlsm','xls','xlsb','ods','csv','tsv','xltx','numbers'],
   pptx: ['pptx','ppsx','potx'],
   image: ['png','jpg','jpeg','gif','webp','bmp','svg','ico','avif'],
-  text: ['txt','md','json','xml','log','ini','cfg','js','css','sql','yml','yaml','eml','rtf','gs','ps1','cmd','bat','html','htm'],
+  md: ['md','markdown'],
+  text: ['txt','json','xml','log','ini','cfg','js','css','sql','yml','yaml','eml','rtf','gs','ps1','cmd','bat','html','htm'],
   audio: ['mp3','wav','ogg','m4a','aac','flac','opus'],
   video: ['mp4','webm','mov','m4v','ogv']
 };
@@ -1658,7 +1718,7 @@ async function showViewer(){
   const item = V.list[V.i], kind = kindOf(item.name), tok = ++V.token;
   const body = $('#vbody'), tabs = $('#vtabs');
   body.className = 'vbody'; tabs.innerHTML = ''; V.zoom = 1;
-  vBar(item, ['docx','sheet','pptx','image','text'].includes(kind) ? zoomTools() : '');
+  vBar(item, ['docx','sheet','pptx','image','text','md'].includes(kind) ? zoomTools() : '');
   body.innerHTML = '<div class="vload">Carregando…</div>';
   let file;
   try { file = await fileOf(item); } catch(e){ if (tok === V.token) vMsg('Não consegui abrir o arquivo', esc(e.message), item); return; }
@@ -1678,6 +1738,11 @@ async function showViewer(){
     else if (kind === 'audio' || kind === 'video'){
       V.url = URL.createObjectURL(new Blob([file], { type: MIME[ext] || file.type }));
       body.innerHTML = `<div class="vmedia">${kind === 'video' ? `<video src="${V.url}" controls autoplay></video>` : `<audio src="${V.url}" controls autoplay></audio>`}</div>`;
+    }
+    else if (kind === 'md'){
+      const html = await mdToHtml(await file.text(), true);
+      if (tok !== V.token) return;
+      body.innerHTML = `<div class="nb-view vzoom"><div class="nb-doc ro">${html}</div></div>`;
     }
     else if (kind === 'text'){
       let t = await file.text();
@@ -1767,6 +1832,276 @@ function renderSheet(){
   applyZoom();
 }
 
+/* ---------------- Cadernos (Markdown, compatível com o Bloco de Notas) ---------------- */
+const notebooks = () => S.files.filter(f => f.kind === 'caderno').sort((a, b) => (b.updatedAt || b.addedAt) - (a.updatedAt || a.addedAt));
+const nbById = id => S.files.find(f => f.id === id && f.kind === 'caderno');
+const NB = { timer: null, dirty: false, saving: false, pop: null };
+function safeName(t){ return (t || 'Caderno sem título').replace(/[\\/:*?"<>|#]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90) || 'Caderno sem título'; }
+async function uniqueNbPath(title, exceptId){
+  let base = safeName(title), name = base + '.md', i = 2;
+  while (S.files.some(f => f.path === 'cadernos/' + name && f.id !== exceptId)) name = `${base} (${i++}).md`;
+  return { name, path: 'cadernos/' + name };
+}
+async function nbCreate(title, linkEntryId){
+  if (FS.state !== 'granted'){ await needFolder(); if (FS.state !== 'granted') return null; }
+  const t = title || 'Caderno sem título';
+  const { name, path } = await uniqueNbPath(t);
+  const md = '';
+  await writeRel(path, new Blob([md], { type: 'text/markdown' }));
+  const e = linkEntryId ? byId(linkEntryId) : null;
+  const f = { id: uid(), kind: 'caderno', title: t, name, path, size: md.length, date: today(), addedAt: Date.now(), updatedAt: Date.now(), link: e && e.date ? e.date : '', entries: e ? [e.id] : [], preview: '' };
+  S.files.push(f); save(false);
+  return f;
+}
+function nbOpen(id){ ui.nbId = id; ui.nbHtml = null; ui.view = 'caderno'; render(); $('#main').scrollTop = 0; nbLoad(id); }
+async function nbLoad(id){
+  const f = nbById(id); if (!f) return;
+  try {
+    const file = await fileOf(f);
+    f.fileTime = file.lastModified;
+    ui.nbHtml = await mdToHtml(await file.text());
+  } catch(e){ ui.nbHtml = ''; toast('Não consegui ler o caderno: ' + e.message); }
+  if (ui.view === 'caderno' && ui.nbId === id) nbMount();
+}
+function nbMount(){
+  const d = $('#nbdoc'); if (!d) return;
+  d.innerHTML = ui.nbHtml == null ? '' : (ui.nbHtml.trim() ? ui.nbHtml : '<p><br></p>');
+  try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch(e){}
+  d.contentEditable = ui.nbHtml == null ? 'false' : 'true';
+  nbRefreshMentions(d);
+}
+async function mdLibs(){ await lib('marked'); }
+async function htmlLibs(){ await lib('turndown'); await lib('gfm'); }
+function encPath(p){ return p.split('/').map(encodeURIComponent).join('/'); }
+function sanitize(root){
+  root.querySelectorAll('script,style,iframe,object,embed,form,input,button,link,meta').forEach(n => n.remove());
+  root.querySelectorAll('*').forEach(n => { for (const a of [...n.attributes]){ if (/^on/i.test(a.name) || (a.name === 'href' && /^\s*javascript:/i.test(a.value)) || a.name === 'style') n.removeAttribute(a.name); } });
+}
+async function mdToHtml(md, readonly){
+  await mdLibs();
+  const box = document.createElement('div');
+  box.innerHTML = window.marked.parse(md || '', { gfm: true, breaks: false });
+  sanitize(box);
+  box.querySelectorAll('a[href]').forEach(a => {
+    let h = a.getAttribute('href') || '';
+    try { h = decodeURIComponent(h); } catch(e){}
+    h = h.replace(/^<|>$/g, '');
+    const m = h.match(/^(?:\.\.\/)?((?:arquivos|cadernos)\/.+)$/);
+    if (m){ const span = document.createElement('a'); span.className = 'mention' + (m[1].startsWith('cadernos/') ? ' nb' : ''); span.dataset.path = m[1]; span.dataset.name = a.textContent; span.textContent = a.textContent; span.setAttribute('contenteditable', 'false'); span.href = '#'; a.replaceWith(span); }
+    else { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); }
+  });
+  return box.innerHTML;
+}
+let _td = null;
+function turndown(){
+  if (_td) return _td;
+  _td = new window.TurndownService({ headingStyle: 'atx', bulletListMarker: '-', codeBlockStyle: 'fenced', emDelimiter: '*', strongDelimiter: '**', hr: '---' });
+  _td.use(window.turndownPluginGfm.gfm);
+  _td.addRule('mention', { filter: n => n.nodeName === 'A' && n.classList.contains('mention'), replacement: (c, n) => `[${(n.dataset.name || n.textContent).replace(/[\[\]]/g, '')}](../${encPath(n.dataset.path)})` });
+  _td.addRule('underline', { filter: ['u', 'ins'], replacement: c => c.trim() ? `<u>${c}</u>` : c });
+  _td.addRule('strike2', { filter: ['s', 'strike', 'del'], replacement: c => c.trim() ? `~~${c}~~` : c });
+  _td.addRule('listItem1', { filter: 'li', replacement: (content, node) => {
+    const par = node.parentNode; let prefix = '- ';
+    if (par.nodeName === 'OL'){ const st = par.getAttribute('start'); const idx = Array.prototype.indexOf.call(par.children, node); prefix = (st ? Number(st) + idx : idx + 1) + '. '; }
+    content = content.replace(/^\n+/, '').replace(/\n+$/, '\n').replace(/\n/gm, '\n' + ' '.repeat(prefix.length));
+    return prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '');
+  } });
+  _td.addRule('cellBreak', { filter: n => n.nodeName === 'BR' && n.closest && n.closest('td,th'), replacement: () => '' });
+  _td.addRule('emptyPara', { filter: n => (n.nodeName === 'P' || n.nodeName === 'DIV') && !n.textContent.trim() && !n.querySelector('img,.mention'), replacement: () => '\n' });
+  _td.addRule('spanStyled', { filter: n => n.nodeName === 'SPAN' && !n.classList.length, replacement: c => c });
+  return _td;
+}
+async function htmlToMd(html){ await htmlLibs(); return turndown().turndown(html).replace(/\n{3,}/g, '\n\n').trim() + '\n'; }
+function nbRefreshMentions(d){
+  $$('.mention', d).forEach(m => { const ok = S.files.some(f => f.path === m.dataset.path); m.classList.toggle('missing', !ok); m.title = ok ? 'Abrir ' + (m.dataset.name || '') : 'Arquivo não encontrado na agenda'; });
+}
+function nbStatus(t){ const el = $('#nb-status'); if (el) el.textContent = t; }
+function nbChanged(){
+  const d = $('#nbdoc'); if (!d) return;
+  ui.nbHtml = d.innerHTML; NB.dirty = true; nbStatus('Editando…');
+  clearTimeout(NB.timer); NB.timer = setTimeout(nbSave, 700);
+}
+async function nbSave(){
+  const f = nbById(ui.nbId); const d = $('#nbdoc');
+  if (!f || !NB.dirty) return;
+  if (FS.state !== 'granted'){ nbStatus('Pasta não autorizada: alterações só neste navegador'); return; }
+  NB.dirty = false;
+  try {
+    const md = await htmlToMd(d ? d.innerHTML : ui.nbHtml || '');
+    await writeRel(f.path, new Blob([md], { type: 'text/markdown' }));
+    f.size = new Blob([md]).size; f.updatedAt = Date.now(); f.fileTime = Date.now() + 1500;
+    f.preview = (d ? d.innerText : '').replace(/\s+/g, ' ').trim().slice(0, 180);
+    save(false); renderSide();
+    nbStatus('Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+  } catch(e){ NB.dirty = true; nbStatus('Não foi possível salvar: ' + e.message); }
+}
+async function nbRename(newTitle){
+  const f = nbById(ui.nbId); if (!f) return;
+  const t = (newTitle || '').trim() || 'Caderno sem título';
+  if (t === f.title) return;
+  const { name, path } = await uniqueNbPath(t, f.id);
+  if (path !== f.path && FS.state === 'granted'){
+    try {
+      const md = await htmlToMd($('#nbdoc') ? $('#nbdoc').innerHTML : ui.nbHtml || '');
+      await writeRel(path, new Blob([md], { type: 'text/markdown' }));
+      const parts = f.path.split('/'); const old = parts.pop();
+      try { await (await dirAt(parts.join('/'), false)).removeEntry(old); } catch(e){}
+      // atualiza menções a este caderno nos demais cadernos fica para a próxima abertura deles
+      for (const o of S.files) if (o.kind === 'caderno' && o.id !== f.id) o.renamedFrom = o.renamedFrom || null;
+      f.path = path; f.name = name;
+    } catch(e){ toast('Não consegui renomear o arquivo: ' + e.message); return; }
+  }
+  f.title = t; f.updatedAt = Date.now(); save(false); renderSide();
+  const crumb = $('.crumbs b'); if (crumb) crumb.textContent = t;
+  const sub = $('#nb-path'); if (sub) sub.textContent = 'Documentos › Agenda Inicial › ' + f.path.replace('/', ' › ');
+}
+function nbExec(cmd, val){ const d = $('#nbdoc'); if (!d) return; d.focus(); document.execCommand(cmd, false, val); nbChanged(); nbToolbarState(); }
+function nbBlock(tag){ nbExec('formatBlock', tag === 'p' ? 'P' : tag.toUpperCase()); }
+function nbToolbarState(){
+  const bar = $('#nbbar'); if (!bar) return;
+  for (const [k, c] of [['bold','bold'],['italic','italic'],['underline','underline'],['strikeThrough','strike'],['insertUnorderedList','ul'],['insertOrderedList','ol']]){
+    const b = bar.querySelector(`[data-cmd="${k}"]`); if (b){ let on = false; try { on = document.queryCommandState(k); } catch(e){} b.classList.toggle('on', on); }
+  }
+  const sel = getSelection(); let n = sel.anchorNode; let tag = 'p';
+  while (n && n.id !== 'nbdoc'){ if (n.nodeType === 1 && /^H[1-3]$/.test(n.nodeName)){ tag = n.nodeName.toLowerCase(); break; } n = n.parentNode; }
+  const s = $('#nb-block'); if (s) s.value = tag;
+}
+function nbInsertTable(){
+  const d = $('#nbdoc'); if (!d) return; d.focus();
+  const sel = getSelection(); let blk = sel.anchorNode;
+  while (blk && blk.parentNode && blk.parentNode !== d) blk = blk.parentNode;
+  if (blk === d) blk = null;
+  const cell = '<td><br></td>', row = `<tr>${cell}${cell}${cell}</tr>`;
+  const t = document.createElement('table');
+  t.innerHTML = `<thead><tr><th>Coluna 1</th><th>Coluna 2</th><th>Coluna 3</th></tr></thead><tbody>${row}${row}</tbody>`;
+  const after = document.createElement('p'); after.innerHTML = '<br>';
+  if (!blk){ d.appendChild(t); d.appendChild(after); }
+  else if (!blk.textContent.trim() && !/^(TABLE|UL|OL)$/.test(blk.nodeName)){ blk.replaceWith(t); t.after(after); }
+  else { blk.after(t); t.after(after); }
+  const r = document.createRange(); r.selectNodeContents(t.querySelector('th')); sel.removeAllRanges(); sel.addRange(r);
+  nbChanged();
+}
+function nbLink(){
+  const sel = getSelection(); const txt = sel.toString();
+  const url = prompt('Endereço do link (https://…):', 'https://'); if (!url || url === 'https://') return;
+  if (txt) nbExec('createLink', url); else nbExec('insertHTML', `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>&nbsp;`);
+}
+/* Menções: ## + nome do arquivo ou caderno */
+function nbMentionCheck(){
+  const sel = getSelection(); if (!sel.rangeCount || !sel.isCollapsed){ nbPopClose(); return; }
+  const node = sel.anchorNode; if (!node || node.nodeType !== 3 || !node.parentNode.closest || !node.parentNode.closest('#nbdoc')){ nbPopClose(); return; }
+  const before = node.textContent.slice(0, sel.anchorOffset);
+  const m = before.match(/##(?![\s#])([^#\n]{0,48})$/) || before.match(/##$/);
+  if (!m){ nbPopClose(); return; }
+  const q = (m[1] || '').trim();
+  const norm = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const items = S.files.filter(f => f.id !== ui.nbId && (!q || norm(f.kind === 'caderno' ? f.title : f.name).includes(norm(q)))).sort((a, b) => (b.updatedAt || b.addedAt) - (a.updatedAt || a.addedAt)).slice(0, 8);
+  const r = sel.getRangeAt(0).cloneRange(); const rect = r.getClientRects()[0] || node.parentNode.getBoundingClientRect();
+  NB.pop = { node, end: sel.anchorOffset, start: sel.anchorOffset - m[0].length, items, i: 0 };
+  let el = $('#mpop'); if (!el){ el = document.createElement('div'); el.id = 'mpop'; el.className = 'mpop'; document.body.appendChild(el); }
+  el.innerHTML = `<div class="h">Mencionar arquivo ou caderno</div>` + (items.length ? items.map((f, i) => `<div class="it ${i ? '' : 'on'}" data-mi="${i}"><span class="ext">${f.kind === 'caderno' ? 'cad' : esc(extOf(f.name))}</span><span>${esc(f.kind === 'caderno' ? f.title : f.name)}</span></div>`).join('') : '<div class="none">Nenhum arquivo com esse nome.</div>');
+  el.style.left = Math.min(rect.left, innerWidth - 360) + 'px';
+  el.style.top = (rect.bottom + 6 + 300 > innerHeight ? rect.top - 306 : rect.bottom + 6) + 'px';
+}
+function nbPopClose(){ NB.pop = null; const el = $('#mpop'); if (el) el.remove(); }
+function nbPopMove(d){ if (!NB.pop || !NB.pop.items.length) return; NB.pop.i = (NB.pop.i + d + NB.pop.items.length) % NB.pop.items.length; $$('#mpop .it').forEach((e, i) => e.classList.toggle('on', i === NB.pop.i)); }
+function nbPopPick(i){
+  const P = NB.pop; if (!P || !P.items[i]) return; const f = P.items[i];
+  const r = document.createRange(); r.setStart(P.node, Math.max(0, P.start)); r.setEnd(P.node, P.end); r.deleteContents();
+  const a = document.createElement('a'); a.className = 'mention' + (f.kind === 'caderno' ? ' nb' : ''); a.href = '#'; a.contentEditable = 'false'; a.dataset.path = f.path; a.dataset.name = f.kind === 'caderno' ? f.title : f.name; a.textContent = a.dataset.name;
+  const sp = document.createTextNode(' ');
+  r.insertNode(sp); r.insertNode(a);
+  const sel = getSelection(); const c = document.createRange(); c.setStartAfter(sp); c.collapse(true); sel.removeAllRanges(); sel.addRange(c);
+  nbPopClose(); nbChanged();
+}
+function openMention(path){
+  const f = S.files.find(x => x.path === path);
+  if (!f) return toast('Esse arquivo não está mais na agenda.');
+  if (f.kind === 'caderno'){ if (ui.view === 'caderno') nbSave(); closeViewer(); return nbOpen(f.id); }
+  openViewer([f], 0);
+}
+/* Autoformatação ao estilo Notion/Markdown: "# ", "## ", "### ", "- ", "1. " no início da linha */
+function nbAutoFormat(ev){
+  if (ev.key !== ' ') return false;
+  const sel = getSelection(); const n = sel.anchorNode; if (!n || n.nodeType !== 3) return false;
+  const before = n.textContent.slice(0, sel.anchorOffset);
+  let blk = n.parentNode; while (blk && blk.id !== 'nbdoc' && !/^(P|DIV|H[1-6]|LI)$/.test(blk.nodeName)) blk = blk.parentNode;
+  if (!blk || blk.nodeName === 'LI') return false;
+  const firstText = blk.id === 'nbdoc' ? n : blk.firstChild;
+  if (firstText !== n) return false;
+  const map = { '#': 'H1', '##': 'H2', '###': 'H3', '-': 'ul', '*': 'ul', '1.': 'ol' };
+  const k = before; if (!map[k]) return false;
+  ev.preventDefault(); nbPopClose();
+  const rest = n.textContent.slice(k.length);
+  let target = n;
+  if (blk.id === 'nbdoc'){ const p = document.createElement('p'); n.replaceWith(p); if (rest){ p.textContent = rest; target = p.firstChild; } else { p.innerHTML = '<br>'; target = p; } }
+  else if (rest) n.textContent = rest; else { const br = document.createElement('br'); n.replaceWith(br); target = blk; }
+  const r = document.createRange(); r.setStart(target, 0); r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+  if (map[k] === 'ul') document.execCommand('insertUnorderedList'); else if (map[k] === 'ol') document.execCommand('insertOrderedList'); else document.execCommand('formatBlock', false, map[k]);
+  nbChanged(); return true;
+}
+/* Tab em tabela: próxima célula; na última, nova linha */
+function nbTableTab(ev){
+  const sel = getSelection(); let n = sel.anchorNode; while (n && n.nodeName !== 'TD' && n.nodeName !== 'TH' && n.id !== 'nbdoc') n = n.parentNode;
+  if (!n || n.id === 'nbdoc') return false;
+  ev.preventDefault();
+  const cells = [...n.closest('table').querySelectorAll('th,td')]; let i = cells.indexOf(n) + (ev.shiftKey ? -1 : 1);
+  if (i >= cells.length){ const tb = n.closest('table').querySelector('tbody') || n.closest('table'); const cols = n.parentNode.children.length; const tr = document.createElement('tr'); tr.innerHTML = '<td><br></td>'.repeat(cols); tb.appendChild(tr); cells.push(...tr.children); nbChanged(); }
+  const t = cells[Math.max(0, i)]; const r = document.createRange(); r.selectNodeContents(t); if (!t.textContent.trim()) r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+  return true;
+}
+function attachPicker(entryId, q){
+  const e = byId(entryId); if (!e) return;
+  if (!ui.att || ui.attFor !== entryId){ ui.att = new Set(filesOf(entryId).map(f => f.id)); ui.attFor = entryId; }
+  const norm = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const list = S.files.filter(f => !q || norm(f.kind === 'caderno' ? f.title : f.name).includes(norm(q))).sort((a, b) => (b.updatedAt || b.addedAt) - (a.updatedAt || a.addedAt)).slice(0, 60);
+  const rows = list.map(f => `<label class="pick"><input type="checkbox" data-att="${f.id}" ${ui.att.has(f.id) ? 'checked' : ''}><span class="b">${f.kind === 'caderno' ? '▤' : '·'}</span><span>${esc(f.kind === 'caderno' ? f.title : f.name)} <span class="faint small">${f.kind === 'caderno' ? 'caderno' : extOf(f.name)}</span></span></label>`).join('');
+  if (q !== undefined && $('#att-list')){ $('#att-list').innerHTML = rows || '<div class="empty" style="padding:var(--s2) var(--s3)">Nada encontrado.</div>'; return; }
+  modal(`<h3>Anexar ao registro</h3><p>${esc(e.text)}</p>
+    <div style="display:flex;gap:var(--s2);margin:0 0 var(--s3)"><button class="btn" data-act="att-upload" data-e="${e.id}">${I.clip}Enviar do computador</button><button class="btn" data-act="att-newnb" data-e="${e.id}">${I.notebook}Novo caderno</button></div>
+    <input class="inp" id="att-q" data-e="${e.id}" placeholder="Buscar arquivos e cadernos da agenda" style="width:100%;margin:0 0 var(--s2)" autocomplete="off">
+    <div class="picklist" id="att-list">${rows || '<div class="empty" style="padding:var(--s2) var(--s3)">Nenhum arquivo ou caderno na agenda ainda.</div>'}</div>
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="att-save" data-e="${e.id}">Salvar anexos</button></div>`);
+}
+
+VIEWS.cadernos = () => {
+  const list = notebooks();
+  const card = f => `<div class="nb-card" data-act="nb-open" data-id="${f.id}"><h3>${I.notebook}<span>${esc(f.title)}</span></h3><p>${esc(f.preview || 'Caderno vazio.')}</p><div class="meta"><span>${brDate(ymd(new Date(f.updatedAt || f.addedAt)))}</span><span>${(f.entries || []).length ? (f.entries.length + ' vínculo' + (f.entries.length > 1 ? 's' : '')) : ''}</span></div></div>`;
+  return topbar('Cadernos', `<button class="btn primary" data-act="nb-new">${I.plus}Novo caderno</button>`) + `
+  <div class="page">
+    <div class="kicker">Biblioteca de notas</div>
+    <h1 class="title">Cadernos</h1>
+    <p class="sub">Cada caderno é um arquivo do Bloco de Notas (.md) na pasta <b>Agenda Inicial › cadernos</b>. Você pode abrir e editar pelo Bloco de Notas também.</p>
+    ${FS.state !== 'granted' ? `<div class="banner"><div><b>Autorize a pasta para usar os cadernos</b><span class="muted">Os cadernos são gravados como arquivos na pasta ${esc(FOLDER_NAME)}.</span></div><div class="tools"><button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}Autorizar</button></div></div>` : ''}
+    <div class="nb-grid">${list.map(card).join('')}<div class="nb-card new" data-act="nb-new">${I.plus}<span>Novo caderno</span></div></div>
+  </div>`;
+};
+VIEWS.caderno = () => {
+  const f = nbById(ui.nbId);
+  if (!f){ ui.view = 'cadernos'; return VIEWS.cadernos(); }
+  const tb = (cmd, ic, t) => `<button class="btn icon ghost" data-act="nb-cmd" data-cmd="${cmd}" title="${t}">${I[ic]}</button>`;
+  return topbar(esc(f.title), `<span class="nb-status" id="nb-status">${NB.dirty ? 'Editando…' : ''}</span>${officeBtnNb(f)}<button class="btn icon ghost" data-act="nb-del" title="Excluir caderno">${I.trash}</button>`) + `
+  <div class="page">
+    <div class="kicker"><a href="#" data-act="go" data-v="cadernos" style="color:inherit;text-decoration:none">Cadernos</a></div>
+    <input class="title-edit" id="nb-title" value="${esc(f.title)}" placeholder="Caderno sem título">
+    <p class="sub" style="margin-bottom:var(--s3)"><span id="nb-path">Documentos › Agenda Inicial › ${esc(f.path.replace('/', ' › '))}</span></p>
+    <div data-fid="${f.id}" style="display:flex;align-items:center;gap:var(--s2)"><span class="muted small">Vínculos</span>${linkTags(f)}</div>
+    <div class="nb-bar" id="nbbar">
+      <select class="inp" id="nb-block" title="Estilo do parágrafo"><option value="p">Texto</option><option value="h1">Título 1</option><option value="h2">Título 2</option><option value="h3">Título 3</option></select>
+      <span class="sep"></span>
+      ${tb('bold','bold','Negrito (Ctrl+B)')}${tb('italic','italic','Itálico (Ctrl+I)')}${tb('underline','underline','Sublinhado (Ctrl+U)')}${tb('strikeThrough','strikeT','Tachado')}
+      <span class="sep"></span>
+      ${tb('insertUnorderedList','ul','Lista com marcadores')}${tb('insertOrderedList','ol','Lista numerada')}
+      <span class="sep"></span>
+      ${tb('link','hlink','Link')}${tb('table','table','Tabela')}${tb('clear','eraser','Limpar formatação')}
+      <span class="grow"></span>
+      <span class="muted small" title="Mencionar arquivo ou caderno">Digite <span class="kbd">##</span> para mencionar</span>
+    </div>
+    <div class="nb-doc" id="nbdoc" contenteditable="true" spellcheck="true" data-ph="Comece a escrever… Use # para título, - para lista e ## para mencionar um arquivo."></div>
+  </div>`;
+};
+function officeBtnNb(f){ return `<button class="btn icon ghost" data-act="o-open" data-p="${esc(f.path)}" title="Abrir no Bloco de Notas (programa padrão para .md)">${I.notepad}</button>`; }
+
 /* ---------------- Seletor de data ---------------- */
 function pickDate(cb, initial, ev){
   const dp = $('#dp'); dp.value = initial || '';
@@ -1809,18 +2144,30 @@ const ACT = {
   'pwa-install': async () => { if (!window._bip) return; window._bip.prompt(); await window._bip.userChoice; window._bip = null; render(false); },
   'f-view': (a, ev) => {
     ev && ev.preventDefault();
+    { const nb = nbById(a.closest('[data-fid]').dataset.fid); if (nb) return nbOpen(nb.id); }
     const tb = a.closest('tbody'); const ids = tb ? $$('tr[data-fid]', tb).map(r => r.dataset.fid) : [];
     const list = ids.map(id => S.files.find(f => f.id === id)).filter(Boolean);
-    const id = a.closest('tr').dataset.fid; openViewer(list, Math.max(0, list.findIndex(f => f.id === id)));
+    const id = a.closest('[data-fid]').dataset.fid; openViewer(list, Math.max(0, list.findIndex(f => f.id === id)));
   },
   'ponto-view': () => { if (S.ponto.file) openViewer([S.ponto.file], 0); },
   'v-local': () => $('#vpick').click(),
   'v-close': () => { if (V.only) window.close(); else closeViewer(); },
   'o-open': a => officeOpen(a.dataset.p),
+  'nb-new': async () => { const f = await nbCreate(); if (f){ nbOpen(f.id); setTimeout(() => { const t = $('#nb-title'); if (t){ t.focus(); t.select(); } }, 300); } },
+  'nb-open': a => nbOpen(a.dataset.id),
+  'nb-cmd': a => { const c = a.dataset.cmd; if (c === 'link') return nbLink(); if (c === 'table') return nbInsertTable(); if (c === 'clear'){ nbExec('removeFormat'); nbBlock('p'); return; } nbExec(c); },
+  'nb-del': async () => {
+    const f = nbById(ui.nbId); if (!f || !confirm(`Excluir o caderno "${f.title}"? O arquivo ${f.name} será apagado da pasta.`)) return;
+    try { const parts = f.path.split('/'); const n = parts.pop(); await (await dirAt(parts.join('/'), false)).removeEntry(n); } catch(e){}
+    S.files = S.files.filter(x => x !== f); NB.dirty = false; ui.view = 'cadernos'; save();
+  },
+  'att-upload': a => { closeModal(); const e = byId(a.dataset.e); const p = $('#fpick'); p.dataset.link = e.date || ''; p.dataset.entry = e.id; p.click(); },
+  'att-newnb': async a => { const e = byId(a.dataset.e); closeModal(); const f = await nbCreate(e.text, e.id); if (f){ save(false); nbOpen(f.id); } },
+  'att-save': a => { const id = a.dataset.e, e = byId(id); for (const f of S.files){ const has = (f.entries || []).includes(id), want = ui.att.has(f.id); if (want && !has){ f.entries = [...(f.entries || []), id]; if (!f.link && e.date) f.link = e.date; } if (!want && has) f.entries = f.entries.filter(x => x !== id); } ui.att = null; closeModal(); save(); toast('Anexos atualizados.'); },
   'm-close': () => { closeModal(); ui.pick = null; ui.pickFor = null; },
-  'fl-add': a => { ui.pick = null; linkPicker(a.closest('tr').dataset.fid); },
+  'fl-add': a => { ui.pick = null; linkPicker(a.closest('[data-fid]').dataset.fid); },
   'fl-save': a => { const f = S.files.find(x => x.id === a.dataset.fid); f.entries = [...ui.pick]; const first = byId(f.entries[0]); if (first && first.date && !f.link) f.link = first.date; ui.pick = null; closeModal(); save(); toast(f.entries.length ? `Anexo vinculado a ${f.entries.length} registro(s).` : 'Vínculos removidos.'); },
-  'fl-del': (a, ev) => { ev.stopPropagation(); const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); f.entries = f.entries.filter(x => x !== a.dataset.e); save(); },
+  'fl-del': (a, ev) => { ev.stopPropagation(); const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); f.entries = f.entries.filter(x => x !== a.dataset.e); save(); },
   'fl-go': a => { const e = byId(a.dataset.e); if (e && e.date){ ui.date = e.date; ui.keepDate = true; go('hoje'); } },
   'm-on': a => { S.settings.openerOn = true; save(false); closeModal(); location.href = localUri(a.dataset.p); },
   'm-win': a => { closeModal(); openWindow(S.files.find(f => f.path === a.dataset.p) || { name: a.dataset.p.split('/').pop(), path: a.dataset.p }); },
@@ -1850,13 +2197,14 @@ const ACT = {
   'm-today': () => { ui.month = today().slice(0,7); render(); },
   'g-refresh': () => { resetG(); render(); toast('Atualizando do Google…'); },
   'attach-day': () => { const p = $('#fpick'); p.dataset.link = ui.date; p.dataset.entry = ''; p.click(); },
-  'e-attach': a => { const e = byId(a.closest('.entry').dataset.id); const p = $('#fpick'); p.dataset.link = e.date || ''; p.dataset.entry = e.id; p.click(); },
-  'f-chip': (a, ev) => { ev.preventDefault(); const e = byId(a.dataset.e); const list = filesOf(e.id); openViewer(list, Math.max(0, list.findIndex(f => f.id === a.dataset.fid))); },
+  'e-attach': a => { ui.att = null; attachPicker(a.closest('.entry').dataset.id); },
+  'e-attach-old': a => { const e = byId(a.closest('.entry').dataset.id); const p = $('#fpick'); p.dataset.link = e.date || ''; p.dataset.entry = e.id; p.click(); },
+  'f-chip': (a, ev) => { ev.preventDefault(); const nb = nbById(a.dataset.fid); if (nb) return nbOpen(nb.id); const e = byId(a.dataset.e); const list = filesOf(e.id).filter(f => f.kind !== 'caderno'); openViewer(list, Math.max(0, list.findIndex(f => f.id === a.dataset.fid))); },
   'f-up': (a, ev) => { ev && ev.preventDefault(); const p = $('#fpick'); p.dataset.link = ''; p.dataset.entry = ''; p.click(); },
   'f-goday': (a, ev) => { ev.preventDefault(); ui.date = a.dataset.d; ui.keepDate = true; go('hoje'); },
-  'f-link': (a, ev) => { const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); pickDate(v => { f.link = v; save(); toast('Arquivo vinculado a ' + brDate(v) + '.'); }, f.link || today(), ev); },
+  'f-link': (a, ev) => { const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); pickDate(v => { f.link = v; save(); toast('Arquivo vinculado a ' + brDate(v) + '.'); }, f.link || today(), ev); },
   'f-del': async a => {
-    const f = S.files.find(x => x.id === a.closest('tr').dataset.fid); if (!f) return;
+    const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); if (!f) return;
     const also = FS.state === 'granted' && confirm(`Remover "${f.name}" da agenda.\n\nOK = apagar também o arquivo da pasta\nCancelar = escolher outra opção`);
     if (!also && !confirm(`Remover "${f.name}" apenas do índice da agenda, mantendo o arquivo na pasta?`)) return;
     if (also){ try { const parts = f.path.split('/'); const dir = await dirAt(parts.slice(0,-1).join('/'), false); await dir.removeEntry(parts.pop()); } catch(e){ toast('Não consegui apagar o arquivo da pasta.'); } }
@@ -1941,7 +2289,13 @@ const ACT = {
     t.onblur = () => { if (!ui.rendering) fin(true); };
   }
 };
+document.addEventListener('mousedown', ev => {
+  if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
+  const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
+});
+document.addEventListener('selectionchange', () => { if (ui.view === 'caderno' && document.activeElement && document.activeElement.id === 'nbdoc'){ nbToolbarState(); } });
 document.addEventListener('click', ev => {
+  const men = ev.target.closest('.mention'); if (men){ ev.preventDefault(); openMention(men.dataset.path); return; }
   if (ev.target.id === 'viewer'){ closeViewer(); return; }
   if (ev.target.id === 'modal'){ closeModal(); ui.pick = null; return; }
   const a = ev.target.closest('[data-act]'); if (!a) return;
@@ -1952,6 +2306,19 @@ document.addEventListener('click', ev => {
 });
 document.addEventListener('keydown', ev => {
   const t = ev.target;
+  if (t.id === 'nbdoc'){
+    if (NB.pop){
+      if (ev.key === 'ArrowDown'){ ev.preventDefault(); return nbPopMove(1); }
+      if (ev.key === 'ArrowUp'){ ev.preventDefault(); return nbPopMove(-1); }
+      if ((ev.key === 'Enter' || ev.key === 'Tab') && NB.pop.items.length){ ev.preventDefault(); return nbPopPick(NB.pop.i); }
+      if (ev.key === 'Escape'){ ev.preventDefault(); return nbPopClose(); }
+    }
+    if (ev.key === 'Tab' && nbTableTab(ev)) return;
+    if (nbAutoFormat(ev)) return;
+    if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's'){ ev.preventDefault(); NB.dirty = true; nbSave(); }
+    return;
+  }
+  if (t.id === 'nb-title' && ev.key === 'Enter'){ ev.preventDefault(); $('#nbdoc').focus(); return; }
   if (!$('#viewer').hidden){
     if (ev.key === 'Escape'){ ev.preventDefault(); closeViewer(); return; }
     if (ev.key === 'ArrowLeft' && V.list.length > 1 && t.tagName !== 'INPUT'){ ev.preventDefault(); ACT['v-prev'](); return; }
@@ -1995,6 +2362,8 @@ document.addEventListener('keydown', ev => {
 });
 document.addEventListener('input', ev => {
   const t = ev.target;
+  if (t.id === 'nbdoc'){ nbChanged(); nbMentionCheck(); return; }
+  if (t.id === 'att-q'){ attachPicker(t.dataset.e, t.value); return; }
   if (t.id === 'daynotes'){ autosize(t); (S.days[ui.date] = S.days[ui.date] || {}).notes = t.value; if (!t.value) delete S.days[ui.date]; save(false); }
   if (t.id === 'lnotes'){ autosize(t); S.lists.find(x => x.id === ui.listId).notes = t.value; save(false); }
   if (t.id === 'ltitle'){ S.lists.find(x => x.id === ui.listId).title = t.value; save(false); renderSide(); }
@@ -2024,6 +2393,9 @@ document.addEventListener('change', async ev => {
   const t = ev.target;
   if (t.id === 'fpick'){ await uploadFiles(t.files, t.dataset.link || '', t.dataset.entry || ''); t.value = ''; }
   if (t.id === 'pk-date'){ linkPicker(t.dataset.fid, t.value); }
+  if (t.id === 'nb-block'){ nbBlock(t.value); }
+  if (t.id === 'nb-title'){ nbRename(t.value); }
+  if (t.dataset && t.dataset.att){ if (t.checked) ui.att.add(t.dataset.att); else ui.att.delete(t.dataset.att); }
   if (t.dataset && t.dataset.pick){ if (t.checked) ui.pick.add(t.dataset.pick); else ui.pick.delete(t.dataset.pick); const h = $('.pickhead span'); if (h) h.textContent = ui.pick.size + ' selecionado(s)'; }
   if (t.id === 'fpick1' && t.files[0]){
     try { const r = await storeFile(t.files[0], 'arquivos/Ponto'); S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link: '', entries: [] }); S.ponto.file = { name: r.name, path: r.path }; S.ponto.kind = 'file'; save(); toast('Arquivo do ponto vinculado.'); } catch(e){ if (e.message !== 'sem pasta') toast('Não consegui gravar o arquivo.'); }
@@ -2052,6 +2424,7 @@ document.addEventListener('dragover', ev => { const d = ev.target.closest && ev.
 document.addEventListener('dragleave', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d) d.classList.remove('over'); });
 document.addEventListener('drop', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d){ ev.preventDefault(); d.classList.remove('over'); uploadFiles(ev.dataTransfer.files); } });
 $('#main').addEventListener('scroll', () => { const tb = $('.topbar'); tb && tb.classList.toggle('scrolled', $('#main').scrollTop > 4); });
+window.addEventListener('beforeunload', () => { if (NB.dirty) nbSave(); });
 window.addEventListener('storage', ev => { if (ev.key === LS_KEY && ev.newValue){ S = migrate(JSON.parse(ev.newValue)); render(false); } });
 // Virada do dia com a agenda aberta
 setInterval(() => { if (ui._today !== today()){ const was = ui._today; ui._today = today(); if (was && ui.view === 'hoje' && ui.date === was){ ui.date = today(); } render(); } }, 60000);
@@ -2066,7 +2439,7 @@ if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
 }
 (async function start(){
   ui._today = today();
-  { const h = location.hash.slice(1); if (['hoje','cal','futuro','arquivos','ponto','perfil','config'].includes(h)) ui.view = h; }
+  { const h = location.hash.slice(1); if (['hoje','cal','futuro','cadernos','arquivos','ponto','perfil','config'].includes(h)) ui.view = h; }
   if (location.hash.startsWith('#ver=')){
     const path = decodeURIComponent(location.hash.slice(5)); V.only = true;
     document.body.classList.add('vonly'); applyTheme(); document.title = path.split('/').pop() + ' · Agenda Inicial';
