@@ -1,10 +1,10 @@
 {
- "version": "1.5.2",
+ "version": "1.5.3",
  "date": "2026-11-24",
  "notes": [
-  "Arquivos do Word, Excel e PowerPoint abrem direto da pasta, sem baixar (botão \"Abrir no Word/Excel/PowerPoint\")",
+  "Anexos abrem direto no Word, Excel e demais programas, sem baixar, após uma ativação única no computador",
+  "Corrigido o tamanho do botão \"Verificar versão\"",
   "Novo \"Abrir em janela\": o visualizador abre numa janela própria, sem baixar nada",
-  "Dentro de uma tarefa agora dá para criar subtarefa, nota ou evento, com ou sem prioridade",
-  "Notas e eventos dentro de uma tarefa não contam para concluí-la; só as subtarefas contam"
+  "Dentro de uma tarefa agora dá para criar subtarefa, nota ou evento, com ou sem prioridade"
  ]
 }

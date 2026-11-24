@@ -299,6 +299,13 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .page.hoje .notes{background-color:transparent}
 .install{margin:0 var(--s2) var(--s2)}
 .install .btn{width:100%;justify-content:center}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(15,15,14,.45);display:grid;place-items:center;padding:var(--s4)}
+.modal[hidden]{display:none}
+.modal .box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);width:min(520px,100%);padding:var(--s4)}
+.modal h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 var(--s2)}
+.modal p{margin:0 0 var(--s3);color:var(--muted)}
+.modal ol{margin:0 0 var(--s3);padding-left:20px;line-height:1.9}
+.modal .tools{display:flex;gap:var(--s2);justify-content:flex-end;flex-wrap:wrap}
 .foot-note{margin-top:var(--s6);padding-top:var(--s2);border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
 /* ---------- Subtarefas ---------- */
 .entry{padding-left:calc(var(--d,0) * 24px)}
@@ -311,7 +318,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .avatar{font-family:var(--serif);width:56px;height:56px;flex:none;display:grid;place-items:center;background:var(--text);color:var(--bg);font-weight:700;font-size:20px;letter-spacing:.02em;border-radius:var(--r);border-bottom:4px solid var(--accent)}
 .prev{border:1px solid var(--border);padding:20px 24px;border-radius:var(--r);box-shadow:var(--shadow)}
 .appcard{display:grid;grid-template-columns:64px 1fr;gap:var(--s3);align-items:center}
-.appcard svg{width:64px;height:64px;display:block}
+.appcard>svg{width:64px;height:64px;display:block}
 
 /* ---------- Relatórios (PDF) ---------- */
 #print{display:none}
@@ -362,6 +369,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 <input type="file" id="importpick" accept=".json,application/json" hidden>
 <div class="toast" id="toast"></div>
 <div id="print"></div>
+<div class="modal" id="modal" hidden><div class="box" id="modalbox"></div></div>
 <div class="viewer" id="viewer" hidden><div class="vpanel"><div class="vbar" id="vbar"></div><div class="vbody" id="vbody"></div><div class="vtabs" id="vtabs"></div></div></div>
 <input type="file" id="vpick" hidden>
 
@@ -374,7 +382,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.5.2';    // versão do programa
+const APP_RELEASE = '1.5.3';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -572,6 +580,7 @@ async function dirAt(path, create = true){
   return d;
 }
 async function syncFromDisk(isFirst = false){
+  setTimeout(ensureOpenerFiles, 300);
   try {
     const dir = await dirAt('dados');
     let disk = null, lm = 0;
@@ -658,25 +667,61 @@ function officeUri(p){
 }
 /* Botão "Abrir no Word/Excel/PowerPoint": abre o arquivo onde ele está, sem baixar. */
 function officeBtn(p, cls = 'btn ghost'){
-  const app = officeApp(p); if (!app) return '';
-  return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}" title="Abre o arquivo direto da pasta, sem baixar">Abrir no ${OFFICE_NAME[app]}</button>`;
+  const app = officeApp(p);
+  return `<button class="${cls}" data-act="o-open" data-p="${esc(p)}" title="Abre o arquivo direto da pasta, no programa do computador, sem baixar">${app ? 'Abrir no ' + OFFICE_NAME[app] : 'Abrir no computador'}</button>`;
 }
-function askWinPath(){
-  const v = prompt(`Para abrir no Office sem baixar, a agenda precisa saber onde fica a pasta ${FOLDER_NAME} no Windows (é perguntado só uma vez).\n\nNo Explorador de Arquivos, abra a pasta ${FOLDER_NAME}, clique na barra de endereço, copie e cole aqui:`, S.settings.winPath || '');
-  if (v === null) return false;
-  const p = v.trim().replace(/^"|"$/g, '');
-  if (!/^([a-zA-Z]:\\|\\\\)/.test(p)){ toast('Endereço não reconhecido. Ele começa com a letra do disco, como C:\\…'); return false; }
-  S.settings.winPath = p; save(false); return true;
+/* Abrir no computador: atalho "agendainicial://" registrado no Windows uma única vez
+   pelo arquivo sistema\Ativar abrir arquivos.cmd, que a própria agenda grava na pasta.
+   O script só abre documentos que estejam dentro de Agenda Inicial\arquivos. */
+const OPENER_V = 1;
+const OPENER_PS1 = [
+  'param([string]$u)',
+  '# Agenda Inicial - abre um anexo da pasta da agenda no programa padrao do Windows.',
+  '$base = Split-Path -Parent $PSScriptRoot',
+  "$rel = $u -replace '^agendainicial:(//)?(abrir/)?', ''",
+  "$rel = [Uri]::UnescapeDataString($rel).Trim().TrimEnd('/') -replace '/', '\\'",
+  "if ($rel -match '\\.\\.' -or $rel -match ':' -or $rel -notmatch '^arquivos\\\\') { exit 1 }",
+  '$ext = [IO.Path]::GetExtension($rel).ToLower()',
+  "$ok = '.pdf .doc .docx .docm .dot .dotx .rtf .odt .xls .xlsx .xlsm .xltx .csv .ods .ppt .pptx .ppsx .potx .odp .txt .md .png .jpg .jpeg .gif .bmp .webp .tif .tiff .msg .eml .mp3 .mp4 .wav'.Split(' ')",
+  'if ($ok -notcontains $ext) { exit 1 }',
+  '$full = Join-Path $base $rel',
+  'if (Test-Path -LiteralPath $full) { Invoke-Item -LiteralPath $full }'
+].join('\r\n') + '\r\n';
+const OPENER_ON = [
+  '@echo off',
+  'title Agenda Inicial - ativar abrir arquivos',
+  'set "PS=%~dp0abrir.ps1"',
+  'reg add "HKCU\\Software\\Classes\\agendainicial" /ve /d "URL:Agenda Inicial" /f >nul',
+  'reg add "HKCU\\Software\\Classes\\agendainicial" /v "URL Protocol" /d "" /f >nul',
+  'reg add "HKCU\\Software\\Classes\\agendainicial\\shell\\open\\command" /ve /d "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \\"%PS%\\" \\"%%1\\"" /f >nul',
+  'if errorlevel 1 (echo Nao foi possivel ativar neste computador. & pause & exit /b 1)',
+  'echo.',
+  'echo Pronto! A Agenda Inicial ja abre os anexos direto no Word, Excel e demais programas.',
+  'echo Pode fechar esta janela e voltar para a agenda.',
+  'timeout /t 8 >nul'
+].join('\r\n') + '\r\n';
+const OPENER_OFF = ['@echo off', 'reg delete "HKCU\\Software\\Classes\\agendainicial" /f >nul', 'echo Abrir arquivos pela agenda foi desativado.', 'timeout /t 5 >nul'].join('\r\n') + '\r\n';
+async function ensureOpenerFiles(){
+  if (FS.state !== 'granted' || S.settings.openerFiles === OPENER_V) return;
+  try {
+    await writeRel('sistema/abrir.ps1', new Blob([OPENER_PS1]));
+    await writeRel('sistema/Ativar abrir arquivos.cmd', new Blob([OPENER_ON]));
+    await writeRel('sistema/Desativar abrir arquivos.cmd', new Blob([OPENER_OFF]));
+    S.settings.openerFiles = OPENER_V; save(false);
+  } catch(e){ console.warn('Arquivos do sistema não gravados', e); }
 }
+const localUri = p => 'agendainicial://abrir/' + p.split('/').map(encodeURIComponent).join('/');
+function modal(html){ $('#modalbox').innerHTML = html; $('#modal').hidden = false; }
+function closeModal(){ $('#modal').hidden = true; }
 function officeOpen(p){
-  if (!baseHref() && !askWinPath()) return;
-  location.href = officeUri(p);
-  toast(`Abrindo no ${OFFICE_NAME[officeApp(p)]}… Se ele não abrir, use "Abrir em janela", que também não baixa nada.`, 6000);
+  if (S.settings.openerOn){ location.href = localUri(p); return; }
+  ensureOpenerFiles();
+  modal(`<h3>Abrir direto no computador</h3>
+    <p>Para os anexos abrirem no Word, Excel e demais programas sem baixar, falta uma ativação feita uma única vez neste computador:</p>
+    <ol><li>Abra a pasta <b>Documentos › ${esc(FOLDER_NAME)} › sistema</b>.</li><li>Dê dois cliques em <b>Ativar abrir arquivos</b>.</li><li>Volte aqui e clique em <b>Já ativei</b>. Se o Chrome perguntar, marque <b>Sempre permitir</b>.</li></ol>
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn" data-act="m-win" data-p="${esc(p)}">${I.open}Abrir em janela</button><button class="btn primary" data-act="m-on" data-p="${esc(p)}">Já ativei, abrir</button></div>`);
 }
-function openPath(p){
-  if (officeApp(p)) return officeOpen(p);
-  openViewer([{ name: p.split('/').pop(), path: p }], 0);
-}
+function openPath(p){ officeOpen(p); }
 /* Janela própria do visualizador (sem download). */
 function openWindow(item){
   if (item.path){ window.open(location.pathname + '#ver=' + encodeURIComponent(item.path), 'ver_' + item.path.replace(/\W/g, '_'), 'popup,width=1180,height=860'); return; }
@@ -1356,7 +1401,7 @@ VIEWS.arquivos = () => {
   <div class="page">
     <div class="kicker">Biblioteca</div>
     <h1 class="title">Arquivos</h1>
-    <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta do sistema.</p>
+    <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta Agenda Inicial.</p>
     ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? 'Abra a agenda no Chrome ou no Edge para enviar arquivos.' : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
     <div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>
     <div class="sec"><div class="sec-h"><h2>${S.files.length} arquivo${S.files.length === 1 ? '' : 's'}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
@@ -1423,7 +1468,7 @@ VIEWS.config = () => {
   <div class="page">
     <div class="kicker">Sistema</div>
     <h1 class="title">Configurações</h1>
-    <p class="sub">Tudo fica salvo na pasta do sistema, junto com este HTML.</p>
+    <p class="sub">Tudo fica salvo na pasta Agenda Inicial, em Documentos, no seu computador.</p>
 
     <div class="sec"><div class="sec-h"><h2>Aplicativo</h2></div>
       <div class="appcard">${ICON_SVG}<div><b style="font-family:var(--serif);font-size:17px">Agenda Inicial · versão ${APP_RELEASE}</b><div class="muted small">${isStandalone() ? 'Instalada como aplicativo.' : 'Aberta no navegador.'} As versões novas chegam sozinhas: ao abrir a agenda com internet, ela já carrega a mais recente. Seus dados nunca saem do computador.</div>
@@ -1444,11 +1489,8 @@ VIEWS.config = () => {
         <dt>Conteúdo</dt><dd><span class="muted">dados/agenda.json · dados/backups/ (cópia diária) · arquivos/ (anexos)</span></dd>
         <dt>Navegador</dt><dd>${fsSupported ? 'Compatível' : '<span style="color:var(--danger)">Este navegador não grava no computador. Use Chrome ou Edge.</span>'}</dd>
       </dl>
-      <div class="form" style="margin-top:var(--s2)">
-        <span class="muted">Caminho no Windows</span>
-        <input class="inp" id="win-path" placeholder="Ex.: C:\Users\seu-usuario\Documents\Agenda Inicial" value="${esc(S.settings.winPath || '')}">
-      </div>
-      <p class="hint">Usado pelos botões "Abrir no Word/Excel/PowerPoint", que abrem o arquivo direto da pasta, sem baixar. Se estiver vazio, a agenda pergunta na primeira vez.</p>
+      <dl class="kv" style="margin-top:var(--s2)"><dt>Abrir no computador</dt><dd>${S.settings.openerOn ? '<span class="dot ok"></span>Ativado · <a href="#" data-act="opener-off">mostrar de novo as instruções</a>' : '<span class="dot"></span>Ainda não ativado: a agenda explica na primeira vez que você clicar em "Abrir no Word"'}</dd></dl>
+      <p class="hint">Os anexos abrem no programa do computador direto da pasta, sem baixar. A ativação fica em <i>sistema › Ativar abrir arquivos</i>; para desfazer, use <i>Desativar abrir arquivos</i> na mesma pasta.</p>
       <div style="display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap">
         ${fsSupported ? `<button class="btn" data-act="fs-connect">${I.folder}${FS.root ? 'Trocar pasta' : 'Autorizar pasta Documentos'}</button>` : ''}
         ${fsSupported ? `<button class="btn" data-act="import-old" title="Traz os registros e anexos da pasta Agenda Cagece">Trazer dados da agenda anterior</button>` : ''}
@@ -1734,6 +1776,10 @@ const ACT = {
   'v-local': () => $('#vpick').click(),
   'v-close': () => { if (V.only) window.close(); else closeViewer(); },
   'o-open': a => officeOpen(a.dataset.p),
+  'm-close': () => closeModal(),
+  'm-on': a => { S.settings.openerOn = true; save(false); closeModal(); location.href = localUri(a.dataset.p); },
+  'm-win': a => { closeModal(); openWindow(S.files.find(f => f.path === a.dataset.p) || { name: a.dataset.p.split('/').pop(), path: a.dataset.p }); },
+  'opener-off': () => { S.settings.openerOn = false; save(); toast('Na próxima vez, a agenda mostra de novo as instruções de ativação.'); },
   'v-prev': () => { V.i = (V.i - 1 + V.list.length) % V.list.length; showViewer(); },
   'v-next': () => { V.i = (V.i + 1) % V.list.length; showViewer(); },
   'v-zin': () => { V.zoom = Math.min(3, Math.round((V.zoom + .1) * 10) / 10); applyZoom(); },
