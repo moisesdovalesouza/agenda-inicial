@@ -528,7 +528,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.15.1';    // versão do programa
+const APP_RELEASE = '1.15.2';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -759,7 +759,7 @@ async function syncFromDisk(isFirst = false){
     const dir = await dirAt('dados');
     let disk = null, lm = 0;
     try { const fh = await dir.getFileHandle('agenda.json'); const f = await fh.getFile(); lm = f.lastModified; disk = JSON.parse(await f.text()); } catch(e){}
-    if (disk && (disk.updatedAt || 0) > (S.updatedAt || 0)){
+    if (disk && !SYNC.user && (disk.updatedAt || 0) > (S.updatedAt || 0)){   // com a nuvem ligada, a nuvem é a referência; a pasta é só cópia
       S = migrate(disk); localStorage.setItem(LS_KEY, JSON.stringify(S)); FS.lastWrite = lm;
     } else {
       await writeDisk();
@@ -1751,7 +1751,7 @@ VIEWS.config = () => {
       <div style="display:flex;gap:var(--s2)"><input class="inp" id="ponteIn" placeholder="Chave da rede do trabalho" style="flex:1" autocomplete="off"><button class="btn" data-act="ponte-in">Conectar</button></div>`}
     </div>
 
-    ${CLOUD.user && NUV.conectadas === null ? (nuvemConectadas().then(() => { if (ui.view === 'config') render(false); }), '') : ''}${CLOUD.user ? `<div class="sec"><div class="sec-h"><h2>Anexos na nuvem</h2></div>
+    ${CLOUD.user && NUV.conectadas === null ? (nuvemConectadas().then(() => { if (ui.view === 'config') renderBg(); }), '') : ''}${CLOUD.user ? `<div class="sec"><div class="sec-h"><h2>Anexos na nuvem</h2></div>
       ${NUV.conectadas === null ? `<p class="muted">Verificando as nuvens conectadas no Termo Inicial…</p>` : `<dl class="kv">
         <dt>Guardar anexos em</dt><dd><select class="inp" id="nuvemProv" style="max-width:260px">
           <option value="nenhuma"${!nuvemEscolhida() ? ' selected' : ''}>Só neste computador</option>
@@ -1823,6 +1823,36 @@ VIEWS.config = () => {
   </div>`;
 };
 
+/* ---------------- Edição protegida ----------------
+   Tarefas em segundo plano (nuvem, perfil, foto, anexos, virada do dia) nunca redesenham a tela enquanto um
+   campo está sendo editado: o redesenho fica para quando o cursor sair do campo. Assim a edição não é
+   interrompida nem volta ao texto salvo antes. */
+function editando(){
+  const a = document.activeElement;
+  if (!a || a === document.body) return false;
+  return a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+}
+function chavesEmEdicao(){
+  const k = new Set(), a = document.activeElement;
+  if (!editando()) return k;
+  const en = a.closest && a.closest('.entry[data-id]'); if (en) k.add('registro:' + en.dataset.id);
+  if (a.id === 'daynotes') k.add('dia:' + ui.date);
+  if (ui.view === 'lista' && ui.listId) k.add('lista:' + ui.listId);
+  if (ui.view === 'caderno' && ui.nbId) k.add('caderno:' + ui.nbId);
+  if (a.dataset && a.dataset.prof) k.add('ajuste:perfil');
+  return k;
+}
+const EDIT = { pend: false, linhas: [] };
+function renderBg(){
+  if (editando() || (ui.view === 'caderno' && typeof NB !== 'undefined' && NB.dirty)){ EDIT.pend = true; return; }
+  render(false);
+}
+document.addEventListener('focusout', () => setTimeout(() => {
+  if (editando()) return;
+  if (EDIT.linhas.length && typeof aplicarAdiadas === 'function') aplicarAdiadas();
+  if (EDIT.pend){ EDIT.pend = false; if (!(ui.view === 'caderno' && NB.dirty)) render(false); }
+}, 250));
+
 /* ---------------- Nuvem (Supabase do Termo Inicial) ---------------- */
 const SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 const SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';   // chave pública; o acesso é protegido por usuário no banco
@@ -1868,7 +1898,7 @@ async function cloudClient(){
       SYNC.user = u.id; saveSync(); cloudSync(true);
     }
     if (!u){ CLOUD.state = 'off'; }
-    renderSide(); if (ui.view === 'config') render(false);
+    renderSide(); if (ui.view === 'config') renderBg();
   });
   return CLOUD.sb;
 }
@@ -1933,6 +1963,16 @@ function applyRow(r){
   }
 }
 const pendingNbFiles = new Set();
+function aplicarAdiadas(){
+  const linhas = EDIT.linhas.splice(0), items = cloudItems(); let mudou = false;
+  for (const r of linhas){
+    const key = r.tipo + ':' + r.id, local = items.get(key);
+    const localHash = local ? hashStr(JSON.stringify(clean(local))) : null;
+    if (local && localHash !== SYNC.sent[key]) continue;        // você mudou enquanto editava: a sua versão vale e será enviada
+    applyRow(r); SYNC.sent[key] = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {}))); mudou = true;
+  }
+  if (mudou){ saveSync(); try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); EDIT.pend = true; }
+}
 async function writePulledNotebooks(){
   if (FS.state !== 'granted') return;
   for (const id of [...pendingNbFiles]){
@@ -1963,11 +2003,16 @@ async function cloudSync(full){
     for (;;){
       const data = await ler(from);
       const items = cloudItems();
+      const emEdicao = chavesEmEdicao();
       for (const r of data){
         const key = r.tipo + ':' + r.id, local = items.get(key);
         const localHash = local ? hashStr(JSON.stringify(clean(local))) : null;
         const localDirty = local ? localHash !== SYNC.sent[key] : false;
+        from = r.atualizado;
         if (localDirty && local && SYNC.done) continue;          // alteração local ainda não enviada: a local vale
+        const remotoHash = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {})));
+        if (local && !r.excluido && remotoHash === localHash){ SYNC.sent[key] = remotoHash; continue; }   // é o eco do que este aparelho enviou: nada muda
+        if (emEdicao.has(key)){ EDIT.linhas.push(r); continue; }   // está sendo editado agora: aplica quando sair do campo
         applyRow(r); changed = true;
         SYNC.sent[key] = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {})));
         from = r.atualizado;
@@ -1991,7 +2036,7 @@ async function cloudSync(full){
     SYNC.done = true; saveSync();
     grupoPuxar(); if (NUV.conectadas === null) nuvemConectadas();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
-    if (changed && !(ui.view === 'caderno' && NB.dirty)) render(false);
+    if (changed) renderBg();
   } catch(e){
     if (CLOUD.via === 'direto' && netError(e) && ponteChave()){ CLOUD.via = 'ponte'; CLOUD.busy = false; return cloudSync(full); }
     CLOUD.state = 'erro'; CLOUD.error = netError(e) ? 'sem conexão com o servidor' : (e.message || String(e));
@@ -2042,7 +2087,7 @@ function grupoAplicar(p){
   fotoDoGrupo(p);
   if (primeira && !p.oab_numero && oabLocal && oabLocal.oab_numero) grupoAgendar();   // a OAB só existia na agenda: leva para o Termo Inicial
   save(false);
-  if (antes !== JSON.stringify([P.name, P.registro])){ renderSide(); if (ui.view === 'perfil') render(false); }
+  if (antes !== JSON.stringify([P.name, P.registro])){ renderSide(); if (ui.view === 'perfil') renderBg(); }
 }
 async function grupoPuxar(forcar){
   if (!CLOUD.user || GRUPO.busy || GRUPO.timer) return;
@@ -2080,10 +2125,10 @@ const blobParaDados = b => new Promise((r, j) => { const f = new FileReader(); f
 async function fotoDoGrupo(p){
   const url = fotoUrl(p), P = S.profile;
   if (P.fotoLocal || (url === (P.fotoFonte || '') && P.fotoFormato === '4x5')) return;
-  if (!url){ delete P.foto; delete P.fotoFonte; save(false); renderSide(); if (ui.view === 'perfil') render(false); return; }
+  if (!url){ delete P.foto; delete P.fotoFonte; save(false); renderSide(); if (ui.view === 'perfil') renderBg(); return; }
   try { const r = await fetch(url, { mode: 'cors' }); if (!r.ok) throw new Error(r.status); P.foto = await blobParaDados(await fotoReduzir(await r.blob(), 240)); P.fotoFormato = '4x5'; }
   catch(e){ if (CLOUD.via === 'ponte' && url.startsWith(SB_URL)) return; P.foto = url; }   // sem acesso direto: usa o endereço da imagem
-  P.fotoFonte = url; save(false); renderSide(); if (ui.view === 'perfil') render(false);
+  P.fotoFonte = url; save(false); renderSide(); if (ui.view === 'perfil') renderBg();
 }
 async function fotoTrocar(){
   const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp';
@@ -2201,7 +2246,7 @@ function nuvemFila(f, blob){
   NUV.fila = NUV.fila.then(async () => {
     try { await nuvemEnviarArquivo(f, blob || await fileOf(f)); save(false); }
     catch(e){ f.nuvemErro = e.message; toast(`Não foi para a nuvem: ${f.name} (${e.message})`, 6000); }
-    finally { NUV.enviando--; renderSide(); if (['arquivos', 'hoje', 'config'].includes(ui.view)) render(false); }
+    finally { NUV.enviando--; renderSide(); if (['arquivos', 'hoje', 'config'].includes(ui.view)) renderBg(); }
   });
   return NUV.fila;
 }
@@ -3034,7 +3079,7 @@ $('#main').addEventListener('scroll', () => { const tb = $('.topbar'); tb && tb.
 window.addEventListener('beforeunload', () => { if (NB.dirty) nbSave(); });
 window.addEventListener('storage', ev => { if (ev.key === LS_KEY && ev.newValue){ S = migrate(JSON.parse(ev.newValue)); render(false); } });
 // Virada do dia com a agenda aberta
-setInterval(() => { if (ui._today !== today()){ const was = ui._today; ui._today = today(); if (was && ui.view === 'hoje' && ui.date === was){ ui.date = today(); } render(); } }, 60000);
+setInterval(() => { if (ui._today !== today()){ const was = ui._today; ui._today = today(); if (was && ui.view === 'hoje' && ui.date === was && !editando()){ ui.date = today(); } renderBg(); } }, 60000);
 
 /* ---------------- Início ---------------- */
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window._bip = e; renderSide(); if (ui.view === 'config') render(false); });
