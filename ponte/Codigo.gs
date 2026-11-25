@@ -3,9 +3,10 @@
 // Contém só o endereço e a chave PÚBLICA do Supabase; quem protege os dados é a chave pessoal enviada pela agenda.
 var SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 var SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';
+var TERMO_NUVEM = 'https://termoinicial.vercel.app/api/agenda-inicial/nuvem';
 
 function doGet() {
-  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 3 });
+  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 4 });
 }
 
 function doPost(e) {
@@ -18,11 +19,11 @@ function doPost(e) {
       var args = p.args || {}; args.p_chave = p.chave;
       return saida({ ok: true, dados: rpc(p.fn, args) });
     }
-    // Acesso temporário ao OneDrive / Google Drive (função inicial-nuvem do Supabase), com a chave pessoal.
+    // Acesso temporário ao OneDrive / Google Drive (entregue pelo Termo Inicial), com a chave pessoal.
     if (p.op === 'nuvem') {
-      var r = UrlFetchApp.fetch(SB_URL + '/functions/v1/inicial-nuvem', {
+      var r = UrlFetchApp.fetch(TERMO_NUVEM, {
         method: 'post', contentType: 'application/json', muteHttpExceptions: true,
-        headers: { apikey: SB_KEY }, payload: JSON.stringify({ chave: p.chave, provedor: p.provedor || '' })
+        payload: JSON.stringify({ chave: p.chave, provedor: p.provedor || '' })
       });
       var j = JSON.parse(r.getContentText() || '{}');
       return saida(j.ok ? { ok: true, dados: j } : { ok: false, erro: j.erro || ('erro ' + r.getResponseCode()) });

@@ -528,7 +528,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.15.0';    // versão do programa
+const APP_RELEASE = '1.15.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -2111,8 +2111,9 @@ async function fotoTrocar(){
 function grupoMsg(t, erro){ const el = $('#pf-grupo'); if (el){ el.textContent = t; el.style.color = erro ? 'var(--danger)' : ''; } }
 
 /* ---------------- Anexos na nuvem (OneDrive / Google Drive, a mesma conexão do Termo Inicial) ---------------- */
-// A função inicial-nuvem (Supabase) entrega um acesso de 1 h; os arquivos vão direto do navegador para a Microsoft / o Google,
+// O Termo Inicial entrega um acesso de 1 h; os arquivos vão direto do navegador para a Microsoft / o Google,
 // em Documentos/Agenda Inicial/arquivos/AAAA-MM — a mesma estrutura da pasta local.
+const TERMO_NUVEM = 'https://termoinicial.vercel.app/api/agenda-inicial/nuvem';   // o Termo Inicial entrega o acesso (a credencial fica no servidor dele)
 const NUV = { tok: {}, conectadas: null, fila: Promise.resolve(), enviando: 0 };
 const NUV_NOME = { onedrive: 'OneDrive', gdrive: 'Google Drive' };
 const nuvemProv = () => { const p = S.settings.nuvemProv !== undefined ? S.settings.nuvemProv : (NUV.conectadas && NUV.conectadas.some(c => c.provedor === 'onedrive') ? 'onedrive' : ''); return p && NUV.pronto && NUV.pronto[p] ? p : ''; };
@@ -2121,7 +2122,7 @@ const nuvemAtiva = () => !!(CLOUD.user && nuvemProv());
 async function nuvemFuncao(corpo){
   if (CLOUD.via === 'ponte') return ponte('nuvem', corpo);
   const sb = await cloudClient(), { data } = await sb.auth.getSession();
-  const r = await fetch(`${SB_URL}/functions/v1/inicial-nuvem`, { method: 'POST', headers: { apikey: SB_KEY, authorization: `Bearer ${data.session ? data.session.access_token : ''}`, 'content-type': 'application/json' }, body: JSON.stringify(corpo) });
+  const r = await fetch(TERMO_NUVEM, { method: 'POST', headers: { authorization: `Bearer ${data.session ? data.session.access_token : ''}`, 'content-type': 'application/json' }, body: JSON.stringify(corpo) });
   const j = await r.json(); if (!j.ok) throw new Error(j.erro || 'falha na nuvem'); return j;
 }
 async function nuvemConectadas(forcar){

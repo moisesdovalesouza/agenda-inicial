@@ -1,8 +1,8 @@
 {
- "version": "1.15.0",
+ "version": "1.15.1",
  "date": "2026-11-24",
  "notes": [
-  "Anexos na nuvem: com a mesma conexão do Termo Inicial, os anexos vão também para o OneDrive (ou Google Drive) em Documentos › Agenda Inicial e abrem em qualquer aparelho, inclusive o celular; em Configurações › Anexos na nuvem há o botão para enviar os anexos atuais",
+  "Anexos na nuvem: com a mesma conexão do Termo Inicial, os anexos vão também para o OneDrive (ou Google Drive) em Documentos › Agenda Inicial e abrem em qualquer aparelho, inclusive o celular; em Configurações › Anexos na nuvem há o botão para enviar os anexos atuais (o acesso é emprestado pelo próprio Termo Inicial; nada para configurar)",
   "Perfil com o nome da empresa: ele aparece embaixo de “Agenda Inicial” (no lugar de “Uso pessoal”) e no cabeçalho dos PDFs",
   "Foto do perfil em formato retrato (4×5), maior na barra lateral",
   "Foto de perfil do grupo Inicial: a mesma do Termo Inicial (ou a da conta Google); clique na foto, no Perfil, para trocar nos dois apps"
