@@ -528,7 +528,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.14.0';    // versão do programa
+const APP_RELEASE = '1.15.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -560,6 +560,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  cloud:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 12.5h7.2a2.8 2.8 0 00.4-5.6A4 4 0 004.4 6a3.3 3.3 0 00.1 6.5z"/></svg>',
   today:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/><rect x="5" y="8.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/></svg>',
   cal:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3M5.5 9h1M9.5 9h1M5.5 11.5h1M9.5 11.5h1"/></svg>',
   future:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4h12M2 8h12M2 12h7"/><path d="M11 10.5l2 1.5-2 1.5"/></svg>',
@@ -819,12 +820,20 @@ async function uploadFiles(fileList, link = '', entry = ''){
   let ok = 0;
   for (const f of files){
     try {
-      const r = await storeFile(f, `arquivos/${today().slice(0,7)}`);
-      S.files.push({ id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entries: entry ? [entry] : [] });
+      const sub = `arquivos/${today().slice(0,7)}`;
+      let r;
+      if (FS.state !== 'granted' && nuvemAtiva()){   // sem pasta (celular, outro computador): vai só para a nuvem
+        let name = f.name.replace(/[\\/:*?"<>|]/g, '_'), i = 2; const dot = name.lastIndexOf('.'), base = dot > 0 ? name.slice(0, dot) : name, ext = dot > 0 ? name.slice(dot) : '';
+        while (S.files.some(x => x.path === `${sub}/${name}`)) name = `${base} (${i++})${ext}`;
+        r = { name, path: `${sub}/${name}`, size: f.size };
+      } else r = await storeFile(f, sub);
+      const rec = { id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entries: entry ? [entry] : [] };
+      S.files.push(rec);
+      if (nuvemAtiva()) nuvemFila(rec, f);
       ok++;
     } catch(e){ if (e.message !== 'sem pasta') toast('Falha ao gravar ' + f.name); break; }
   }
-  if (ok){ save(); toast(ok === 1 ? 'Arquivo salvo na pasta Agenda Inicial.' : `${ok} arquivos salvos na pasta Agenda Inicial.`); }
+  if (ok){ save(); const onde = FS.state === 'granted' ? 'na pasta Agenda Inicial' + (nuvemAtiva() ? ' e no ' + NUV_NOME[nuvemProv()] : '') : 'no ' + NUV_NOME[nuvemProv()]; toast(ok === 1 ? `Arquivo salvo ${onde}.` : `${ok} arquivos salvos ${onde}.`); }
 }
 const relHref = p => p.split('/').map(encodeURIComponent).join('/');
 function baseHref(){ const p = (S.settings.winPath || '').trim().replace(/\\/g, '/').replace(/\/?$/, '/'); return p.length > 3 ? 'file:///' + encodeURI(p) : ''; }
@@ -1625,7 +1634,7 @@ function fileTable(files, compact){
       <td>${linkTags(f)}</td>
       ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
       <td class="num c-size">${fmtSize(f.size || 0)}</td>
-      <td class="acts"><button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
+      <td class="acts">${temLocal() || !f.nuvem ? `<button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}` : ''}${f.nuvem ? `<button class="btn icon ghost" data-act="f-nuvem" title="Abrir no ${NUV_NOME[f.nuvem.prov]}">${I.cloud}</button>` : ''}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
 }
 function linkPicker(fid, date){
   const f = S.files.find(x => x.id === fid); if (!f) return;
@@ -1642,13 +1651,13 @@ function linkPicker(fid, date){
 VIEWS.arquivos = () => {
   const q = (ui.fq || '').toLowerCase();
   const files = S.files.filter(f => !q || f.name.toLowerCase().includes(q)).sort((a,b) => b.addedAt - a.addedAt);
-  return topbar('Arquivos', FS.state === 'unsupported' ? `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo deste aparelho">${I.eye}</button>` : `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
+  return topbar('Arquivos', FS.state === 'unsupported' && !nuvemAtiva() ? `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo deste aparelho">${I.eye}</button>` : `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca</div>
     <h1 class="title">Arquivos</h1>
     <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta Agenda Inicial.</p>
     ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? (IS_MOBILE ? 'No celular dá para ver a lista e os vínculos; os arquivos em si ficam no computador.' : 'Abra a agenda no Chrome ou no Edge para enviar arquivos.') : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
-    ${FS.state === 'unsupported' ? '' : `<div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>`}
+    ${FS.state === 'unsupported' && !nuvemAtiva() ? '' : `<div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>`}
     <div class="sec"><div class="sec-h"><h2>${S.files.length} arquivo${S.files.length === 1 ? '' : 's'}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
     ${files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
   </div>`;
@@ -1741,6 +1750,21 @@ VIEWS.config = () => {
       <p class="muted small" style="margin:var(--s4) 0 var(--s2)">Na rede do trabalho o login não abre. Gere a chave em outro computador já conectado (Configurações › Conta e nuvem › Chave para a rede do trabalho) e cole aqui:</p>
       <div style="display:flex;gap:var(--s2)"><input class="inp" id="ponteIn" placeholder="Chave da rede do trabalho" style="flex:1" autocomplete="off"><button class="btn" data-act="ponte-in">Conectar</button></div>`}
     </div>
+
+    ${CLOUD.user && NUV.conectadas === null ? (nuvemConectadas().then(() => { if (ui.view === 'config') render(false); }), '') : ''}${CLOUD.user ? `<div class="sec"><div class="sec-h"><h2>Anexos na nuvem</h2></div>
+      ${NUV.conectadas === null ? `<p class="muted">Verificando as nuvens conectadas no Termo Inicial…</p>` : `<dl class="kv">
+        <dt>Guardar anexos em</dt><dd><select class="inp" id="nuvemProv" style="max-width:260px">
+          <option value="nenhuma"${!nuvemEscolhida() ? ' selected' : ''}>Só neste computador</option>
+          ${['onedrive', 'gdrive'].map(p => { const c = NUV.conectadas.find(x => x.provedor === p); return `<option value="${p}"${nuvemEscolhida() === p ? ' selected' : ''}${c ? '' : ' disabled'}>${NUV_NOME[p]}${c ? ' · ' + esc(c.conta || '') : ' (conecte no Termo Inicial)'}</option>`; }).join('')}
+        </select></dd>
+        <dt>Situação</dt><dd>${nuvemProv() ? `<span class="dot ok"></span>Pronto: novos anexos vão também para o ${NUV_NOME[nuvemProv()]}` : nuvemEscolhida() ? '<span class="dot warn"></span>Ainda sem acesso (veja a mensagem abaixo)' : 'Desligado'}</dd>
+        <dt>Pasta</dt><dd>Documentos › Agenda Inicial › arquivos › AAAA-MM</dd>
+        <dt>Na nuvem</dt><dd>${(() => { const a = S.files.filter(f => f.kind !== 'caderno'); const n = a.filter(f => f.nuvem).length; return `${n} de ${a.length} anexo(s)${NUV.enviando ? ` · enviando ${NUV.enviando}…` : ''}`; })()}</dd>
+      </dl>
+      ${NUV.erro ? `<p class="hint" style="color:var(--danger)">${esc(NUV.erro)}</p>` : ''}
+      <div style="display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap">${nuvemProv() && temLocal() && S.files.some(f => f.kind !== 'caderno' && !f.nuvem) ? `<button class="btn" data-act="nuvem-atuais">${I.cloud}Enviar anexos atuais</button>` : ''}<button class="btn ghost" data-act="nuvem-ver">${I.sync}Verificar conexões</button></div>
+      <p class="hint">É a mesma conexão do Termo Inicial: para ligar o Google Drive ou trocar de conta, conecte lá (Configurações › Nuvem). Com a nuvem ligada, os anexos abrem em qualquer aparelho e podem ser enviados também pelo celular.</p>`}
+    </div>` : ''}
 
     <div class="sec"><div class="sec-h"><h2>Pasta de dados</h2></div>
       <dl class="kv">
@@ -1965,7 +1989,7 @@ async function cloudSync(full){
       for (const r of chunk) SYNC.sent[r._k] = r._h;
     }
     SYNC.done = true; saveSync();
-    grupoPuxar();
+    grupoPuxar(); if (NUV.conectadas === null) nuvemConectadas();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
     if (changed && !(ui.view === 'caderno' && NB.dirty)) render(false);
   } catch(e){
@@ -2085,6 +2109,114 @@ async function fotoTrocar(){
   inp.click();
 }
 function grupoMsg(t, erro){ const el = $('#pf-grupo'); if (el){ el.textContent = t; el.style.color = erro ? 'var(--danger)' : ''; } }
+
+/* ---------------- Anexos na nuvem (OneDrive / Google Drive, a mesma conexão do Termo Inicial) ---------------- */
+// A função inicial-nuvem (Supabase) entrega um acesso de 1 h; os arquivos vão direto do navegador para a Microsoft / o Google,
+// em Documentos/Agenda Inicial/arquivos/AAAA-MM — a mesma estrutura da pasta local.
+const NUV = { tok: {}, conectadas: null, fila: Promise.resolve(), enviando: 0 };
+const NUV_NOME = { onedrive: 'OneDrive', gdrive: 'Google Drive' };
+const nuvemProv = () => { const p = S.settings.nuvemProv !== undefined ? S.settings.nuvemProv : (NUV.conectadas && NUV.conectadas.some(c => c.provedor === 'onedrive') ? 'onedrive' : ''); return p && NUV.pronto && NUV.pronto[p] ? p : ''; };
+const nuvemEscolhida = () => S.settings.nuvemProv !== undefined ? S.settings.nuvemProv : (NUV.conectadas && NUV.conectadas.some(c => c.provedor === 'onedrive') ? 'onedrive' : '');
+const nuvemAtiva = () => !!(CLOUD.user && nuvemProv());
+async function nuvemFuncao(corpo){
+  if (CLOUD.via === 'ponte') return ponte('nuvem', corpo);
+  const sb = await cloudClient(), { data } = await sb.auth.getSession();
+  const r = await fetch(`${SB_URL}/functions/v1/inicial-nuvem`, { method: 'POST', headers: { apikey: SB_KEY, authorization: `Bearer ${data.session ? data.session.access_token : ''}`, 'content-type': 'application/json' }, body: JSON.stringify(corpo) });
+  const j = await r.json(); if (!j.ok) throw new Error(j.erro || 'falha na nuvem'); return j;
+}
+async function nuvemConectadas(forcar){
+  if (!CLOUD.user) return [];
+  if (NUV.conectadas && !forcar) return NUV.conectadas;
+  if (NUV.pend) return NUV.pend;
+  NUV.pend = (async () => {
+    try { NUV.conectadas = (await nuvemFuncao({})).conectadas || []; NUV.erro = ''; } catch(e){ NUV.erro = e.message; NUV.conectadas = NUV.conectadas || []; }
+    NUV.pronto = {};
+    const esc_ = nuvemEscolhida();   // confirma que o acesso funciona (segredos colados, conexão válida) antes de enviar qualquer coisa
+    if (esc_ && NUV.conectadas.some(c => c.provedor === esc_)){ try { await nuvemToken(esc_); NUV.pronto[esc_] = true; } catch(e){ NUV.erro = e.message; } }
+    NUV.pend = null; return NUV.conectadas;
+  })();
+  return NUV.pend;
+}
+async function nuvemToken(prov){
+  const t = NUV.tok[prov]; if (t && t.expira > Date.now() + 60000) return t.access;
+  const j = await nuvemFuncao({ provedor: prov }); NUV.tok[prov] = { access: j.access, expira: j.expira }; NUV.conta = j.conta; return j.access;
+}
+
+async function odPedir(url, init = {}){
+  const tk = await nuvemToken('onedrive');
+  const r = await fetch(url.startsWith('http') ? url : 'https://graph.microsoft.com/v1.0' + url, { ...init, headers: { authorization: 'Bearer ' + tk, ...(init.headers || {}) } });
+  if (!r.ok){ let m = r.status; try { const j = await r.json(); m = (j.error && j.error.message) || m; } catch(e){} throw new Error('OneDrive: ' + m); }
+  return r;
+}
+async function odEnviar(blob, rel){
+  const alvo = `/me/drive/special/documents:/${encPath('Agenda Inicial/' + rel)}:`;
+  if (blob.size <= 4 * 1024 * 1024) return (await odPedir(`${alvo}/content?@microsoft.graph.conflictBehavior=replace`, { method: 'PUT', body: blob })).json();
+  const ses = await (await odPedir(`${alvo}/createUploadSession`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ item: { '@microsoft.graph.conflictBehavior': 'replace' } }) })).json();
+  const PED = 320 * 1024 * 20; let ini = 0, fim, r;
+  while (ini < blob.size){
+    fim = Math.min(ini + PED, blob.size);
+    r = await fetch(ses.uploadUrl, { method: 'PUT', headers: { 'content-range': `bytes ${ini}-${fim - 1}/${blob.size}` }, body: blob.slice(ini, fim) });
+    if (!r.ok && r.status !== 202) throw new Error('OneDrive: envio interrompido (' + r.status + ')');
+    ini = fim;
+  }
+  return r.json();
+}
+async function gdPedir(url, init = {}){
+  const tk = await nuvemToken('gdrive');
+  const r = await fetch(url, { ...init, headers: { authorization: 'Bearer ' + tk, ...(init.headers || {}) } });
+  if (!r.ok){ let m = r.status; try { const j = await r.json(); m = (j.error && j.error.message) || m; } catch(e){} throw new Error('Google Drive: ' + m); }
+  return r;
+}
+async function gdPasta(caminho){   // Documentos/Agenda Inicial/arquivos/AAAA-MM, criando o que faltar (o Drive só mostra ao app o que ele criou)
+  S.settings.gdPastas = S.settings.gdPastas || {};
+  if (S.settings.gdPastas[caminho]) return S.settings.gdPastas[caminho];
+  let pai = 'root', acc = '';
+  for (const nome of caminho.split('/')){
+    acc += (acc ? '/' : '') + nome;
+    if (S.settings.gdPastas[acc]){ pai = S.settings.gdPastas[acc]; continue; }
+    const q = `name='${nome.replace(/'/g, "\\'")}' and '${pai}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+    const l = await (await gdPedir('https://www.googleapis.com/drive/v3/files?fields=files(id)&q=' + encodeURIComponent(q))).json();
+    pai = l.files && l.files[0] ? l.files[0].id : (await (await gdPedir('https://www.googleapis.com/drive/v3/files?fields=id', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: nome, mimeType: 'application/vnd.google-apps.folder', parents: [pai] }) })).json()).id;
+    S.settings.gdPastas[acc] = pai;
+  }
+  save(false); return pai;
+}
+async function gdEnviar(blob, rel){
+  const partes = ('Documentos/Agenda Inicial/' + rel).split('/'), nome = partes.pop(), pai = await gdPasta(partes.join('/'));
+  const ini = await gdPedir('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,webViewLink', { method: 'POST', headers: { 'content-type': 'application/json; charset=UTF-8', 'x-upload-content-type': blob.type || 'application/octet-stream' }, body: JSON.stringify({ name: nome, parents: [pai] }) });
+  const r = await fetch(ini.headers.get('location'), { method: 'PUT', body: blob });
+  if (!r.ok) throw new Error('Google Drive: envio interrompido (' + r.status + ')');
+  return r.json();
+}
+async function nuvemEnviarArquivo(f, blob){
+  const prov = nuvemProv(); if (!prov || !CLOUD.user) return false;
+  const it = prov === 'onedrive' ? await odEnviar(blob, f.path) : await gdEnviar(blob, f.path);
+  f.nuvem = { prov, id: it.id, url: it.webUrl || it.webViewLink || '' };
+  return true;
+}
+/* Envia em fila, sem travar a tela. */
+function nuvemFila(f, blob){
+  NUV.enviando++; renderSide();
+  NUV.fila = NUV.fila.then(async () => {
+    try { await nuvemEnviarArquivo(f, blob || await fileOf(f)); save(false); }
+    catch(e){ f.nuvemErro = e.message; toast(`Não foi para a nuvem: ${f.name} (${e.message})`, 6000); }
+    finally { NUV.enviando--; renderSide(); if (['arquivos', 'hoje', 'config'].includes(ui.view)) render(false); }
+  });
+  return NUV.fila;
+}
+async function nuvemEnviarAtuais(){
+  if (FS.state !== 'granted') return toast('Os anexos atuais estão na pasta deste computador: autorize a pasta Documentos primeiro.');
+  const lista = S.files.filter(f => f.kind !== 'caderno' && f.path && !f.nuvem);
+  if (!lista.length) return toast('Todos os anexos já estão na nuvem.');
+  toast(`Enviando ${lista.length} anexo(s) para o ${NUV_NOME[nuvemProv()]}…`);
+  for (const f of lista) nuvemFila(f);
+  await NUV.fila; toast('Pronto: anexos enviados para a nuvem.');
+}
+function nuvemAbrir(f){
+  if (f && f.nuvem && f.nuvem.url){ window.open(f.nuvem.url, '_blank', 'noopener'); return true; }
+  return false;
+}
+const temLocal = () => FS.state === 'granted';
 
 /* ---------------- Versões ---------------- */
 const UP = { notes: null, checked: 0, error: '', newer: null };
@@ -2596,6 +2728,7 @@ const ACT = {
   'f-view': (a, ev) => {
     ev && ev.preventDefault();
     { const nb = nbById(a.closest('[data-fid]').dataset.fid); if (nb) return nbOpen(nb.id); }
+    { const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); if (!temLocal() && nuvemAbrir(f)) return; }
     const tb = a.closest('tbody'); const ids = tb ? $$('tr[data-fid]', tb).map(r => r.dataset.fid) : [];
     const list = ids.map(id => S.files.find(f => f.id === id)).filter(Boolean);
     const id = a.closest('[data-fid]').dataset.fid; openViewer(list, Math.max(0, list.findIndex(f => f.id === id)));
@@ -2622,6 +2755,9 @@ const ACT = {
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'side-toggle': () => document.body.classList.toggle('side-open'),
   'pf-foto': () => fotoTrocar(),
+  'f-nuvem': a => nuvemAbrir(S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid)),
+  'nuvem-atuais': () => nuvemEnviarAtuais(),
+  'nuvem-ver': async () => { await nuvemConectadas(true); render(false); },
   'cloud-in': () => cloudLogin(),
   'ponte-in': () => ponteConectar((document.getElementById('ponteIn') || {}).value),
   'ponte-gerar': () => ponteGerar(),
@@ -2862,6 +2998,7 @@ document.addEventListener('change', async ev => {
   const t = ev.target;
   if (t.id === 'fpick'){ await uploadFiles(t.files, t.dataset.link || '', t.dataset.entry || ''); t.value = ''; }
   if (t.id === 'pk-date'){ linkPicker(t.dataset.fid, t.value); }
+  if (t.id === 'nuvemProv'){ S.settings.nuvemProv = t.value === 'nenhuma' ? '' : t.value; save(false); await nuvemConectadas(true); render(false); }
   if (t.id === 'nb-block'){ nbBlock(t.value); }
   if (t.id === 'nb-title'){ nbRename(t.value); }
   if (t.dataset && t.dataset.att){ if (t.checked) ui.att.add(t.dataset.att); else ui.att.delete(t.dataset.att); }

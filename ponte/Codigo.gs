@@ -5,7 +5,7 @@ var SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 var SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';
 
 function doGet() {
-  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 2 });
+  return saida({ ok: true, ponte: 'Agenda Inicial', versao: 3 });
 }
 
 function doPost(e) {
@@ -17,6 +17,15 @@ function doPost(e) {
     if (p.op === 'rpc' && /^agendainicial_ponte_[a-z_]{1,40}$/.test(p.fn || '')) {
       var args = p.args || {}; args.p_chave = p.chave;
       return saida({ ok: true, dados: rpc(p.fn, args) });
+    }
+    // Acesso temporário ao OneDrive / Google Drive (função inicial-nuvem do Supabase), com a chave pessoal.
+    if (p.op === 'nuvem') {
+      var r = UrlFetchApp.fetch(SB_URL + '/functions/v1/inicial-nuvem', {
+        method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+        headers: { apikey: SB_KEY }, payload: JSON.stringify({ chave: p.chave, provedor: p.provedor || '' })
+      });
+      var j = JSON.parse(r.getContentText() || '{}');
+      return saida(j.ok ? { ok: true, dados: j } : { ok: false, erro: j.erro || ('erro ' + r.getResponseCode()) });
     }
     return saida({ ok: false, erro: 'operação desconhecida' });
   } catch (err) {
