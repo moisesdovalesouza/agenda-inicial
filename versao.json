@@ -1,7 +1,9 @@
 {
- "version": "1.19.0",
+ "version": "1.20.0",
  "date": "2026-11-25",
  "notes": [
+  "Registros: mude a ordem arrastando pelo símbolo (para cima, para baixo ou, soltando mais à direita, para dentro de outro item); o botão ⋯ do registro muda o tipo (tarefa, evento, nota), sobe, desce e troca o nível; ao editar o texto, Alt ↑/↓ move e Tab/Shift+Tab muda o nível",
+  "Novo desenho dos registros: símbolos redesenhados com o mesmo tamanho e traço, seta de recolher junto do símbolo e guias de nível descendo do centro do item de cima, tudo numa grade de 24 px",
   "Leitor com marcações: ao abrir um PDF ou documento do Word anexado, selecione um trecho para destacar, sublinhar, tachar ou comentar, em cinco cores; o marcador no alto marca a página. Tudo fica salvo e sincronizado, no mesmo formato do Termo Inicial",
   "Ficha do documento: o botão (i) na lista de arquivos e no leitor mostra título, nome do arquivo, datas (do arquivo, do anexo e da última alteração), onde está, tags, os registros, cadernos e listas em que ele aparece e todas as marcações, com atalho para a página",
   "Títulos dos documentos: ao enviar, a agenda sugere um título (RG, CNH, petição, comprovante…); mude pelo lápis ao lado do nome e ela aprende para os próximos arquivos parecidos. O arquivo na pasta mantém o nome original",

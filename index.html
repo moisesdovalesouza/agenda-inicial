@@ -132,19 +132,28 @@ label.chk input{accent-color:var(--accent)}
 .qlog .txt{border:0;outline:0;background:transparent;height:30px;min-width:0}
 .qlog .time{width:112px}
 .typebtns{display:flex;gap:2px}
-.typebtns button{width:28px;height:28px;border:1px solid transparent;border-radius:var(--r);background:transparent;cursor:pointer;font-family:var(--mono);font-size:15px;color:var(--muted)}
+.typebtns button{width:28px;height:28px;border:1px solid transparent;border-radius:var(--r);background:transparent;cursor:pointer;color:var(--muted);display:grid;place-items:center;padding:0}
+.typebtns button svg{width:16px;height:16px}
+.typebtns [data-act$="prio"] svg{width:8px;height:8px}
 .typebtns button.on{border-color:var(--border);background:var(--hover);color:var(--text)}
 .hint{font-size:12px;line-height:18px;color:var(--faint);margin:var(--s2) 0 0}
 
 /* ---------- Entries (bullet journal) ---------- */
-.entries{list-style:none;margin:0 0 0 -18px;padding:0}
-.entries .empty{padding-left:18px}
-.entry{display:grid;grid-template-columns:18px 20px 1fr auto;gap:2px var(--s1);align-items:start;padding:3px 0;border-radius:var(--r);position:relative}
+.entries{list-style:none;margin:0 0 0 -28px;padding:0;position:relative}
+.entries .empty{padding-left:28px}
+/* Grade dos registros: módulo de 24 px. Colunas: prioridade (12) · seta de recolher (16) · símbolo (24) · texto · contadores.
+   Cada nível recua 24 px = largura da coluna do símbolo, então o símbolo do filho fica sob o início do texto do pai.
+   A guia de cada nível desce do centro do símbolo do pai (24k + 16); a seta do filho fica sobre ela, com fundo próprio. */
+.entry{--ind:calc(var(--d,0) * 24px);display:grid;grid-template-columns:28px 24px minmax(0,1fr) auto;column-gap:0;row-gap:2px;align-items:start;min-height:28px;padding:2px 0 2px var(--ind);border-radius:2px;position:relative}
 .entry:hover{background:var(--hover)}
-.entry .sig{font-family:var(--mono);color:var(--accent);font-weight:700;text-align:center;line-height:24px;cursor:pointer}
-.entry .bul{font-family:var(--mono);font-size:16px;line-height:24px;text-align:center;cursor:pointer;color:var(--text);user-select:none}
-.entry .txt{line-height:24px;outline:none;min-height:24px;word-break:break-word;padding-right:var(--s1)}
-.entry .txt[contenteditable="true"]{background:var(--bg);box-shadow:0 0 0 1px var(--accent);border-radius:2px;padding:0 4px}
+.entry .sig{height:24px;display:flex;align-items:center;justify-content:flex-start;padding-left:1px;color:var(--accent);cursor:pointer}
+.entry .sig svg{width:8px;height:8px}
+.entry .bul{height:24px;display:grid;place-items:center;cursor:pointer;color:var(--text);user-select:none;touch-action:none}
+.entry .bul svg{width:16px;height:16px;display:block}
+.entry.done .bul,.entry.cancelled .bul,.entry.migrated .bul,.entry.scheduled .bul{color:var(--muted)}
+.entry.event .bul{color:var(--text)}
+.entry .txt{line-height:24px;outline:none;min-height:24px;word-break:break-word;padding:0 var(--s2) 0 4px}
+.entry .txt .t[contenteditable="true"]{background:var(--bg);box-shadow:0 0 0 1px var(--accent);border-radius:2px;outline:0;padding:0 2px;margin:0 -2px}
 .entry .meta{display:flex;gap:6px;align-items:center;line-height:24px;font-size:12px;color:var(--muted);white-space:nowrap}
 .entry .time{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px;cursor:pointer}
 .entry .acts{display:none;position:absolute;right:0;top:1px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1px}
@@ -199,7 +208,7 @@ label.chk input{accent-color:var(--accent)}
 .fcell h3{margin:0 0 var(--s2);font-family:var(--serif);font-size:17px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
 .fcell h3 small{font-weight:400;color:var(--muted);font-size:11px}
 .fcell .entries{flex:1}
-.fcell .entry{grid-template-columns:18px 20px 1fr auto}
+.fcell .entry{grid-template-columns:28px 24px minmax(0,1fr) auto}
 .fcell .d{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px}
 .fadd{display:grid;grid-template-columns:72px 1fr;gap:var(--s1);margin-top:var(--s2)}
 
@@ -382,7 +391,7 @@ tr:hover .fname .tt-ed,.fname .tt-ed:focus{opacity:1}
 .fchip:hover{border-color:var(--accent);background:var(--accent-bg)}
 .fchip svg{width:12px;height:12px;color:var(--muted);flex:none}
 .fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.entry .fchips{grid-column:3 / -1}
+.entry .fchips{grid-column:3 / -1;padding-left:4px}
 select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .page.hoje .notes{background-color:transparent}
 .install{margin:0 var(--s2) var(--s2)}
@@ -442,22 +451,35 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .mpop .none{padding:8px;color:var(--faint);font-size:13px}
 .foot-note{margin-top:var(--s6);padding-top:var(--s2);border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
 /* ---------- Subtarefas ---------- */
-.entry{padding-left:calc(var(--d,0) * 24px)}
-.tog{position:absolute;top:3px;left:calc(var(--d,0) * 24px - 20px);width:18px;height:18px;padding:0;border:0;border-radius:2px;background:transparent;color:var(--faint);cursor:pointer;display:grid;place-items:center}
-.tog svg{width:12px;height:12px;transition:transform .12s ease}
+.tog{position:absolute;top:6px;left:calc(var(--d,0) * 24px + 10px);width:12px;height:16px;padding:0;border:0;border-radius:2px;background:var(--bg);color:var(--muted);cursor:pointer;display:grid;place-items:center;z-index:1}
+.tog svg{width:10px;height:10px;transition:transform .12s ease}
 .tog.open svg{transform:rotate(90deg)}
-.tog:hover{background:var(--hover);color:var(--text)}
-.entry:not(:hover) .tog.open{opacity:.55}
-.check .tog{top:3px}
+.tog.open{color:var(--faint)}
+.entry:hover > .tog,.tog:hover{color:var(--text)}
+.entry:hover > .tog{background:var(--hover)}
+.fcell .entry > .tog{background:transparent}
+.check .tog{top:3px;left:calc(var(--d,0) * 24px - 20px);width:18px;height:18px;background:transparent}
+.check .tog svg{width:12px;height:12px}
 .tag.fold{cursor:pointer}
 .mpop .it .ic{display:grid;place-items:center;color:var(--muted)}
 .mpop .it .ic svg{width:15px;height:15px}
 .mpop.menu{width:auto;min-width:260px}
 .mpop.menu .it{grid-template-columns:20px 1fr}
 .mpop .it small{display:block;color:var(--faint);font-size:11px;line-height:14px}
-.entry.child::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--d) * 24px - 12px);border-left:1px solid var(--border)}
-.subadd{display:grid;grid-template-columns:18px auto 1fr;gap:2px var(--s2);align-items:center;padding:2px 0 2px calc(var(--d,1) * 24px)}
-.subadd .typebtns button{width:24px;height:24px;font-size:14px}
+.entry.child::before,.subadd::before{content:"";position:absolute;top:0;bottom:0;left:40px;width:calc(var(--d) * 24px - 23px);background:linear-gradient(90deg,var(--border) 0 1px,transparent 1px) 0 0/24px 100% repeat-x;pointer-events:none}
+.subadd{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--s2);align-items:center;min-height:28px;padding:2px 0 2px calc(var(--d,1) * 24px + 28px);position:relative}
+/* Arrastar pelo símbolo */
+body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
+.entry.arrastado{opacity:.45}
+.dropline{position:absolute;height:2px;background:var(--accent);pointer-events:none;z-index:5}
+.dropline::before{content:"";position:absolute;left:-3px;top:-3px;width:6px;height:6px;border:2px solid var(--accent);border-radius:50%;background:var(--bg)}
+.dropline.nao{background:var(--faint)}.dropline.nao::before{border-color:var(--faint)}
+#fmenu .it .kb{font:11px var(--mono);color:var(--faint);justify-self:end}
+#fmenu.emenu .it{grid-template-columns:20px 1fr auto}
+#fmenu.emenu .it.on{color:var(--accent-strong)}
+#fmenu.emenu .it .ic svg{width:16px;height:16px}
+#fmenu .sep{height:1px;background:var(--border);margin:4px 0}
+.subadd .typebtns button{width:24px;height:24px}
 .subadd .inp{height:26px}
 
 /* ---------- Perfil ---------- */
@@ -505,6 +527,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
 @media (max-width:640px){
   :root{--page-x:16px}
   .page{padding:var(--s3) 16px 96px}
+  .entries{margin-left:-12px}
   .topbar{padding:0 var(--s1) 0 var(--s2);gap:var(--s1)}
   .cr-pre{display:none}
   .topbar .tools{gap:0}
@@ -589,7 +612,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.19.0';    // versão do programa
+const APP_RELEASE = '1.20.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -621,6 +644,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  dots:'<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="12.5" cy="8" r="1.2"/></svg>',
   info:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg>',
   bookmark:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 2.5h7v11L8 10.8l-3.5 2.7z"/></svg>',
   pen:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M10.5 2.8l2.7 2.7L6 12.7l-3.3.6.6-3.3z"/></svg>',
@@ -1201,6 +1225,22 @@ function doGet(req) {
 
 /* ---------------- Entradas ---------------- */
 const SYM = { task: '•', event: '○', note: '–' };
+/* Símbolos desenhados no mesmo quadro de 16 px e traço de 1,5 px, para todos terem o mesmo peso e alinhamento. */
+const BSVG = {
+  task: '<circle cx="8" cy="8" r="2.4" fill="currentColor" stroke="none"/>',
+  done: '<path d="M5.4 5.4l5.2 5.2M10.6 5.4l-5.2 5.2"/>',
+  event: '<circle cx="8" cy="8" r="3.6"/>',
+  eventDone: '<circle cx="8" cy="8" r="3.6"/><circle cx="8" cy="8" r="1.6" fill="currentColor" stroke="none"/>',
+  note: '<path d="M4.8 8h6.4"/>',
+  migrated: '<path d="M4.4 8h7.2M8.8 5.2L11.6 8l-2.8 2.8"/>',
+  scheduled: '<path d="M11.6 8H4.4M7.2 5.2L4.4 8l2.8 2.8"/>'
+};
+function bulletSvg(e){
+  const k = e.status === 'done' ? (e.type === 'event' ? 'eventDone' : e.type === 'note' ? 'note' : 'done') : e.status === 'migrated' ? 'migrated' : e.status === 'scheduled' ? 'scheduled' : (BSVG[e.type] ? e.type : 'task');
+  return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${BSVG[k]}</svg>`;
+}
+const PRIO_SVG = '<svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M4 .8v6.4M1.2 2.4l5.6 3.2M6.8 2.4L1.2 5.6"/></svg>';
+const NOME_TIPO = { task: 'Tarefa', event: 'Evento', note: 'Nota' };
 function bulletOf(e){
   if (e.status === 'done') return e.type === 'event' ? '◉' : '×';
   if (e.status === 'migrated') return '>';
@@ -1219,11 +1259,30 @@ function addEntry(o){
   const par = o.parent ? byId(o.parent) : null;
   const e = Object.assign({ id: uid(), type: 'task', text: '', date: par ? par.date : null, month: null, time: '', status: 'open', prio: false, gId: '', parent: '', createdAt: Date.now() + (_seq++ % 1000) / 1000 }, o);
   if (e.date) e.month = e.date.slice(0,7);
+  if (e.ord == null && (e.parent || e.date)){
+    const g = e.parent ? kids(e.parent) : entriesOn(e.date);
+    if (g.some(x => x.ord != null)){
+      S.entries.push(e);
+      let i = g.length;
+      if (e.time){
+        const j = g.findIndex(x => x.time && x.time > e.time);
+        if (j >= 0) i = j;
+        else { let u = -1; g.forEach((x, k) => { if (x.time) u = k; }); if (u >= 0) i = u + 1; }
+      }
+      g.splice(i, 0, e); g.forEach((x, k) => { x.ord = k; });
+      return e;
+    }
+  }
   S.entries.push(e); return e;
 }
 const byId = id => S.entries.find(e => e.id === id);
+const cmpLegado = (a, b) => (a.time ? 0 : 1) - (b.time ? 0 : 1) || (a.time || '').localeCompare(b.time || '') || a.createdAt - b.createdAt;
+const cmpOrdem = (a, b) => (a.ord ?? 1e9) - (b.ord ?? 1e9);
+/* Ordem manual (e.ord) vale dentro de um mesmo grupo (mesmo dia e mesmo item acima); sem ela, horário e criação. */
+const grupoUnico = list => new Set(list.map(x => (x.parent || '') + '|' + (x.parent ? '' : x.date))).size === 1;
 function sortEntries(list){
-  return list.slice().sort((a,b) => (a.time ? 0 : 1) - (b.time ? 0 : 1) || (a.time || '').localeCompare(b.time || '') || a.createdAt - b.createdAt);
+  const ord = list.some(x => x.ord != null) && grupoUnico(list);
+  return list.slice().sort((a, b) => (ord ? cmpOrdem(a, b) : 0) || cmpLegado(a, b));
 }
 const entriesOn = s => sortEntries(S.entries.filter(e => e.date === s && !e.parent));
 
@@ -1232,7 +1291,7 @@ const MAXSUB = 3;
 const filesOf = id => S.files.filter(f => (f.entries || []).includes(id));
 function moveFiles(fromId, toId, date){ for (const f of filesOf(fromId)){ f.entries = f.entries.map(x => x === fromId ? toId : x); if (date) f.link = date; } }
 const dayFiles = d => S.files.filter(f => f.link === d || (f.entries || []).some(id => { const e = byId(id); return e && e.date === d; }));
-const kids = id => S.entries.filter(e => e.parent === id).sort((a,b) => a.createdAt - b.createdAt);
+const kids = id => { const l = S.entries.filter(e => e.parent === id); const ord = l.some(x => x.ord != null); return l.sort((a, b) => (ord ? cmpOrdem(a, b) : 0) || a.createdAt - b.createdAt); };
 function depthOf(e){ let d = 0, p = e; while (p && p.parent){ p = byId(p.parent); d++; } return d; }
 function subtree(e){ const out = []; (function w(x){ for (const k of kids(x.id)){ out.push(k); w(k); } })(e); return out; }
 function heightOf(e){ let h = 0; for (const k of kids(e.id)) h = Math.max(h, 1 + heightOf(k)); return h; }
@@ -1245,7 +1304,7 @@ function renderTree(e, opt = {}, depth = 0){
   if (!e.collapsed) for (const k of kids(e.id)) h += renderTree(k, {}, depth + 1);
   if (ui.subFor === e.id){
     const t = ui.subType || 'task', nm = { task: 'Subtarefa', event: 'Evento', note: 'Nota' }[t];
-    h += `<li class="subadd" style="--d:${depth + 1}"><span></span><span class="typebtns">${[['task','•','Subtarefa'],['event','○','Evento (não conta para concluir a tarefa)'],['note','–','Nota (não conta para concluir a tarefa)']].map(([k, sy, tt]) => `<button data-act="sub-type" data-t="${k}" class="${t === k ? 'on' : ''}" title="${tt}">${sy}</button>`).join('')}<button data-act="sub-prio" class="${ui.subPrio ? 'on' : ''}" title="Prioridade">*</button></span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="${nm} (nível ${depth + 1}) · Enter adiciona · Esc encerra${t === 'event' ? ' · ex.: 14h Reunião' : ''}" autocomplete="off"></li>`;
+    h += `<li class="subadd" style="--d:${depth + 1}"><span class="typebtns">${[['task','Subtarefa'],['event','Evento (não conta para concluir a tarefa)'],['note','Nota (não conta para concluir a tarefa)']].map(([k, tt]) => `<button data-act="sub-type" data-t="${k}" class="${t === k ? 'on' : ''}" title="${tt}">${bulletSvg({ type: k, status: 'open' })}</button>`).join('')}<button data-act="sub-prio" class="${ui.subPrio ? 'on' : ''}" title="Prioridade">${PRIO_SVG}</button></span><input class="inp" id="subtext" data-parent="${e.id}" placeholder="${nm} (nível ${depth + 1}) · Enter adiciona · Esc encerra${t === 'event' ? ' · ex.: 14h Reunião' : ''}" autocomplete="off"></li>`;
   }
   return h;
 }
@@ -1277,19 +1336,117 @@ function migrateTo(e, date, asSchedule){
   if (copy.gId && copy.type === 'event') gPush(copy, true);
   return copy;
 }
-function indentEntry(e, dir){
-  if (dir > 0){
-    const sibs = e.parent ? kids(e.parent) : entriesOn(e.date);
-    const prev = sibs[sibs.indexOf(e) - 1];
-    if (!prev){ toast('Não há item acima para servir de tarefa principal.'); return false; }
-    if (depthOf(prev) + 1 + heightOf(e) > MAXSUB){ toast(`O limite é de ${MAXSUB} níveis de subtarefa.`); return false; }
-    e.parent = prev.id; e.date = prev.date; e.month = prev.month; e.createdAt = Date.now();
-  } else {
-    if (!e.parent) return false;
-    const p = byId(e.parent); e.parent = p.parent || ''; e.createdAt = p.createdAt + 0.0005;
-  }
+function refocar(id){ setTimeout(() => { const li = $(`.entry[data-id="${id}"]`); if (li){ const tx = $('.txt', li); if (tx) ACT['e-edit'](tx, { target: tx }); } }, 30); }
+const irmaosDe = e => e.parent ? kids(e.parent) : entriesOn(e.date);
+/* Move o registro (com tudo o que está dentro) para baixo de "pai" (ou para o dia), na posição "indice" entre os irmãos. */
+function moverEntrada(e, paiId, indice, quieto){
+  const pai = paiId ? byId(paiId) : null;
+  if (pai && (pai === e || subtree(e).includes(pai))) return false;
+  if ((pai ? depthOf(pai) + 1 : 0) + heightOf(e) > MAXSUB){ if (!quieto) toast(`O limite é de ${MAXSUB} níveis abaixo do item principal.`); return false; }
+  const date = pai ? pai.date : e.date;
+  if (!date) return false;
+  const grupo = (pai ? kids(pai.id) : entriesOn(date)).filter(x => x !== e);
+  grupo.splice(Math.max(0, Math.min(indice, grupo.length)), 0, e);
+  if (pai && pai.collapsed) pai.collapsed = false;
+  e.parent = pai ? pai.id : '';
+  if (date !== e.date) for (const x of [e, ...subtree(e)]){ x.date = date; x.month = date.slice(0, 7); }
+  grupo.forEach((x, i) => { x.ord = i; });
   save(); return true;
 }
+function moverVertical(e, dir){
+  const g = irmaosDe(e), i = g.indexOf(e), j = i + dir;
+  if (j < 0 || j >= g.length){ toast(dir < 0 ? 'Já é o primeiro deste nível.' : 'Já é o último deste nível.'); return false; }
+  return moverEntrada(e, e.parent, j);
+}
+function indentEntry(e, dir){
+  if (dir > 0){
+    const sibs = irmaosDe(e), prev = sibs[sibs.indexOf(e) - 1];
+    if (!prev){ toast('Não há item acima para ficar dentro dele.'); return false; }
+    return moverEntrada(e, prev.id, kids(prev.id).length);
+  }
+  if (!e.parent){ toast('Já está no primeiro nível.'); return false; }
+  const p = byId(e.parent), g = irmaosDe(p);
+  return moverEntrada(e, p.parent, g.indexOf(p) + 1);
+}
+function mudarTipo(e, t){
+  if (!NOME_TIPO[t] || e.type === t) return;
+  e.type = t;
+  if (t === 'note' && e.status === 'done') e.status = 'open';
+  save(); if (e.gId) gPush(e, true);
+}
+function menuEntrada(btn, e){
+  closeMenu();
+  const el = document.createElement('div'); el.id = 'fmenu'; el.className = 'mpop menu emenu'; el.dataset.eid = e.id; document.body.appendChild(el);
+  const ic = t => bulletSvg({ type: t, status: 'open' });
+  const d = depthOf(e), g = irmaosDe(e), i = g.indexOf(e);
+  const it = (act, icon, t, kb, extra = '', on = false, off = false) => `<div class="it${on ? ' on' : ''}" data-act="${act}" ${extra}${off ? ' style="opacity:.4;pointer-events:none"' : ''}><span class="ic">${icon}</span><span>${t}</span><span class="kb">${kb || ''}</span></div>`;
+  el.innerHTML = `<div class="h">Tipo</div>` + ['task','event','note'].map(t => it('e-tipo', ic(t), NOME_TIPO[t], '', `data-t="${t}"`, e.type === t)).join('')
+    + `<div class="sep"></div><div class="h">Posição e nível</div>`
+    + it('e-cima', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12.5v-9M4.5 7L8 3.5 11.5 7"/></svg>', 'Mover para cima', 'Alt ↑', '', false, i <= 0)
+    + it('e-baixo', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5v9M4.5 9L8 12.5 11.5 9"/></svg>', 'Mover para baixo', 'Alt ↓', '', false, i >= g.length - 1)
+    + it('e-nivel-mais', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M7 8h6M7 12h6M3 7l2 1.5L3 10"/></svg>', 'Para dentro do item acima', 'Tab', '', false, i <= 0 || d >= MAXSUB)
+    + it('e-nivel-menos', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M7 8h6M7 12h6M5 7L3 8.5 5 10"/></svg>', 'Para o nível de cima', 'Shift Tab', '', false, !d)
+    + `<div class="h" style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--faint)">Ou arraste pelo símbolo do registro.</div>`;
+  const r = btn.getBoundingClientRect(), h = el.offsetHeight;
+  el.style.left = Math.max(8, Math.min(r.right - el.offsetWidth, innerWidth - el.offsetWidth - 8)) + 'px';
+  el.style.top = (r.bottom + 6 + h > innerHeight ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+}
+
+/* Arrastar pelo símbolo: acima/abaixo de outro registro do mesmo dia; à direita do texto, entra nele. */
+const DRAG = { e: null, li: null, ini: null, alvo: null, linha: null, suprimir: false };
+document.addEventListener('pointerdown', ev => {
+  const b = ev.target.closest('.entry[data-id] .bul'); if (!b || ev.button !== 0) return;
+  const li = b.closest('.entry'), e = byId(li.dataset.id); if (!e || !e.date) return;
+  DRAG.e = e; DRAG.li = li; DRAG.ini = { x: ev.clientX, y: ev.clientY }; DRAG.ativo = false; DRAG.alvo = null;
+});
+document.addEventListener('pointermove', ev => {
+  if (!DRAG.e) return;
+  if (!DRAG.ativo){
+    if (Math.hypot(ev.clientX - DRAG.ini.x, ev.clientY - DRAG.ini.y) < 6) return;
+    DRAG.ativo = true; document.body.classList.add('arrastando');
+    [DRAG.li, ...$$('.entry[data-id]', DRAG.li.parentElement).filter(x => subtree(DRAG.e).some(k => k.id === x.dataset.id))].forEach(x => x.classList.add('arrastado'));
+    DRAG.linha = document.createElement('div'); DRAG.linha.className = 'dropline'; DRAG.li.parentElement.appendChild(DRAG.linha);
+    try { getSelection().removeAllRanges(); } catch(_){}
+  }
+  ev.preventDefault();
+  const lista = DRAG.li.parentElement, lr = lista.getBoundingClientRect();
+  const rows = $$(':scope > .entry[data-id]', lista).filter(x => !x.classList.contains('arrastado'));
+  let alvo = null;
+  for (const r of rows){
+    const q = r.getBoundingClientRect();
+    if (ev.clientY < q.top){ alvo = alvo || { li: r, onde: 'antes' }; break; }
+    if (ev.clientY < q.bottom){ alvo = { li: r, onde: ev.clientY < q.top + q.height / 2 ? 'antes' : 'depois' }; break; }
+    alvo = { li: r, onde: 'depois' };
+  }
+  if (!alvo){ DRAG.alvo = null; DRAG.linha.style.display = 'none'; return; }
+  const t = byId(alvo.li.dataset.id), rq = alvo.li.getBoundingClientRect();
+  let pai, idx, prof;
+  if (alvo.onde === 'antes'){ pai = t.parent; idx = irmaosDe(t).filter(x => x !== DRAG.e).indexOf(t); prof = depthOf(t); }
+  else {
+    const visiveis = kids(t.id).filter(x => x !== DRAG.e).length && !t.collapsed;
+    const dentro = visiveis || ev.clientX > rq.left + (depthOf(t) + 1) * 24 + 28 + 24;
+    if (dentro){ pai = t.id; idx = 0; prof = depthOf(t) + 1; }
+    else { pai = t.parent; idx = irmaosDe(t).filter(x => x !== DRAG.e).indexOf(t) + 1; prof = depthOf(t); }
+  }
+  const p = pai ? byId(pai) : null;
+  const ok = t.date === DRAG.e.date && !(p && (p === DRAG.e || subtree(DRAG.e).includes(p))) && prof + heightOf(DRAG.e) <= MAXSUB;
+  DRAG.alvo = ok ? { pai, idx } : null;
+  const y = (alvo.onde === 'antes' ? rq.top : rq.bottom) - lr.top - 1;
+  Object.assign(DRAG.linha.style, { display: '', top: y + 'px', left: (prof * 24 + 28 + 4) + 'px', right: '0px' });
+  DRAG.linha.classList.toggle('nao', !ok);
+});
+function fimArraste(){
+  if (!DRAG.e) return;
+  const { e, ativo, alvo } = DRAG;
+  if (DRAG.linha) DRAG.linha.remove();
+  document.body.classList.remove('arrastando'); $$('.arrastado').forEach(x => x.classList.remove('arrastado'));
+  DRAG.e = null; DRAG.linha = null;
+  if (!ativo) return;
+  DRAG.suprimir = true; setTimeout(() => { DRAG.suprimir = false; }, 50);
+  if (alvo) moverEntrada(e, alvo.pai, alvo.idx);
+}
+document.addEventListener('pointerup', fimArraste);
+document.addEventListener('pointercancel', fimArraste);
 
 function entryRow(e, opt = {}){
   const depth = opt.depth || 0;
@@ -1302,6 +1459,7 @@ function entryRow(e, opt = {}){
   if ((!depth || e.type === 'event') && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
   if (e.status === 'open' && e.date) acts.push(['attach','Anexar arquivo a esta tarefa',I.clip]);
   acts.push(['prio','Prioridade',I.star], ['tag','Classificar com tag',I.hash]);
+  if (e.date) acts.push(['mais','Tipo, posição e nível',I.dots]);
   if (!depth && e.type !== 'note' && gOn() && e.date && !e.gId && e.status === 'open') acts.push(['gpush',`Enviar ao Google Agenda (${S.google.calName || 'Cagece'})`,I.g]);
   if (e.status === 'open' || e.status === 'cancelled') acts.push(['cancel', e.status === 'cancelled' ? 'Restaurar' : 'Cancelar (irrelevante)', I.strike]);
   acts.push(['del','Excluir',I.trash]);
@@ -1313,9 +1471,10 @@ function entryRow(e, opt = {}){
   if (e.gId) meta.push('<span class="tag g" title="Sincronizado com o Google Agenda">Google</span>');
   const nk = kids(e.id).length;
   if (nk && e.collapsed){ const n = subtree(e).length; meta.unshift(`<span class="tag fold" data-act="e-fold" title="Mostrar os itens recolhidos">+${n} ${n === 1 ? 'item' : 'itens'}</span>`); }
-  return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">${nk ? `<button class="tog ${e.collapsed ? '' : 'open'}" data-act="e-fold" title="${e.collapsed ? 'Expandir' : 'Recolher'} itens dentro">${I.chev}</button>` : ''}
-    <span class="sig" data-act="e-prio" title="Prioridade">${e.prio ? '*' : ''}</span>
-    <span class="bul" data-act="e-bullet" title="${e.type === 'task' ? 'Clique para concluir / reabrir' : e.type === 'event' ? 'Evento' : 'Nota'}">${bulletOf(e)}</span>
+  const dica = (e.type === 'task' ? 'Tarefa: clique para concluir ou reabrir' : e.type === 'event' ? 'Evento: clique para marcar como realizado' : 'Nota') + (e.date ? ' · arraste para mudar de posição ou de nível' : '');
+  return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">${nk ? `<button class="tog ${e.collapsed ? '' : 'open'}" data-act="e-fold" title="${e.collapsed ? 'Expandir' : 'Recolher'} itens dentro" aria-expanded="${!e.collapsed}">${I.chev}</button>` : ''}
+    <span class="sig" data-act="e-prio" title="${e.prio ? 'Prioridade (clique para tirar)' : 'Marcar como prioridade'}">${e.prio ? PRIO_SVG : ''}</span>
+    <span class="bul" data-act="e-bullet" title="${dica}">${bulletSvg(e)}</span>
     <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${comTags(esc(e.text))}</span></span>
     <span class="meta">${meta.join('')}</span>
     ${(fs => fs.length || (e.tags || []).length ? `<span class="fchips" data-tk="registro" data-tid="${e.id}">${(e.tags || []).map(t => tagChip(t)).join('')}${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="Visualizar ${esc(f.name)}">${I.clip}<span>${esc(tituloDe(f))}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
@@ -1324,7 +1483,7 @@ function entryRow(e, opt = {}){
 }
 function gRow(ev, showDate){
   return `<li class="entry event g" title="Evento do Google Agenda (${S.google.calName || 'Cagece'})">
-    <span class="sig"></span><span class="bul" style="color:var(--accent)">○</span>
+    <span class="sig"></span><span class="bul" style="color:var(--accent)">${bulletSvg({ type: 'event', status: 'open' })}</span>
     <span class="txt">${ev.start ? `<span class="time">${ev.start}–${ev.end}</span>` : ''}${esc(ev.title)}${ev.location ? ` <span class="muted small">· ${esc(ev.location)}</span>` : ''}</span>
     <span class="meta">${showDate ? `<span>${shortDate(ev.date)}</span>` : ''}<span class="tag g">Google</span></span>
   </li>`;
@@ -1440,17 +1599,17 @@ VIEWS.hoje = () => {
     <div>
       <div class="qlog">
         <div class="typebtns">
-          <button data-act="qtype" data-t="task" class="${ui.qtype === 'task' ? 'on' : ''}" title="Tarefa">•</button>
-          <button data-act="qtype" data-t="event" class="${ui.qtype === 'event' ? 'on' : ''}" title="Evento / compromisso">○</button>
-          <button data-act="qtype" data-t="note" class="${ui.qtype === 'note' ? 'on' : ''}" title="Nota">–</button>
-          <button data-act="qprio" class="${ui.qprio ? 'on' : ''}" title="Prioridade">*</button>
+          <button data-act="qtype" data-t="task" class="${ui.qtype === 'task' ? 'on' : ''}" title="Tarefa">${bulletSvg({ type: 'task', status: 'open' })}</button>
+          <button data-act="qtype" data-t="event" class="${ui.qtype === 'event' ? 'on' : ''}" title="Evento / compromisso">${bulletSvg({ type: 'event', status: 'open' })}</button>
+          <button data-act="qtype" data-t="note" class="${ui.qtype === 'note' ? 'on' : ''}" title="Nota">${bulletSvg({ type: 'note', status: 'open' })}</button>
+          <button data-act="qprio" class="${ui.qprio ? 'on' : ''}" title="Prioridade">${PRIO_SVG}</button>
         </div>
         <input class="txt" id="qtext" placeholder="Registro rápido: tarefa, compromisso ou nota…" autocomplete="off">
         <input class="inp time" id="qtime" type="time" title="Horário (opcional)">
         ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
         <button class="btn primary" data-act="qadd">Adicionar</button>
       </div>
-      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no marcador para concluir. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
+      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
     </div>
 
     <div class="sec">
@@ -3465,6 +3624,12 @@ const ACT = {
   'e-bullet': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (e.type === 'task' || e.type === 'event'){ if (e.status === 'open') completeEntry(e); else if (e.status === 'done') e.status = 'open'; else return; save(); } },
   'e-done': a => { const e = byId(a.closest('.entry').dataset.id); completeEntry(e); save(); },
   'e-reopen': a => { const e = byId(a.closest('.entry').dataset.id); e.status = 'open'; save(); },
+  'e-mais': (a, ev) => { ev.stopPropagation(); const e = byId(a.closest('.entry').dataset.id); if (!e) return; if ($('#fmenu') && $('#fmenu').dataset.eid === e.id){ closeMenu(); return; } menuEntrada(a, e); },
+  'e-tipo': a => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) mudarTipo(e, a.dataset.t); },
+  'e-cima': () => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) moverVertical(e, -1); },
+  'e-baixo': () => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) moverVertical(e, 1); },
+  'e-nivel-mais': () => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) indentEntry(e, 1); },
+  'e-nivel-menos': () => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) indentEntry(e, -1); },
   'e-prio': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; e.prio = !e.prio; save(); },
   'e-cancel': a => { const e = byId(a.closest('.entry').dataset.id); e.status = e.status === 'cancelled' ? 'open' : 'cancelled'; save(); },
   'e-tomorrow': a => { const e = byId(a.closest('.entry').dataset.id); const d = nextBusiness(e.date || today()); migrateTo(e, d); save(); toast('Migrada para ' + longDate(d).toLowerCase() + '.'); },
@@ -3474,6 +3639,7 @@ const ACT = {
   'e-gpush': a => { const e = byId(a.closest('.entry').dataset.id); gPush(e); },
   'e-del': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (deleteEntry(e)) save(); },
   'e-edit': (a, ev) => {
+    if (DRAG.suprimir) return;
     if (ev.target.closest('[data-act="e-time"]')) return ACT['e-time'](a);
     const li = a.closest('.entry'), e = byId(li.dataset.id); if (!e) return;
     const t = $('.t', li); if (t.isContentEditable) return;
@@ -3483,20 +3649,22 @@ const ACT = {
     t.onkeydown = k => {
       if (k.key === 'Enter'){ k.preventDefault(); t.onblur = null; fin(true); }
       if (k.key === 'Escape'){ t.onblur = null; fin(false); }
-      if (k.key === 'Tab'){ k.preventDefault(); t.onblur = null; const v = t.textContent.trim(); if (v) e.text = v; if (!indentEntry(e, k.shiftKey ? -1 : 1)) fin(true); }
+      if (k.key === 'Tab'){ k.preventDefault(); t.onblur = null; const v = t.textContent.trim(); if (v) e.text = v; if (!indentEntry(e, k.shiftKey ? -1 : 1)) fin(true); else refocar(e.id); }
+      if (k.altKey && (k.key === 'ArrowUp' || k.key === 'ArrowDown')){ k.preventDefault(); t.onblur = null; const v = t.textContent.trim(); if (v) e.text = v; if (!moverVertical(e, k.key === 'ArrowUp' ? -1 : 1)) fin(true); else refocar(e.id); }
     };
     t.onblur = () => { if (!ui.rendering) fin(true); };
   }
 };
 document.addEventListener('mousedown', ev => {
-  const sh = ev.target.closest('#fmenu .it');
+  const sh = ev.target.closest('#fmenu .it[data-sh]');
   if (sh){ ev.preventDefault(); const p = $('#fmenu').dataset.p, k = sh.dataset.sh; closeMenu(); if (k === 'win') shareWindows(p); else localAction(k, p); return; }
-  if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]')) closeMenu();
+  if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]') && !ev.target.closest('[data-act="e-mais"]')) closeMenu();
   if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
   const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
 });
 document.addEventListener('selectionchange', () => { if (ui.view === 'caderno' && document.activeElement && document.activeElement.id === 'nbdoc'){ nbToolbarState(); } });
 document.addEventListener('click', ev => {
+  if (DRAG.suprimir){ DRAG.suprimir = false; ev.preventDefault(); return; }
   const men = ev.target.closest('.mention'); if (men){ ev.preventDefault(); openMention(men.dataset.path); return; }
   if (ev.target.id === 'viewer'){ closeViewer(); return; }
   if (ev.target.id === 'modal'){ closeModal(); ui.pick = null; return; }
