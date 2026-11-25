@@ -544,7 +544,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.16.0';    // versão do programa
+const APP_RELEASE = '1.17.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -832,9 +832,9 @@ async function needFolder(){
   if (FS.state === 'prompt') return reconnectFolder();
   if (confirm('Para guardar arquivos, a agenda precisa da autorização da pasta Documentos (ela cria a pasta Agenda Inicial lá).\n\nAutorizar agora?')) return connectFolder();
 }
-async function uploadFiles(fileList, link = '', entry = ''){
-  const files = [...fileList]; if (!files.length) return;
-  let ok = 0;
+async function uploadFiles(fileList, link = '', entry = '', caderno = ''){
+  const files = [...fileList]; if (!files.length) return [];
+  let ok = 0; const criados = [];
   for (const f of files){
     try {
       const sub = `arquivos/${today().slice(0,7)}`;
@@ -845,12 +845,14 @@ async function uploadFiles(fileList, link = '', entry = ''){
         r = { name, path: `${sub}/${name}`, size: f.size };
       } else r = await storeFile(f, sub);
       const rec = { id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entries: entry ? [entry] : [] };
-      S.files.push(rec);
+      if (caderno) rec.cadernos = [caderno];
+      S.files.push(rec); criados.push(rec);
       if (nuvemAtiva()) nuvemFila(rec, f);
       ok++;
     } catch(e){ if (e.message !== 'sem pasta') toast('Falha ao gravar ' + f.name); break; }
   }
-  if (ok){ save(); const onde = FS.state === 'granted' ? 'na pasta Agenda Inicial' + (nuvemAtiva() ? ' e no ' + NUV_NOME[nuvemProv()] : '') : 'no ' + NUV_NOME[nuvemProv()]; toast(ok === 1 ? `Arquivo salvo ${onde}.` : `${ok} arquivos salvos ${onde}.`); }
+  if (ok){ save(!caderno); const onde = FS.state === 'granted' ? 'na pasta Agenda Inicial' + (nuvemAtiva() ? ' e no ' + NUV_NOME[nuvemProv()] : '') : 'no ' + NUV_NOME[nuvemProv()]; toast(ok === 1 ? `Arquivo salvo ${onde}.` : `${ok} arquivos salvos ${onde}.`); }
+  return criados;
 }
 const relHref = p => p.split('/').map(encodeURIComponent).join('/');
 function baseHref(){ const p = (S.settings.winPath || '').trim().replace(/\\/g, '/').replace(/\/?$/, '/'); return p.length > 3 ? 'file:///' + encodeURI(p) : ''; }
@@ -1672,6 +1674,7 @@ function linkTags(f){
   const tags = (f.entries || []).map(id => byId(id)).filter(Boolean).map(e => `<span class="ftag" data-act="fl-go" data-e="${e.id}" title="${esc(e.text)} · ${e.date ? brDate(e.date) : ''}"><span class="b">${bulletOf(e)}</span><span class="tx">${esc(e.text)}</span><button data-act="fl-del" data-e="${e.id}" title="Desvincular">${I.x}</button></span>`);
   if (!tags.length && f.link) tags.push(`<span class="ftag day" title="Anexo do dia">${I.today ? '' : ''}dia ${shortDate(f.link)}</span>`);
   const tk = f.kind === 'caderno' ? 'caderno' : 'arquivo';
+  for (const id of f.cadernos || []){ const nb = nbById(id); if (nb) tags.push(`<span class="ftag" data-act="nb-open" data-id="${nb.id}" title="Caderno"><span class="b">${I.notebook}</span><span class="tx">${esc(nb.title)}</span></span>`); }
   return `<div class="ftags" data-tk="${tk}" data-tid="${f.id}">${(f.tags || []).map(t => tagChip(t, true)).join('')}${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button><button class="btn icon ghost addlink" data-act="tag-add" data-tk="${tk}" data-tid="${f.id}" title="Classificar com tag">${I.hash}</button></div>`;
 }
 function fileTable(files, compact){
@@ -2795,6 +2798,51 @@ function nbPopPick(i){
   const sel = getSelection(); const c = document.createRange(); c.setStartAfter(sp); c.collapse(true); sel.removeAllRanges(); sel.addRange(c);
   nbPopClose(); nbChanged();
 }
+/* Arquivos dentro do caderno: anexa ao caderno e menciona onde está o cursor (ou onde foi solto). */
+function nbGuardarCursor(){
+  const d = $('#nbdoc'), sel = getSelection();
+  NB.cursor = d && sel.rangeCount && d.contains(sel.getRangeAt(0).startContainer) ? sel.getRangeAt(0).cloneRange() : null;
+}
+function nbMencionar(f, r){
+  const d = $('#nbdoc'); if (!d) return;
+  if (!r || !d.contains(r.startContainer)){ r = document.createRange(); r.selectNodeContents(d); r.collapse(false); }
+  const a = document.createElement('a'); a.className = 'mention'; a.href = '#'; a.contentEditable = 'false'; a.dataset.path = f.path; a.dataset.name = f.name; a.textContent = f.name;
+  const sp = document.createTextNode(' ');
+  r.insertNode(sp); r.insertNode(a);
+  const c = document.createRange(); c.setStartAfter(sp); c.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(c);
+  return c;
+}
+function nbAnexosHtml(nb){
+  const fs = S.files.filter(x => (x.cadernos || []).includes(nb.id));
+  return fs.length ? `<div class="fchips" style="margin:var(--s2) 0 0;align-items:center;gap:var(--s2)"><span class="muted small" style="min-width:56px">Anexos</span>${fs.map(x => `<a class="fchip" href="#" data-act="nb-anexo" data-fid="${x.id}" title="Visualizar ${esc(x.name)}">${I.clip}<span>${esc(x.name)}</span></a>`).join('')}</div>` : '';
+}
+async function nbAnexar(lista, r){
+  const nb = nbById(ui.nbId), d = $('#nbdoc'); if (!nb || !d || !lista || !lista.length) return;
+  // marca a posição (cursor ou ponto onde soltou) antes de enviar
+  let cur = r || NB.cursor;
+  if (!cur || !d.contains(cur.startContainer)){ cur = document.createRange(); cur.selectNodeContents(d.lastElementChild || d); cur.collapse(false); }
+  const marca = document.createElement('span'); marca.className = 'nb-ancora'; marca.contentEditable = 'false';
+  cur.insertNode(marca);
+  const novos = await uploadFiles(lista, '', '', nb.id);
+  const m = $('#nbdoc .nb-ancora');
+  if (!m) return;
+  let ultimo = null;
+  for (const f of novos || []){
+    const a = document.createElement('a'); a.className = 'mention'; a.href = '#'; a.contentEditable = 'false'; a.dataset.path = f.path; a.dataset.name = f.name; a.textContent = f.name;
+    const sp = document.createTextNode('\u00a0');
+    m.parentNode.insertBefore(a, m); m.parentNode.insertBefore(sp, m); ultimo = sp;
+  }
+  m.remove();
+  if (ultimo){ d.focus(); const c = document.createRange(); c.setStartAfter(ultimo); c.collapse(true); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(c); nbChanged(); }
+  const lin = $('#nb-anexos'); if (lin) lin.innerHTML = nbAnexosHtml(nb);
+}
+document.addEventListener('dragover', ev => { if (ev.target.closest && ev.target.closest('#nbdoc') && ev.dataTransfer && [...ev.dataTransfer.types].includes('Files')){ ev.preventDefault(); } });
+document.addEventListener('drop', ev => {
+  if (!(ev.target.closest && ev.target.closest('#nbdoc')) || !ev.dataTransfer || !ev.dataTransfer.files.length) return;
+  ev.preventDefault();
+  const r = document.caretRangeFromPoint ? document.caretRangeFromPoint(ev.clientX, ev.clientY) : null;
+  nbAnexar(ev.dataTransfer.files, r);
+});
 function openMention(path){
   const f = S.files.find(x => x.path === path);
   if (!f) return toast('Esse arquivo não está mais na agenda.');
@@ -2866,7 +2914,8 @@ VIEWS.caderno = () => {
     <div class="kicker"><a href="#" data-act="go" data-v="cadernos" style="color:inherit;text-decoration:none">Cadernos</a></div>
     <input class="title-edit" id="nb-title" value="${esc(f.title)}" placeholder="Caderno sem título">
     <p class="sub" style="margin-bottom:var(--s3)"><span id="nb-path">Documentos › Agenda Inicial › ${esc(f.path.replace('/', ' › '))}</span></p>
-    <div data-fid="${f.id}" style="display:flex;align-items:center;gap:var(--s2)"><span class="muted small">Vínculos</span>${linkTags(f)}</div>
+    <div data-fid="${f.id}" style="display:flex;align-items:center;gap:var(--s2)"><span class="muted small" style="min-width:56px">Vínculos</span>${linkTags(f)}</div>
+    <div id="nb-anexos">${nbAnexosHtml(f)}</div>
     <div class="nb-bar" id="nbbar">
       <select class="inp" id="nb-block" title="Estilo do parágrafo"><option value="p">Texto</option><option value="h1">Título 1</option><option value="h2">Título 2</option><option value="h3">Título 3</option></select>
       <span class="sep"></span>
@@ -2875,6 +2924,8 @@ VIEWS.caderno = () => {
       ${tb('insertUnorderedList','ul','Lista com marcadores')}${tb('insertOrderedList','ol','Lista numerada')}
       <span class="sep"></span>
       ${tb('link','hlink','Link')}${tb('table','table','Tabela')}${tb('clear','eraser','Limpar formatação')}
+      <span class="sep"></span>
+      <button class="btn icon ghost" data-act="nb-anexar" title="Anexar arquivo ao caderno e mencioná-lo aqui (ou arraste o arquivo para o texto)">${I.clip}</button>
       <span class="grow"></span>
       <span class="muted small" title="Tags e menções">Digite <span class="kbd">#</span> para tag e <span class="kbd">##</span> para mencionar</span>
     </div>
@@ -2953,6 +3004,8 @@ const ACT = {
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'side-toggle': () => document.body.classList.toggle('side-open'),
   'pf-foto': () => fotoTrocar(),
+  'nb-anexar': () => { nbGuardarCursor(); const inp = document.createElement('input'); inp.type = 'file'; inp.multiple = true; inp.onchange = () => nbAnexar(inp.files); inp.click(); },
+  'nb-anexo': (a, ev) => { ev && ev.preventDefault(); const f = S.files.find(x => x.id === a.dataset.fid); if (f && !(!temLocal() && nuvemAbrir(f))) openViewer([f], 0); },
   'tag-go': (a, ev) => { ev && ev.preventDefault(); if (ev && ev.target.closest('[data-act="tag-rm"]')) return ACT['tag-rm'](ev.target.closest('[data-act="tag-rm"]')); const ed = a.closest('[contenteditable="true"]'); if (ed && document.activeElement === ed) return; ui.tag = a.dataset.tag; ui.view = 'tag'; render(); },
   'tag-rm': a => { const c = a.closest('[data-tk]'); tagPor(c.dataset.tk, c.dataset.tid, a.dataset.tag, true); },
   'tag-add': a => tagEditor(a.dataset.tk, a.dataset.tid),
