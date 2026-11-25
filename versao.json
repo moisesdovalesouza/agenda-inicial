@@ -1,10 +1,10 @@
 {
- "version": "1.15.2",
+ "version": "1.16.0",
  "date": "2026-11-24",
  "notes": [
+  "Tags: escreva #palavra em registros, listas e cadernos (a agenda sugere as que você já usa) ou classifique registros, cadernos, listas e documentos com o botão #; clique numa tag para ver tudo o que a tem, e em Tags, no menu, estão todas",
   "Correção: a sincronização não interrompe mais a edição de um texto nem o faz voltar à versão anterior; o que chega de outro aparelho espera você sair do campo",
   "Anexos na nuvem: com a mesma conexão do Termo Inicial, os anexos vão também para o OneDrive (ou Google Drive) em Documentos › Agenda Inicial e abrem em qualquer aparelho, inclusive o celular; em Configurações › Anexos na nuvem há o botão para enviar os anexos atuais (o acesso é emprestado pelo próprio Termo Inicial; nada para configurar)",
-  "Perfil com o nome da empresa: ele aparece embaixo de “Agenda Inicial” (no lugar de “Uso pessoal”) e no cabeçalho dos PDFs",
-  "Foto do perfil em formato retrato (4×5), maior na barra lateral"
+  "Perfil com o nome da empresa: ele aparece embaixo de “Agenda Inicial” (no lugar de “Uso pessoal”) e no cabeçalho dos PDFs"
  ]
 }

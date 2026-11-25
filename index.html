@@ -317,6 +317,22 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .vload{display:grid;place-items:center;height:100%;color:var(--muted);font-size:13px}
 @media print{.viewer{display:none!important}}
 .fchips{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 4px}
+/* Tags (#) */
+.htag{display:inline-flex;align-items:center;height:20px;padding:0 6px;border:1px solid var(--accent-line, var(--border));border-radius:var(--r);background:var(--accent-soft, var(--bg2));color:var(--text);font-size:11.5px;line-height:18px;text-decoration:none;cursor:pointer;white-space:nowrap;vertical-align:1px}
+.htag:hover{border-color:var(--accent)}
+.htag .x{margin-left:4px;color:var(--muted);font-size:13px;line-height:1}
+.htag .x:hover{color:var(--danger)}
+.t .htag,.txt .htag,.nb-card p .htag{display:inline;height:auto;padding:0;border:0;background:none;color:var(--accent-strong, var(--accent));font-size:inherit;line-height:inherit;vertical-align:baseline}
+.tagline{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tagadd{height:20px;padding:0 6px;border:1px dashed var(--border);border-radius:var(--r);background:none;color:var(--muted);font-size:11.5px;cursor:pointer}
+.tagadd:hover{border-color:var(--accent);color:var(--text)}
+#tpop{position:fixed;z-index:80;min-width:180px;max-width:280px;max-height:220px;overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:4px}
+#tpop .it{display:flex;justify-content:space-between;gap:var(--s2);padding:4px 8px;border-radius:2px;font-size:13px;cursor:pointer}
+#tpop .it.on,#tpop .it:hover{background:var(--bg2)}
+#tpop .it small{color:var(--faint)}
+.tag-index{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.tag-index .htag{height:28px;font-size:13px;padding:0 10px}
+.tag-index .htag small{margin-left:6px;color:var(--muted)}
 .fchip{display:inline-flex;align-items:center;gap:4px;max-width:260px;height:20px;padding:0 6px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);font-size:11.5px;color:var(--text);text-decoration:none;cursor:pointer;line-height:18px}
 .fchip:hover{border-color:var(--accent);background:var(--accent-bg)}
 .fchip svg{width:12px;height:12px;color:var(--muted);flex:none}
@@ -528,7 +544,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.15.2';    // versão do programa
+const APP_RELEASE = '1.16.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -560,6 +576,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  hash:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6.2 2.5L4.8 13.5M11.2 2.5l-1.4 11M2.8 5.8h11M2.2 10.2h11"/></svg>',
   cloud:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 12.5h7.2a2.8 2.8 0 00.4-5.6A4 4 0 004.4 6a3.3 3.3 0 00.1 6.5z"/></svg>',
   today:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/><rect x="5" y="8.5" width="2.5" height="2.5" fill="currentColor" stroke="none"/></svg>',
   cal:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3M5.5 9h1M9.5 9h1M5.5 11.5h1M9.5 11.5h1"/></svg>',
@@ -1233,7 +1250,7 @@ function entryRow(e, opt = {}){
   if (!depth && e.status === 'open' && e.type !== 'note') acts.push(['tomorrow','Migrar para o próximo dia útil',I.migrate], ['sched','Agendar para outra data',I.sched]);
   if ((!depth || e.type === 'event') && e.status === 'open') acts.push(['time','Definir horário',I.clock]);
   if (e.status === 'open' && e.date) acts.push(['attach','Anexar arquivo a esta tarefa',I.clip]);
-  acts.push(['prio','Prioridade',I.star]);
+  acts.push(['prio','Prioridade',I.star], ['tag','Classificar com tag',I.hash]);
   if (!depth && e.type !== 'note' && gOn() && e.date && !e.gId && e.status === 'open') acts.push(['gpush',`Enviar ao Google Agenda (${S.google.calName || 'Cagece'})`,I.g]);
   if (e.status === 'open' || e.status === 'cancelled') acts.push(['cancel', e.status === 'cancelled' ? 'Restaurar' : 'Cancelar (irrelevante)', I.strike]);
   acts.push(['del','Excluir',I.trash]);
@@ -1248,9 +1265,9 @@ function entryRow(e, opt = {}){
   return `<li class="${cls}" data-id="${e.id}" style="--d:${depth}">${nk ? `<button class="tog ${e.collapsed ? '' : 'open'}" data-act="e-fold" title="${e.collapsed ? 'Expandir' : 'Recolher'} itens dentro">${I.chev}</button>` : ''}
     <span class="sig" data-act="e-prio" title="Prioridade">${e.prio ? '*' : ''}</span>
     <span class="bul" data-act="e-bullet" title="${e.type === 'task' ? 'Clique para concluir / reabrir' : e.type === 'event' ? 'Evento' : 'Nota'}">${bulletOf(e)}</span>
-    <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${esc(e.text)}</span></span>
+    <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${comTags(esc(e.text))}</span></span>
     <span class="meta">${meta.join('')}</span>
-    ${(fs => fs.length ? `<span class="fchips">${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="Visualizar ${esc(f.name)}">${I.clip}<span>${esc(f.name)}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
+    ${(fs => fs.length || (e.tags || []).length ? `<span class="fchips" data-tk="registro" data-tid="${e.id}">${(e.tags || []).map(t => tagChip(t)).join('')}${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="Visualizar ${esc(f.name)}">${I.clip}<span>${esc(f.name)}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
     <span class="acts">${acts.map(([a,t,ic]) => `<button data-act="e-${a}" title="${t}">${ic}</button>`).join('')}</span>
   </li>`;
 }
@@ -1293,6 +1310,7 @@ function renderSide(){
       ${nav('cadernos','notebook','Cadernos', notebooks().length ? `<span class="cnt">${notebooks().length}</span>` : '')}
       ${nav('arquivos','files','Arquivos', S.files.length ? `<span class="cnt">${S.files.length}</span>` : '')}
       ${nav('ponto','ponto','Ponto', p.pending ? '<span class="pill">pendente</span>' : '')}
+      ${nav('tags','hash','Tags', (n => n ? `<span class="cnt">${n}</span>` : '')(todasTags().length))}
       <div class="grp">Listas</div>
       ${S.lists.map(l => `<a class="${ui.view === 'lista' && ui.listId === l.id ? 'on' : ''}" data-act="go-list" data-id="${l.id}">${I.list}<span>${esc(l.title || 'Sem título')}</span><span class="cnt">${l.items.filter(i => !i.done).length || ''}</span></a>`).join('')}
       <a data-act="list-new">${I.plus}<span class="muted">Nova lista</span></a>
@@ -1471,6 +1489,33 @@ VIEWS.futuro = () => {
 function listRange(items, i){ let j = i + 1; while (j < items.length && items[j].level > items[i].level) j++; return j; }
 function normLevels(items){ items.forEach((it, i) => { it.level = Math.max(0, Math.min(it.level || 0, i ? items[i-1].level + 1 : 0, MAXSUB)); }); }
 const curList = () => S.lists.find(x => x.id === ui.listId);
+VIEWS.tags = () => {
+  const todas = todasTags();
+  return topbar('Tags') + `<div class="page">
+    <div class="kicker">Classificação</div>
+    <h1 class="title">Tags</h1>
+    <p class="sub">Escreva <b>#palavra</b> em um registro, lista ou caderno, ou use o botão <b>#</b> para classificar registros, cadernos, listas e documentos.</p>
+    ${todas.length ? `<div class="tag-index">${todas.map(x => `<a class="htag" href="#" data-act="tag-go" data-tag="${esc(x.nome)}">#${esc(x.nome)}<small>${x.n}</small></a>`).join('')}</div>` : '<div class="empty">Nenhuma tag ainda.</div>'}
+  </div>`;
+};
+VIEWS.tag = () => {
+  const k = tagKey(ui.tag || ''), tem = (tipo, o) => tagsDe(tipo, o).some(t => tagKey(t) === k);
+  const reg = S.entries.filter(e => tem('registro', e)).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const cads = S.files.filter(f => f.kind === 'caderno' && tem('caderno', f));
+  const docs = S.files.filter(f => f.kind !== 'caderno' && tem('arquivo', f));
+  const lis = S.lists.filter(l => tem('lista', l));
+  const total = reg.length + cads.length + docs.length + lis.length;
+  return topbar(`<a href="#" data-act="go-tags" style="color:inherit">Tags</a> / #${esc(ui.tag || '')}`) + `<div class="page">
+    <div class="kicker"><a href="#" data-act="go-tags" style="color:inherit;text-decoration:none">Tags</a></div>
+    <h1 class="title">#${esc(ui.tag || '')}</h1>
+    <p class="sub">${total} ite${total === 1 ? 'm' : 'ns'} com esta tag</p>
+    ${reg.length ? `<div class="sec"><div class="sec-h"><h2>Registros</h2></div><ul class="entries">${reg.map(e => entryRow(e, { showDate: true })).join('')}</ul></div>` : ''}
+    ${cads.length ? `<div class="sec"><div class="sec-h"><h2>Cadernos</h2></div><div class="nb-grid">${cads.map(f => `<div class="nb-card" data-act="nb-open" data-id="${f.id}"><h3>${I.notebook}<span>${esc(f.title)}</span></h3><p>${comTags(esc(f.preview || ''))}</p></div>`).join('')}</div></div>` : ''}
+    ${lis.length ? `<div class="sec"><div class="sec-h"><h2>Listas</h2></div>${lis.map(l => `<div><a href="#" data-act="go-list" data-id="${l.id}">${I.list} ${esc(l.title || 'Sem título')}</a></div>`).join('')}</div>` : ''}
+    ${docs.length ? `<div class="sec"><div class="sec-h"><h2>Documentos</h2></div>${fileTable(docs, true)}</div>` : ''}
+    ${total ? '' : '<div class="empty">Nada com esta tag.</div>'}
+  </div>`;
+};
 VIEWS.lista = () => {
   const l = curList() || S.lists[0];
   if (!l){ ui.view = 'hoje'; return VIEWS.hoje(); }
@@ -1485,13 +1530,14 @@ VIEWS.lista = () => {
     if (ui.hideDone && it.done) return '';
     const sub = items.slice(i + 1, listRange(items, i));
     const pr = sub.length ? `<span class="tag ${sub.every(x => x.done) ? '' : 'acc'}" title="Subitens concluídos">${sub.filter(x => x.done).length}/${sub.length}</span>` : '';
-    return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}">${hasKids ? `<button class="tog ${it.collapsed ? '' : 'open'}" data-act="li-fold" title="${it.collapsed ? 'Expandir' : 'Recolher'} subitens">${I.chev}</button>` : ''}<input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span><span class="meta">${hasKids && it.collapsed ? `<span class="tag fold" data-act="li-fold">+${sub.length}</span>` : pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
+    return `<div class="check ${it.done ? 'done' : ''}" data-iid="${it.id}" style="--d:${it.level || 0}">${hasKids ? `<button class="tog ${it.collapsed ? '' : 'open'}" data-act="li-fold" title="${it.collapsed ? 'Expandir' : 'Recolher'} subitens">${I.chev}</button>` : ''}<input type="checkbox" data-act="li-toggle" ${it.done ? 'checked' : ''}><span class="txt" contenteditable="true" data-li-edit>${esc(it.text)}</span>${tagsTexto(it.text).length ? `<span class="meta">${tagsTexto(it.text).map(t => tagChip(t)).join('')}</span>` : ''}<span class="meta">${hasKids && it.collapsed ? `<span class="tag fold" data-act="li-fold">+${sub.length}</span>` : pr}</span><span class="ops">${(it.level || 0) < MAXSUB ? `<button data-act="li-sub" title="Adicionar subitem (nível ${(it.level || 0) + 1} de ${MAXSUB})">${I.subtask}</button>` : ''}<button data-act="li-del" title="Excluir">${I.trash}</button></span></div>`;
   }).join('');
   return topbar(esc(l.title || 'Lista'), `<button class="btn icon ghost" data-act="li-hide" title="${ui.hideDone ? 'Mostrar concluídos' : 'Ocultar concluídos'}">${ui.hideDone ? I.eye : I.eyeoff}</button><button class="btn icon ghost" data-act="li-todays" title="Levar os itens em aberto, com a hierarquia, para o registro de hoje">${I.migrate}</button><button class="btn ghost" data-act="pdf-list" title="Exportar a lista em PDF">${I.pdf}PDF</button><button class="btn icon ghost danger" data-act="list-del" title="Excluir lista">${I.trash}</button>`) + `
   <div class="page">
     <div class="kicker">Lista</div>
     <input class="title-edit" id="ltitle" value="${esc(l.title)}" placeholder="Sem título">
     <p class="sub">${open} em aberto · ${done} concluído${done === 1 ? '' : 's'}</p>
+    <div class="tagline" data-tk="lista" data-tid="${l.id}" style="margin:calc(-1 * var(--s3)) 0 var(--s4)">${tagLine('lista', l.id, l)}${tagsTexto(textoDe('lista', l)).filter(t => !(l.tags || []).some(x => tagKey(x) === tagKey(t))).map(t => tagChip(t)).join('')}</div>
     <div class="qlog" style="grid-template-columns:1fr auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)"><button class="btn primary" data-act="li-add">Adicionar</button></div>
     <div class="hint">Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.</div>
     <div class="sec">${rows || '<div class="empty">Lista vazia.</div>'}</div>
@@ -1625,7 +1671,8 @@ function exportList(l){
 function linkTags(f){
   const tags = (f.entries || []).map(id => byId(id)).filter(Boolean).map(e => `<span class="ftag" data-act="fl-go" data-e="${e.id}" title="${esc(e.text)} · ${e.date ? brDate(e.date) : ''}"><span class="b">${bulletOf(e)}</span><span class="tx">${esc(e.text)}</span><button data-act="fl-del" data-e="${e.id}" title="Desvincular">${I.x}</button></span>`);
   if (!tags.length && f.link) tags.push(`<span class="ftag day" title="Anexo do dia">${I.today ? '' : ''}dia ${shortDate(f.link)}</span>`);
-  return `<div class="ftags">${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button></div>`;
+  const tk = f.kind === 'caderno' ? 'caderno' : 'arquivo';
+  return `<div class="ftags" data-tk="${tk}" data-tid="${f.id}">${(f.tags || []).map(t => tagChip(t, true)).join('')}${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button><button class="btn icon ghost addlink" data-act="tag-add" data-tk="${tk}" data-tid="${f.id}" title="Classificar com tag">${I.hash}</button></div>`;
 }
 function fileTable(files, compact){
   const cols = compact ? '<col><col style="width:36%"><col class="c-size" style="width:72px"><col style="width:148px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:176px">';
@@ -1822,6 +1869,111 @@ VIEWS.config = () => {
     </div>
   </div>`;
 };
+
+/* ---------------- Tags (#) ----------------
+   #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
+   "# Título" (com espaço) continua sendo título no caderno, e "##" continua mencionando arquivo. */
+const TAG_RE = /(^|[\s(\[{,;:>"'“])#([\p{L}\p{N}][\p{L}\p{N}_\-]{0,39})/gu;
+const tagKey = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const limpaTag = t => String(t || '').trim().replace(/^#+/, '').replace(/[^\p{L}\p{N}_\-]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+function tagsTexto(txt){ const s = new Map(); for (const m of String(txt || '').matchAll(TAG_RE)) s.set(tagKey(m[2]), m[2]); return [...s.values()]; }
+function textoDe(tipo, o){
+  if (tipo === 'registro') return o.text;
+  if (tipo === 'lista') return [o.notes, ...(o.items || []).map(i => i.text)].join('\n');
+  if (tipo === 'caderno') return o.md || o.preview || '';
+  return '';
+}
+function tagsDe(tipo, o){
+  const m = new Map();
+  for (const t of [...(o.tags || []), ...tagsTexto(textoDe(tipo, o))]) if (!m.has(tagKey(t))) m.set(tagKey(t), t);
+  return [...m.values()];
+}
+function todasTags(){
+  const m = new Map(), add = (t) => { const k = tagKey(t), x = m.get(k); if (x) x.n++; else m.set(k, { nome: t, n: 1 }); };
+  for (const e of S.entries) tagsDe('registro', e).forEach(add);
+  for (const l of S.lists) tagsDe('lista', l).forEach(add);
+  for (const f of S.files) tagsDe(f.kind === 'caderno' ? 'caderno' : 'arquivo', f).forEach(add);
+  return [...m.values()].sort((a, b) => b.n - a.n || a.nome.localeCompare(b.nome, 'pt-BR'));
+}
+const tagChip = (t, x) => `<a class="htag" href="#" data-act="tag-go" data-tag="${esc(t)}" title="Ver tudo com #${esc(t)}">#${esc(t)}${x ? `<span class="x" data-act="tag-rm" data-tag="${esc(t)}" title="Tirar a tag">×</span>` : ''}</a>`;
+/* Texto com as #tags clicáveis (o texto já vem escapado). */
+const comTags = html => html.replace(TAG_RE, (m, a, t) => `${a}<a class="htag" href="#" data-act="tag-go" data-tag="${t}" title="Ver tudo com #${t}">#${t}</a>`);
+/* Linha de classificação: as tags do item (as do texto aparecem no próprio texto). */
+function tagLine(tipo, id, o, botao = true){
+  const tags = o.tags || [];
+  return `${tags.map(t => tagChip(t, true).replace('data-act="tag-go"', `data-act="tag-go" data-tk="${tipo}" data-tid="${id}"`)).join('')}${botao ? `<button class="tagadd" data-act="tag-add" data-tk="${tipo}" data-tid="${id}" title="Classificar com uma tag">#</button>` : ''}`;
+}
+function alvoTag(tk, tid){
+  if (tk === 'registro') return byId(tid);
+  if (tk === 'lista') return S.lists.find(l => l.id === tid);
+  return S.files.find(f => f.id === tid);
+}
+function tagEditor(tk, tid){
+  const o = alvoTag(tk, tid); if (!o) return;
+  const todas = todasTags();
+  modal(`<h3>Tags</h3>
+    <p class="muted">Classifique com uma ou mais tags. Dentro do texto, basta escrever <b>#palavra</b>.</p>
+    <div class="tagline" id="tg-atuais" style="margin-bottom:var(--s3)">${(o.tags || []).map(t => tagChip(t, true).replace('data-act="tag-go"', `data-act="tag-go" data-tk="${tk}" data-tid="${tid}"`)).join('') || '<span class="muted small">Sem tags ainda.</span>'}</div>
+    <input class="inp" id="tg-in" placeholder="Nova tag (Enter)" autocomplete="off" style="width:100%" data-tk="${tk}" data-tid="${tid}">
+    ${todas.length ? `<p class="muted small" style="margin:var(--s3) 0 var(--s1)">Já usadas</p><div class="tagline">${todas.slice(0, 30).map(x => `<button class="tagadd" data-act="tag-pick" data-tk="${tk}" data-tid="${tid}" data-tag="${esc(x.nome)}">#${esc(x.nome)}</button>`).join('')}</div>` : ''}
+    <div class="tools"><button class="btn primary" data-act="m-close">Pronto</button></div>`);
+  setTimeout(() => { const i = $('#tg-in'); if (i) i.focus(); }, 30);
+}
+function tagPor(tk, tid, tag, tirar){
+  const o = alvoTag(tk, tid); tag = limpaTag(tag); if (!o || !tag) return;
+  o.tags = (o.tags || []).filter(t => tagKey(t) !== tagKey(tag));
+  if (!tirar) o.tags.push(tag);
+  if (!o.tags.length) delete o.tags;
+  if (tk === 'arquivo' || tk === 'caderno') o.updatedAt = Date.now();
+  save();
+  if ($('#tg-atuais')) tagEditor(tk, tid);
+}
+/* Sugestões ao digitar # (campos de texto, registros, listas e cadernos). */
+const TP = { el: null, ini: 0, itens: [], i: 0 };
+function tpFechar(){ TP.el = null; const p = $('#tpop'); if (p) p.remove(); }
+function tpAntes(el){
+  if (el.isContentEditable){
+    const sel = getSelection(); if (!sel.rangeCount) return null;
+    const r = sel.getRangeAt(0); if (!r.collapsed || r.startContainer.nodeType !== 3) return null;
+    return { txt: r.startContainer.textContent.slice(0, r.startOffset), node: r.startContainer, off: r.startOffset, rect: r.getBoundingClientRect() };
+  }
+  if (typeof el.selectionStart !== 'number') return null;
+  const b = el.getBoundingClientRect();
+  return { txt: el.value.slice(0, el.selectionStart), rect: { left: b.left + 8, bottom: b.bottom } };
+}
+function tpVer(el){
+  const a = tpAntes(el); if (!a) return tpFechar();
+  const m = a.txt.match(/(^|[\s(\[{,;:>"'“])#([\p{L}\p{N}_\-]{0,40})$/u);
+  if (!m) return tpFechar();
+  const q = tagKey(m[2]);
+  const itens = todasTags().filter(x => tagKey(x.nome).startsWith(q) && tagKey(x.nome) !== q).slice(0, 8);
+  if (!itens.length) return tpFechar();
+  Object.assign(TP, { el, itens, i: 0, q: m[2], node: a.node, off: a.off });
+  let p = $('#tpop'); if (!p){ p = document.createElement('div'); p.id = 'tpop'; document.body.appendChild(p); }
+  p.innerHTML = itens.map((x, i) => `<div class="it${i ? '' : ' on'}" data-ti="${i}"><span>#${esc(x.nome)}</span><small>${x.n}</small></div>`).join('');
+  const r = a.rect || { left: 0, bottom: 0 };
+  p.style.left = Math.min(r.left || 0, innerWidth - 300) + 'px'; p.style.top = Math.min((r.bottom || 0) + 4, innerHeight - 230) + 'px';
+}
+function tpEscolher(i){
+  const x = TP.itens[i], el = TP.el; if (!x || !el) return tpFechar();
+  if (el.isContentEditable){
+    const n = TP.node; n.textContent = n.textContent.slice(0, TP.off - TP.q.length) + x.nome + ' ' + n.textContent.slice(TP.off);
+    const r = document.createRange(); r.setStart(n, TP.off - TP.q.length + x.nome.length + 1); r.collapse(true); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  } else {
+    const p = el.selectionStart; el.setRangeText(x.nome + ' ', p - TP.q.length, p, 'end');
+  }
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  tpFechar();
+}
+document.addEventListener('input', ev => { const el = ev.target; if (el && (el.isContentEditable || /^(INPUT|TEXTAREA)$/.test(el.tagName)) && el.id !== 'tg-in' && el.type !== 'date') tpVer(el.isContentEditable ? (el.closest('[contenteditable="true"]') || el) : el); });
+document.addEventListener('keydown', ev => {
+  if (ev.target && ev.target.id === 'tg-in' && ev.key === 'Enter'){ ev.preventDefault(); const t = ev.target; if (t.value.trim()){ tagPor(t.dataset.tk, t.dataset.tid, t.value); } return; }
+  if (!TP.el || !$('#tpop')) return;
+  if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){ ev.preventDefault(); ev.stopImmediatePropagation(); TP.i = (TP.i + (ev.key === 'ArrowDown' ? 1 : -1) + TP.itens.length) % TP.itens.length; $$('#tpop .it').forEach((e, i) => e.classList.toggle('on', i === TP.i)); }
+  else if (ev.key === 'Enter' || ev.key === 'Tab'){ ev.preventDefault(); ev.stopImmediatePropagation(); tpEscolher(TP.i); }
+  else if (ev.key === 'Escape'){ ev.stopImmediatePropagation(); tpFechar(); }
+}, true);
+document.addEventListener('mousedown', ev => { const it = ev.target.closest('#tpop .it'); if (it){ ev.preventDefault(); tpEscolher(+it.dataset.ti); } else if (!ev.target.closest('#tpop')) tpFechar(); }, true);
 
 /* ---------------- Edição protegida ----------------
    Tarefas em segundo plano (nuvem, perfil, foto, anexos, virada do dia) nunca redesenham a tela enquanto um
@@ -2695,7 +2847,7 @@ function attachPicker(entryId, q){
 
 VIEWS.cadernos = () => {
   const list = notebooks();
-  const card = f => `<div class="nb-card" data-act="nb-open" data-id="${f.id}"><h3>${I.notebook}<span>${esc(f.title)}</span></h3><p>${esc(f.preview || 'Caderno vazio.')}</p><div class="meta"><span>${brDate(ymd(new Date(f.updatedAt || f.addedAt)))}</span><span>${(f.entries || []).length ? (f.entries.length + ' vínculo' + (f.entries.length > 1 ? 's' : '')) : ''}</span></div></div>`;
+  const card = f => `<div class="nb-card" data-act="nb-open" data-id="${f.id}"><h3>${I.notebook}<span>${esc(f.title)}</span></h3><p>${comTags(esc(f.preview || 'Caderno vazio.'))}</p>${tagsDe('caderno', f).length ? `<div class="tagline">${tagsDe('caderno', f).map(t => tagChip(t)).join('')}</div>` : ''}<div class="meta"><span>${brDate(ymd(new Date(f.updatedAt || f.addedAt)))}</span><span>${(f.entries || []).length ? (f.entries.length + ' vínculo' + (f.entries.length > 1 ? 's' : '')) : ''}</span></div></div>`;
   return topbar('Cadernos', `<button class="btn primary" data-act="nb-new">${I.plus}Novo caderno</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca de notas</div>
@@ -2724,9 +2876,9 @@ VIEWS.caderno = () => {
       <span class="sep"></span>
       ${tb('link','hlink','Link')}${tb('table','table','Tabela')}${tb('clear','eraser','Limpar formatação')}
       <span class="grow"></span>
-      <span class="muted small" title="Mencionar arquivo ou caderno">Digite <span class="kbd">##</span> para mencionar</span>
+      <span class="muted small" title="Tags e menções">Digite <span class="kbd">#</span> para tag e <span class="kbd">##</span> para mencionar</span>
     </div>
-    <div class="nb-doc" id="nbdoc" contenteditable="true" spellcheck="true" data-ph="Comece a escrever… Use # para título, - para lista e ## para mencionar um arquivo."></div>
+    <div class="nb-doc" id="nbdoc" contenteditable="true" spellcheck="true" data-ph="Comece a escrever… Use “# ” para título, #palavra para tag, - para lista e ## para mencionar um arquivo."></div>
   </div>`;
 };
 function officeBtnNb(f){ return `<button class="btn icon ghost" data-act="o-open" data-p="${esc(f.path)}" title="Abrir no Bloco de Notas (programa padrão para .md)">${I.notepad}</button>${fileActs(f.path)}`; }
@@ -2801,6 +2953,12 @@ const ACT = {
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'side-toggle': () => document.body.classList.toggle('side-open'),
   'pf-foto': () => fotoTrocar(),
+  'tag-go': (a, ev) => { ev && ev.preventDefault(); if (ev && ev.target.closest('[data-act="tag-rm"]')) return ACT['tag-rm'](ev.target.closest('[data-act="tag-rm"]')); const ed = a.closest('[contenteditable="true"]'); if (ed && document.activeElement === ed) return; ui.tag = a.dataset.tag; ui.view = 'tag'; render(); },
+  'tag-rm': a => { const c = a.closest('[data-tk]'); tagPor(c.dataset.tk, c.dataset.tid, a.dataset.tag, true); },
+  'tag-add': a => tagEditor(a.dataset.tk, a.dataset.tid),
+  'tag-pick': a => tagPor(a.dataset.tk, a.dataset.tid, a.dataset.tag),
+  'e-tag': a => tagEditor('registro', a.closest('.entry').dataset.id),
+  'go-tags': () => { ui.view = 'tags'; render(); },
   'f-nuvem': a => nuvemAbrir(S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid)),
   'nuvem-atuais': () => nuvemEnviarAtuais(),
   'nuvem-ver': async () => { await nuvemConectadas(true); render(false); },
