@@ -326,6 +326,52 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .vload{display:grid;place-items:center;height:100%;color:var(--muted);font-size:13px}
 @media print{.viewer{display:none!important}}
 .fchips{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 4px}
+
+/* ---------- Ambientes e equipe ---------- */
+.ambsel{display:grid;grid-template-columns:16px minmax(0,1fr) auto 12px;gap:var(--s2);align-items:center;width:calc(100% - 2 * var(--s2));margin:0 var(--s2) var(--s2);height:32px;padding:0 var(--s2);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--muted);font-size:12px;text-align:left;cursor:pointer}
+.ambsel:hover{border-color:var(--accent);color:var(--text)}
+.ambsel svg{width:14px;height:14px}
+.ambsel .dd{width:12px;height:12px;color:var(--faint)}
+.ambsel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ambsel b{color:var(--text);font-weight:600}
+.ambsel .cnt{font:11px var(--mono);padding:0 5px;border-radius:2px;background:var(--accent-bg);color:var(--accent-strong)}
+#fmenu.ambmenu{width:300px}
+#fmenu.ambmenu .it .kb svg{width:14px;height:14px;color:var(--accent)}
+.pacote{margin-top:var(--s2);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.pfoto{position:relative;display:inline-grid;place-items:center;width:40px;height:50px;border-radius:2px;background:var(--hover);overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--border)}
+.pfoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pfoto .ini{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.pfoto.p40{width:32px;height:40px}
+.pfoto.p120{width:96px;height:120px}.pfoto.p120 .ini{font-size:24px}
+.eqseg button small{font:11px var(--mono);color:var(--faint);margin-left:4px}
+.eqseg button.on{background:var(--hover);color:var(--text)}
+.eqlist{display:flex;flex-direction:column}
+.eqp{display:grid;grid-template-columns:40px minmax(0,1.4fr) minmax(0,.8fr) 120px minmax(0,1.2fr);gap:var(--s3);align-items:center;padding:var(--s2) 0;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}
+.eqp:hover{background:var(--hover)}
+.eqp .nm b{display:block;font-weight:600}.eqp .nm small,.eqp .st,.eqp .em{font-size:13px;color:var(--muted)}
+.eqp .em{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.setores{display:flex;flex-wrap:wrap;gap:var(--s1);align-items:center}
+.setores .tag .x{border:0;background:transparent;color:var(--faint);cursor:pointer;padding:0 0 0 2px}
+.setores .tag .x:hover{color:var(--text)}
+.btn.mini{height:24px;font-size:12px;padding:0 var(--s2)}
+.btn.danger,.btn.ghost.danger{color:#b4453a}
+.form{display:flex;flex-direction:column;gap:var(--s3);margin:0 0 var(--s3)}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.form label small{font-size:11px}
+.form .dupla{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.form .chk{flex-direction:row;gap:var(--s2);align-items:flex-start;padding:var(--s2);border:1px solid var(--border);border-radius:var(--r)}
+.form .chk input{margin-top:3px}
+.form .chk b{display:block;color:var(--text);font-weight:600}
+.form .chk small{display:block;font-size:12px;line-height:17px}
+.linkbox{display:grid;grid-template-columns:1fr auto;gap:var(--s2);margin:0 0 var(--s3)}
+.linkbox .inp{font:12px var(--mono)}
+.convite .quem{display:grid;grid-template-columns:32px 1fr;gap:var(--s3);align-items:center;margin:0 0 var(--s3)}
+.convite .quem p{margin:0;color:var(--text)}
+.perfil-m .pm-topo{display:grid;grid-template-columns:96px 1fr;gap:var(--s4);align-items:end;margin:0 0 var(--s4)}
+.perfil-m .pm-topo h3{margin:2px 0 2px}.perfil-m .pm-topo p{margin:0 0 var(--s2)}
+.perfil-m .kv{grid-template-columns:140px 1fr;margin:0 0 var(--s4)}
+.perfil-m .tools{display:flex;gap:var(--s2);align-items:center}
+@media (max-width:900px){.eqp{grid-template-columns:40px minmax(0,1fr) auto}.eqp .st,.eqp .em{display:none}.form .dupla{grid-template-columns:1fr}}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -395,7 +441,9 @@ tr:hover .fname .tt-ed,.fname .tt-ed:focus{opacity:1}
 select.inp.mini{height:24px;font-size:12px;max-width:220px}
 .page.hoje .notes{background-color:transparent}
 .install{margin:0 var(--s2) var(--s2)}
-.install .btn{width:100%;justify-content:center}
+.install .btn{width:100%;justify-content:flex-start;gap:var(--s2);height:32px;padding:0 var(--s2);border:1px dashed var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:400}
+.install .btn:hover{border-color:var(--accent);color:var(--text);background:var(--hover)}
+.install .btn svg{width:14px;height:14px;color:var(--accent)}
 .modal{position:fixed;inset:0;z-index:60;background:rgba(15,15,14,.45);display:grid;place-items:center;padding:var(--s4)}
 .modal[hidden]{display:none}
 .modal .box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);width:min(520px,100%);padding:var(--s4)}
@@ -612,8 +660,14 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.20.1';    // versão do programa
+const APP_RELEASE = '1.21.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
+/* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
+const AMB_KEY = 'agendaInicial.ambiente';
+let AMB_ATUAL = (() => { try { return localStorage.getItem(AMB_KEY) || ''; } catch(e){ return ''; } })();
+const lsKey = (a = AMB_ATUAL) => a ? `${LS_KEY}@${a}` : LS_KEY;
+const dadosArq = (a = AMB_ATUAL) => a ? `ambiente-${a}.json` : 'agenda.json';
+const ambPref = (a = AMB_ATUAL) => a ? a + '~' : '';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
 
@@ -644,6 +698,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  team:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.2c.4-2.3 2.1-3.6 4.2-3.6s3.8 1.3 4.2 3.6"/><circle cx="11.4" cy="6.2" r="1.8"/><path d="M11.2 9.7c1.6.1 2.7 1.1 3 3"/></svg>',
   dots:'<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="12.5" cy="8" r="1.2"/></svg>',
   info:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg>',
   bookmark:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 2.5h7v11L8 10.8l-3.5 2.7z"/></svg>',
@@ -729,7 +784,7 @@ const ui = { view: 'hoje', date: today(), month: today().slice(0,7), listId: nul
 
 function load(){
   let s = null;
-  try { s = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch(e){}
+  try { s = JSON.parse(localStorage.getItem(lsKey()) || 'null'); } catch(e){}
   return migrate(s || DEFAULT());
 }
 function migrate(s){
@@ -746,7 +801,7 @@ function migrate(s){
 let saveTimer = null;
 function save(renderAfter = true){
   S.updatedAt = Date.now();
-  try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){ toast('Não foi possível salvar no navegador.'); }
+  try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){ toast('Não foi possível salvar no navegador.'); }
   clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 500);
   if (typeof cloudSchedule === 'function') cloudSchedule();
   if (renderAfter) render();
@@ -847,9 +902,9 @@ async function syncFromDisk(isFirst = false){
   try {
     const dir = await dirAt('dados');
     let disk = null, lm = 0;
-    try { const fh = await dir.getFileHandle('agenda.json'); const f = await fh.getFile(); lm = f.lastModified; disk = JSON.parse(await f.text()); } catch(e){}
+    try { const fh = await dir.getFileHandle(dadosArq()); const f = await fh.getFile(); lm = f.lastModified; disk = JSON.parse(await f.text()); } catch(e){}
     if (disk && !SYNC.user && (disk.updatedAt || 0) > (S.updatedAt || 0)){   // com a nuvem ligada, a nuvem é a referência; a pasta é só cópia
-      S = migrate(disk); localStorage.setItem(LS_KEY, JSON.stringify(S)); FS.lastWrite = lm;
+      S = migrate(disk); localStorage.setItem(lsKey(), JSON.stringify(S)); FS.lastWrite = lm;
     } else {
       await writeDisk();
     }
@@ -859,13 +914,13 @@ async function writeDisk(){
   if (!FS.root || FS.state !== 'granted') return;
   try {
     const dir = await dirAt('dados');
-    const fh = await dir.getFileHandle('agenda.json', { create: true });
+    const fh = await dir.getFileHandle(dadosArq(), { create: true });
     const w = await fh.createWritable(); await w.write(JSON.stringify(S, null, 1)); await w.close();
     FS.lastWrite = (await fh.getFile()).lastModified;
-    const k = 'agendaInicial.lastBackup';
+    const k = 'agendaInicial.lastBackup' + (AMB_ATUAL ? '@' + AMB_ATUAL : '');
     if (localStorage.getItem(k) !== today()){
       const b = await dirAt('dados/backups');
-      const bh = await b.getFileHandle(`agenda-${today()}.json`, { create: true });
+      const bh = await b.getFileHandle(`${AMB_ATUAL ? 'ambiente-' + AMB_ATUAL : 'agenda'}-${today()}.json`, { create: true });
       const bw = await bh.createWritable(); await bw.write(JSON.stringify(S)); await bw.close();
       localStorage.setItem(k, today());
     }
@@ -877,11 +932,11 @@ async function writeDisk(){
 async function checkDiskChanged(){
   if (FS.state !== 'granted') return;
   try {
-    const fh = await (await dirAt('dados')).getFileHandle('agenda.json');
+    const fh = await (await dirAt('dados')).getFileHandle(dadosArq());
     const f = await fh.getFile();
     if (f.lastModified > FS.lastWrite + 1000){
       const disk = JSON.parse(await f.text());
-      if ((disk.updatedAt || 0) > (S.updatedAt || 0)){ S = migrate(disk); localStorage.setItem(LS_KEY, JSON.stringify(S)); FS.lastWrite = f.lastModified; render(); toast('Agenda atualizada a partir da pasta.'); }
+      if ((disk.updatedAt || 0) > (S.updatedAt || 0)){ S = migrate(disk); localStorage.setItem(lsKey(), JSON.stringify(S)); FS.lastWrite = f.lastModified; render(); toast('Agenda atualizada a partir da pasta.'); }
     }
   } catch(e){}
 }
@@ -1289,8 +1344,10 @@ const entriesOn = s => sortEntries(S.entries.filter(e => e.date === s && !e.pare
 /* Subtarefas: até MAXSUB níveis abaixo da tarefa principal */
 const MAXSUB = 3;
 const filesOf = id => S.files.filter(f => (f.entries || []).includes(id));
+/* Arquivos da agenda: o que foi enviado. Cadernos criados pela agenda ficam só em Cadernos. */
+const arquivos = () => S.files.filter(f => f.kind !== 'caderno');
 function moveFiles(fromId, toId, date){ for (const f of filesOf(fromId)){ f.entries = f.entries.map(x => x === fromId ? toId : x); if (date) f.link = date; } }
-const dayFiles = d => S.files.filter(f => f.link === d || (f.entries || []).some(id => { const e = byId(id); return e && e.date === d; }));
+const dayFiles = d => S.files.filter(f => f.kind !== 'caderno').filter(f => f.link === d || (f.entries || []).some(id => { const e = byId(id); return e && e.date === d; }));
 const kids = id => { const l = S.entries.filter(e => e.parent === id); const ord = l.some(x => x.ord != null); return l.sort((a, b) => (ord ? cmpOrdem(a, b) : 0) || a.createdAt - b.createdAt); };
 function depthOf(e){ let d = 0, p = e; while (p && p.parent){ p = byId(p.parent); d++; } return d; }
 function subtree(e){ const out = []; (function w(x){ for (const k of kids(x.id)){ out.push(k); w(k); } })(e); return out; }
@@ -1477,7 +1534,7 @@ function entryRow(e, opt = {}){
     <span class="bul" data-act="e-bullet" title="${dica}">${bulletSvg(e)}</span>
     <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${comTags(esc(e.text))}</span></span>
     <span class="meta">${meta.join('')}</span>
-    ${(fs => fs.length || (e.tags || []).length ? `<span class="fchips" data-tk="registro" data-tid="${e.id}">${(e.tags || []).map(t => tagChip(t)).join('')}${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="Visualizar ${esc(f.name)}">${I.clip}<span>${esc(tituloDe(f))}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
+    ${(fs => fs.length || (e.tags || []).length ? `<span class="fchips" data-tk="registro" data-tid="${e.id}">${(e.tags || []).map(t => tagChip(t)).join('')}${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="${f.kind === 'caderno' ? 'Abrir o caderno ' + esc(f.title || f.name) : 'Visualizar ' + esc(f.name)}">${f.kind === 'caderno' ? I.notebook : I.clip}<span>${esc(f.kind === 'caderno' ? (f.title || f.name) : tituloDe(f))}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
     <span class="acts">${acts.map(([a,t,ic]) => `<button data-act="e-${a}" title="${t}">${ic}</button>`).join('')}</span>
   </li>`;
 }
@@ -1510,17 +1567,19 @@ function renderSide(){
   $('#side').innerHTML = `
     <div class="brand">
       <div class="mark">${ICON_SVG}</div>
-      <div><b>Agenda Inicial</b><small>${esc(S.profile.empresa || 'Uso pessoal')}${S.profile.setor ? ' · ' + esc(S.profile.setor) : ''} · v${APP_RELEASE}</small></div>
+      <div><b>Agenda Inicial</b><small>v${APP_RELEASE}</small></div>
     </div>
+    <button class="ambsel" data-act="amb-menu" title="Trocar de ambiente de trabalho">${(a => a ? `${I.team}<span><b>${esc(a.nome)}</b>${esc(setorNome(a, a.setor_id) ? ' · ' + setorNome(a, a.setor_id) : '')}</span>` : `${I.user}<span><b>Agenda pessoal</b>${esc(S.profile.empresa ? ' · ' + S.profile.empresa : '')}</span>`)(ambAtual())}${AMB.convites.length ? `<span class="cnt acc">${AMB.convites.length}</span>` : ''}<svg class="dd" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5L8 10l3.5-3.5"/></svg></button>
     ${S.settings.logo ? `<div class="logo-wide"><img src="${S.settings.logo}" alt="Logo"></div>` : ''}
     <nav class="nav">
       ${nav('hoje','today','Hoje', openToday ? `<span class="cnt">${openToday}</span>` : '')}
       ${nav('cal','cal','Calendário')}
       ${nav('futuro','future','Registro futuro')}
       ${nav('cadernos','notebook','Cadernos', notebooks().length ? `<span class="cnt">${notebooks().length}</span>` : '')}
-      ${nav('arquivos','files','Arquivos', S.files.length ? `<span class="cnt">${S.files.length}</span>` : '')}
+      ${nav('arquivos','files','Arquivos', (n => n ? `<span class="cnt">${n}</span>` : '')(arquivos().length))}
       ${nav('ponto','ponto','Ponto', p.pending ? '<span class="pill">pendente</span>' : '')}
       ${nav('tags','hash','Tags', (n => n ? `<span class="cnt">${n}</span>` : '')(todasTags().length))}
+      ${AMB_ATUAL ? nav('equipe','team','Equipe', (a => a ? `<span class="cnt">${a.membros.length}</span>` : '')(ambAtual())) : ''}
       <div class="grp">Listas</div>
       ${S.lists.map(l => `<a class="${ui.view === 'lista' && ui.listId === l.id ? 'on' : ''}" data-act="go-list" data-id="${l.id}">${I.list}<span>${esc(l.title || 'Sem título')}</span><span class="cnt">${l.items.filter(i => !i.done).length || ''}</span></a>`).join('')}
       <a data-act="list-new">${I.plus}<span class="muted">Nova lista</span></a>
@@ -1529,11 +1588,12 @@ function renderSide(){
       ${nav('config','gear','Configurações')}
     </nav>
     ${UP.newer ? `<div class="install"><button class="btn primary" data-act="up-check">Nova versão ${esc(UP.newer.version)} · recarregar</button></div>` : ''}
-    ${window._bip && !isStandalone() ? `<div class="install"><button class="btn" data-act="pwa-install">${I.dl}Instalar a Agenda Inicial</button></div>` : ''}
+    ${mostrarInstalar() ? `<div class="install"><button class="btn" data-act="pwa-install" title="Instala a agenda como aplicativo, com ícone próprio e janela sem a barra do navegador">${I.dl}Instalar como aplicativo</button></div>` : ''}
     <div class="side-foot">
       <div class="who${S.profile.foto ? ' pic' : ''}" data-act="go" data-v="perfil" style="cursor:pointer" title="Abrir o perfil">${S.profile.foto ? `<img src="${esc(S.profile.foto)}" alt="">` : ''}<span class="who-t"><b>${esc(S.profile.name || 'Complete o seu perfil')}</b>${esc([S.profile.email, S.profile.matricula && 'Mat. ' + S.profile.matricula].filter(Boolean).join(' · '))}</span></div>
       <div class="row">${storageLine()}<button class="btn icon ghost" data-act="theme" title="Tema: ${S.settings.theme === 'auto' ? 'automático' : S.settings.theme === 'dark' ? 'escuro' : 'claro'}">${themeIcon()}</button></div>
       ${cloudLine()}
+      <div class="pacote" title="Agenda Inicial faz parte do Pacote Inicial: Termo Inicial, Pesquisa Inicial, Página Inicial e msagem">Pacote Inicial</div>
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
     </div>`;
 }
@@ -1593,6 +1653,7 @@ VIEWS.hoje = () => {
     <div class="kicker">${isToday ? 'Registro de hoje' : 'Registro diário'}</div>
     <h1 class="title">${longDate(d)}</h1>
     <p class="sub">${parse(d).getFullYear()} · Semana ${weekNo(d)}${hol ? ` · <span class="tag acc">${esc(hol)}</span>` : (wd === 0 || wd === 6) ? ' · Fim de semana' : ' · Dia útil'}${isFbd ? ' · <span class="tag acc">1º dia útil — ponto</span>' : ''}</p>
+    ${convitesBanner()}
     ${FS.state === 'none' ? `<div class="banner"><div><b>Autorize a pasta Documentos (só uma vez)</b><span class="muted">A janela abre em Documentos: clique em <b>Selecionar pasta</b> e depois em <b>Permitir</b>. A agenda cria sozinha a pasta <b>${esc(FOLDER_NAME)}</b> e guarda lá seus dados e anexos.</span></div><div class="tools"><button class="btn primary" data-act="fs-connect">${I.folder}Autorizar</button></div></div>` : ''}
     ${isToday && p.pending ? `<div class="banner"><div><b>Registrar o ponto de ${MES[parse(p.refOf(p.mk)+'-01').getMonth()]}</b><span class="muted">Hoje ${p.fbd === d ? 'é' : 'já passou'} o 1º dia útil de ${MES[parse(d).getMonth()]} (${shortDate(p.fbd)}).${p.linked ? '' : ' Nenhum arquivo vinculado ainda.'}</span></div><div class="tools">${p.linked ? `<button class="btn primary" data-act="ponto-open">${I.open}Abrir o ponto</button>` : `<button class="btn primary" data-act="go" data-v="ponto">Vincular arquivo</button>`}<button class="btn" data-act="ponto-done" data-k="${p.mk}">${I.check}Feito</button></div></div>` : ''}
 
@@ -1852,7 +1913,7 @@ function doPrint(html, name){
 const fileBase = () => S.profile.name ? ' - ' + S.profile.name : '';
 async function exportDay(d){
   if (gOn()) await gLoad(d, d);
-  const hol = holidayName(d), notes = S.days[d] && S.days[d].notes, files = S.files.filter(f => f.link === d);
+  const hol = holidayName(d), notes = S.days[d] && S.days[d].notes, files = arquivos().filter(f => f.link === d);
   const items = rpItems(d);
   doPrint(rpHeader('Registro do dia', `${longDate(d)} de ${d.slice(0,4)}${hol ? ' · ' + esc(hol) : ''}`) + rpStats(d, d)
     + `<h2>Tarefas, compromissos e notas</h2>${items || '<p class="vazio">Nada registrado neste dia.</p>'}`
@@ -1912,7 +1973,7 @@ function linkPicker(fid, date){
 }
 VIEWS.arquivos = () => {
   const q = (ui.fq || '').toLowerCase();
-  const files = S.files.filter(f => !q || simplesTxt([f.name, f.title || '', ...tagsDe(f.kind === 'caderno' ? 'caderno' : 'arquivo', f).map(t => '#' + t)].join(' ')).includes(simplesTxt(q))).sort((a,b) => b.addedAt - a.addedAt);
+  const files = arquivos().filter(f => !q || simplesTxt([f.name, f.title || '', ...tagsDe(f.kind === 'caderno' ? 'caderno' : 'arquivo', f).map(t => '#' + t)].join(' ')).includes(simplesTxt(q))).sort((a,b) => b.addedAt - a.addedAt);
   return topbar('Arquivos', FS.state === 'unsupported' && !nuvemAtiva() ? `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo deste aparelho">${I.eye}</button>` : `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca</div>
@@ -1920,7 +1981,7 @@ VIEWS.arquivos = () => {
     <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta Agenda Inicial.</p>
     ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? (IS_MOBILE ? 'No celular dá para ver a lista e os vínculos; os arquivos em si ficam no computador.' : 'Abra a agenda no Chrome ou no Edge para enviar arquivos.') : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
     ${FS.state === 'unsupported' && !nuvemAtiva() ? '' : `<div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>`}
-    <div class="sec"><div class="sec-h"><h2>${S.files.length} arquivo${S.files.length === 1 ? '' : 's'}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome, título ou #tag" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
+    <div class="sec"><div class="sec-h"><h2>${(n => `${n} arquivo${n === 1 ? '' : 's'}`)(arquivos().length)}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome, título ou #tag" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
     ${files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
   </div>`;
 };
@@ -1934,7 +1995,7 @@ VIEWS.ponto = () => {
     const st = done ? `<span class="tag" style="color:var(--ok);border-color:var(--ok)">feito em ${brDate(ymd(new Date(done)))}</span>` : before ? '<span class="faint small">antes da agenda</span>' : f > t ? '<span class="tag">a vencer</span>' : '<span class="tag acc">pendente</span>';
     hist.push(`<tr><td>${monthName(k)}</td><td class="num">${brDate(f)} (${WDS[parse(f).getDay()]})</td><td class="num">${monthName(p.refOf(k))}</td><td>${st}</td><td class="acts">${f <= t && !before ? (done ? `<button class="btn ghost" data-act="ponto-undo" data-k="${k}">Desfazer</button>` : `<button class="btn ghost" data-act="ponto-done" data-k="${k}">Marcar feito</button>`) : ''}</td></tr>`);
   }
-  const fileOpts = S.files.map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('');
+  const fileOpts = arquivos().map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('');
   return topbar('Ponto', '') + `
   <div class="page">
     <div class="kicker">Rotina mensal</div>
@@ -1957,7 +2018,7 @@ VIEWS.ponto = () => {
           <span></span>
           <div style="display:flex;gap:var(--s2);flex-wrap:wrap">
             <button class="btn" data-act="ponto-pick">${I.folder}${P.file ? 'Trocar arquivo' : 'Escolher arquivo do computador'}</button>
-            ${S.files.length ? `<select class="inp" id="ponto-from"><option value="">ou usar um arquivo já enviado…</option>${fileOpts}</select>` : ''}
+            ${arquivos().length ? `<select class="inp" id="ponto-from"><option value="">ou usar um arquivo já enviado…</option>${fileOpts}</select>` : ''}
             ${P.file ? `<button class="btn" data-act="ponto-view">${I.eye}Visualizar</button><button class="btn primary" data-act="ponto-open">${I.open}Abrir</button>` : ''}
           </div>
           <span class="muted">Cópia mensal</span>
@@ -1979,7 +2040,7 @@ VIEWS.ponto = () => {
 
 VIEWS.config = () => {
   const g = S.google;
-  if (!g.token){ g.token = (crypto.randomUUID ? crypto.randomUUID() : uid() + uid()).replace(/-/g, ''); localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+  if (!g.token){ g.token = (crypto.randomUUID ? crypto.randomUUID() : uid() + uid()).replace(/-/g, ''); localStorage.setItem(lsKey(), JSON.stringify(S)); }
   return topbar('Configurações', '') + `
   <div class="page">
     <div class="kicker">Sistema</div>
@@ -2355,6 +2416,231 @@ async function fichaDoc(f){
   </div>`);
 }
 
+/* ---------------- Pacote Inicial · ambientes de trabalho ----------------
+   Empresas com setores, funções (proprietário, gerente, coordenador, colaborador) e convites.
+   O servidor confere cada permissão; aqui a tela só esconde o que a pessoa não pode fazer. */
+const AMB = { lista: [], convites: [], eu: null, carregado: false, busy: false };
+const FUNCOES = { proprietario: 'Proprietário', gerente: 'Gerente', coordenador: 'Coordenador', colaborador: 'Colaborador' };
+const FUNCAO_DICA = {
+  proprietario: 'Pode tudo: configurar e excluir o ambiente, mudar funções e transferir a propriedade',
+  gerente: 'Pode tudo, menos excluir (ambiente, setores e pessoas) e mexer no proprietário',
+  coordenador: 'Designa registros, cadernos e listas a qualquer pessoa, sem precisar de aceite',
+  colaborador: 'Mexe no que é seu; o que compartilha precisa ser aceito pelo colega'
+};
+const ambAtual = () => AMB.lista.find(a => a.id === AMB_ATUAL) || null;
+const posso = (a, ...fs) => !!a && fs.includes(a.funcao);
+const setorNome = (a, id) => ((a && a.setores) || []).find(x => x.id === id)?.nome || '';
+async function ambRpc(acao, dados = {}){
+  if (!CLOUD.user) throw new Error('entre com o Google para usar ambientes');
+  if (CLOUD.via === 'ponte') return ponte('rpc', { fn: 'agendainicial_ponte_amb', args: { p_acao: acao, p_dados: dados } });
+  const sb = await cloudClient();
+  const { data, error } = await sb.rpc('inicial_amb', { acao, dados });
+  if (error) throw error; return data;
+}
+function ambAplicar(e){
+  if (!e) return;
+  AMB.lista = e.ambientes || []; AMB.convites = e.convites_para_mim || []; AMB.eu = e.eu || null; AMB.carregado = true;
+  try { localStorage.setItem('agendaInicial.ambientes', JSON.stringify({ lista: AMB.lista, convites: AMB.convites, eu: AMB.eu })); } catch(_){}
+  if (AMB_ATUAL && !AMB.lista.some(a => a.id === AMB_ATUAL)){ toast('Você não faz mais parte desse ambiente. Voltando para a agenda pessoal.', 6000); trocarAmbiente(''); return; }
+  const a = ambAtual();
+  if (a){ const P = S.profile, st = setorNome(a, a.setor_id); if (P.empresa !== a.nome || (P.setor || '') !== st || (a.cargo && P.cargo !== a.cargo)){ P.empresa = a.nome; P.setor = st; if (a.cargo) P.cargo = a.cargo; save(false); } }
+}
+(() => { try { const c = JSON.parse(localStorage.getItem('agendaInicial.ambientes') || 'null'); if (c){ AMB.lista = c.lista || []; AMB.convites = c.convites || []; AMB.eu = c.eu || null; } } catch(e){} })();
+async function ambPuxar(){
+  if (!CLOUD.user || AMB.busy) return;
+  AMB.busy = true;
+  try { ambAplicar(await ambRpc('estado')); renderSide(); if (['equipe','hoje'].includes(ui.view)) renderBg(); conviteLinkVer(); }
+  catch(e){ console.warn('ambientes', e); }
+  finally { AMB.busy = false; }
+}
+async function ambAcao(acao, dados, ok){
+  try { const e = await ambRpc(acao, dados); ambAplicar(e); renderSide(); render(false); if (ok) toast(ok); return e; }
+  catch(e){ toast('Não foi possível: ' + (e.message || e), 6000); return null; }
+}
+const esperar = ms => new Promise(r => setTimeout(r, ms));
+async function nuvemParada(){ for (let i = 0; i < 200 && CLOUD.busy; i++) await esperar(100); }
+/* Troca a agenda da tela pela do ambiente escolhido. Com "levar", o conteúdo atual muda para o ambiente
+   (a agenda de origem fica vazia, e os outros aparelhos seguem a mudança sozinhos). */
+async function trocarAmbiente(id, levar = false){
+  if (id === AMB_ATUAL) return;
+  if (ui.view === 'caderno' && NB.dirty) nbSave();
+  clearTimeout(saveTimer); await writeDisk(); await nuvemParada();
+  const origem = AMB_ATUAL, atual = S;
+  if (levar){
+    const vazio = DEFAULT();
+    vazio.profile = JSON.parse(JSON.stringify(atual.profile)); vazio.settings = Object.assign({}, atual.settings, { movidoPara: id });
+    vazio.google = JSON.parse(JSON.stringify(atual.google)); vazio.updatedAt = Date.now();
+    S = migrate(vazio); try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){} await writeDisk();
+    if (CLOUD.user){ await cloudSync(); await nuvemParada(); }          // a origem envia as exclusões e o aviso de mudança
+  }
+  AMB_ATUAL = id; try { localStorage.setItem(AMB_KEY, id); } catch(e){}
+  SYNC = lerSync();
+  if (levar){ S = atual; delete S.settings.movidoPara; S.updatedAt = Date.now(); try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){} }
+  else {
+    S = load();
+    if (!origem && id){ const novo = !localStorage.getItem(lsKey()) ; if (novo){ S.profile = JSON.parse(JSON.stringify(atual.profile)); const keep = {}; for (const k of [...DEVICE_SETTINGS, 'theme', 'logo', 'logoWide']) if (atual.settings[k] !== undefined) keep[k] = atual.settings[k]; Object.assign(S.settings, keep); } }
+  }
+  if (id) ambAplicar({ ambientes: AMB.lista, convites_para_mim: AMB.convites, eu: AMB.eu });
+  else if (S.profile.empresa && AMB.lista.some(a => a.nome === S.profile.empresa) && origem){ /* volta ao pessoal: mantém o que estava */ }
+  try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){}
+  ui.view = ['equipe'].includes(ui.view) && !id ? 'hoje' : ui.view; ui.date = today();
+  if (FS.state === 'granted') await syncFromDisk();
+  render(); closeMenu();
+  if (CLOUD.user) cloudSync(true);
+  const a = ambAtual(); toast(id ? `Ambiente ${a ? a.nome : ''}` : 'Agenda pessoal');
+}
+/* Quando outro aparelho levou a agenda pessoal para um ambiente, este segue junto (uma vez). */
+async function ambSeguirMudanca(){
+  const para = !AMB_ATUAL && S.settings.movidoPara;
+  if (!para) return;
+  let visto = ''; try { visto = localStorage.getItem('agendaInicial.movidoVisto') || ''; } catch(e){}
+  if (visto === para) return;
+  if (!AMB.lista.some(a => a.id === para)){ try { ambAplicar(await ambRpc('estado')); } catch(e){ return; } }
+  if (!AMB.lista.some(a => a.id === para)) return;
+  try { localStorage.setItem('agendaInicial.movidoVisto', para); } catch(e){}
+  setTimeout(() => trocarAmbiente(para), 50);
+}
+
+/* Fotos: a do perfil (Termo Inicial) e, se não carregar nesta rede, a do Google; por fim, as iniciais. */
+const iniciais = n => (n || '?').split(/\s+/).filter(w => w.length > 2 || /^[A-ZÁ-Ú]/.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+function fotoPessoa(p, cls = 'pfoto'){
+  const fontes = [p.foto_caminho ? fotoUrl({ foto_caminho: p.foto_caminho }) : '', p.foto_google || ''].filter(Boolean);
+  const ini = `<span class="ini">${esc(iniciais(p.nome))}</span>`;
+  if (!fontes.length) return `<span class="${cls}">${ini}</span>`;
+  return `<span class="${cls}">${ini}<img src="${esc(fontes[0])}" alt="" data-alt="${esc(fontes[1] || '')}" referrerpolicy="no-referrer" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt=''}else{this.remove()}"></span>`;
+}
+
+function ambMenu(btn){
+  closeMenu();
+  const el = document.createElement('div'); el.id = 'fmenu'; el.className = 'mpop menu emenu ambmenu'; document.body.appendChild(el);
+  const it = (act, extra, ic, t, sub, on) => `<div class="it${on ? ' on' : ''}" data-act="${act}" ${extra}><span class="ic">${ic}</span><span>${t}${sub ? `<small>${sub}</small>` : ''}</span><span class="kb">${on ? I.check : ''}</span></div>`;
+  let h = '<div class="h">Ambientes de trabalho</div>';
+  if (!CLOUD.user) h += `<div class="it" data-act="go" data-v="config"><span class="ic">${I.user}</span><span>Entre com o Google<small>Para criar ambientes e convidar colegas</small></span><span></span></div>`;
+  h += it('amb-ir', 'data-id=""', I.user, 'Agenda pessoal', 'Só sua, fora de qualquer empresa', !AMB_ATUAL);
+  for (const a of AMB.lista) h += it('amb-ir', `data-id="${a.id}"`, I.team, esc(a.nome), esc([FUNCOES[a.funcao], setorNome(a, a.setor_id)].filter(Boolean).join(' · ')), a.id === AMB_ATUAL);
+  if (AMB.convites.length) h += '<div class="sep"></div><div class="h">Convites para você</div>' + AMB.convites.map(c => it('conv-abrir', `data-id="${c.id}"`, I.mail, esc(c.ambiente), esc(`${FUNCOES[c.funcao]}${c.setor ? ' · ' + c.setor : ''} · de ${c.por ? c.por.nome : ''}`))).join('');
+  if (CLOUD.user) h += '<div class="sep"></div>' + it('amb-criar', '', I.plus, 'Criar ambiente…', 'Uma empresa ou equipe, com setores e convites');
+  el.innerHTML = h;
+  const r = btn.getBoundingClientRect();
+  el.style.left = Math.max(8, Math.min(r.left, innerWidth - el.offsetWidth - 8)) + 'px';
+  el.style.top = Math.min(r.bottom + 6, innerHeight - el.offsetHeight - 8) + 'px';
+}
+function ambCriarModal(){
+  const temConteudo = !AMB_ATUAL && (S.entries.length || S.lists.length || S.files.length);
+  modal(`<h3>Criar ambiente de trabalho</h3>
+    <p>Um ambiente é a agenda de uma empresa ou equipe. Você fica como proprietário e convida os colegas.</p>
+    <div class="form">
+      <label>Nome da empresa<input class="inp" id="am-nome" placeholder="Ex.: Cagece" maxlength="80" value="${esc(!AMB_ATUAL && S.profile.empresa ? S.profile.empresa : '')}"></label>
+      <label>Setores <small class="muted">separados por vírgula</small><input class="inp" id="am-setores" placeholder="Ex.: CGPAR, GECOT, GEJUR" value="${esc(!AMB_ATUAL && S.profile.setor ? S.profile.setor : '')}"></label>
+      <div class="dupla"><label>O seu setor<input class="inp" id="am-meu" placeholder="Ex.: CGPAR" value="${esc(!AMB_ATUAL && S.profile.setor ? S.profile.setor : '')}"></label>
+      <label>O seu cargo<input class="inp" id="am-cargo" placeholder="Ex.: Advogado" maxlength="80" value="${esc(S.profile.cargo || '')}"></label></div>
+      ${temConteudo ? `<label class="chk"><input type="checkbox" id="am-levar" checked><span><b>Levar a agenda atual para este ambiente</b><small>Registros, listas, cadernos, arquivos e anotações passam para o ambiente. A agenda pessoal fica vazia para o que não for do trabalho.</small></span></label>` : ''}
+    </div>
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="amb-criar-ok">Criar</button></div>`);
+  setTimeout(() => $('#am-nome') && $('#am-nome').focus(), 30);
+}
+function convidarModal(){
+  const a = ambAtual(); if (!a) return;
+  const funcoes = ['colaborador', 'coordenador', 'gerente'];
+  modal(`<h3>Convidar para ${esc(a.nome)}</h3>
+    <p>Com e-mail, o convite chega para a pessoa quando ela entrar na agenda com essa conta do Google. Sem e-mail, sai um link que você manda por WhatsApp ou e-mail.</p>
+    <div class="form">
+      <label>E-mail da conta Google <small class="muted">opcional</small><input class="inp" id="cv-email" type="email" placeholder="nome@empresa.com.br"></label>
+      <div class="dupla"><label>Função<select class="inp" id="cv-funcao">${funcoes.map(f => `<option value="${f}" title="${esc(FUNCAO_DICA[f])}">${FUNCOES[f]}</option>`).join('')}</select></label>
+      <label>Setor<select class="inp" id="cv-setor"><option value="">Sem setor</option>${a.setores.map(x => `<option value="${x.id}" ${x.id === a.setor_id ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label></div>
+      <label class="so-link">Quantas pessoas podem usar o link<select class="inp" id="cv-limite">${[1, 5, 10, 20, 50].map(n => `<option ${n === 10 ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <p class="hint" id="cv-dica">${esc(FUNCAO_DICA.colaborador)}.</p>
+    </div>
+    <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="cv-criar">Criar convite</button></div>`);
+  const sync = () => { const t = ($('#cv-email').value || '').trim(); $('.so-link').hidden = !!t; $('#cv-dica').textContent = FUNCAO_DICA[$('#cv-funcao').value] + '.'; };
+  $('#cv-email').addEventListener('input', sync); $('#cv-funcao').addEventListener('change', sync); sync();
+  setTimeout(() => $('#cv-email').focus(), 30);
+}
+const linkConvite = c => location.origin + location.pathname + '?convite=' + c.token;
+function conviteCriadoModal(c){
+  const link = linkConvite(c), a = ambAtual();
+  const txt = `Convite para o ambiente ${a ? a.nome : c.ambiente} na Agenda Inicial (${FUNCOES[c.funcao]}${c.setor ? ', ' + c.setor : ''}). Abra o link e entre com a sua conta Google: ${link}`;
+  modal(`<h3>Convite criado</h3>
+    <p>${c.email ? `Quando <b>${esc(c.email)}</b> entrar na agenda, o convite aparece para aceitar. Se preferir, mande também o link:` : `Mande este link para quem você quer no ambiente. Ele vale por 7 dias e para até ${c.limite} pessoa${c.limite > 1 ? 's' : ''}.`}</p>
+    <div class="linkbox"><input class="inp" readonly value="${esc(link)}" id="cv-link"><button class="btn" data-act="cv-copiar">${I.copy}Copiar</button></div>
+    <div class="tools"><a class="btn" href="mailto:${esc(c.email || '')}?subject=${encodeURIComponent('Convite para a Agenda Inicial')}&body=${encodeURIComponent(txt)}">${I.mail}Enviar por e-mail</a><button class="btn primary" data-act="m-close">Pronto</button></div>`);
+}
+function conviteResponderModal(c, viaLink){
+  modal(`<div class="convite" data-cid="${esc(c.id || '')}" data-tok="${esc(viaLink || '')}">
+    <div class="kicker">Convite</div><h3>${esc(c.ambiente)}</h3>
+    <div class="quem">${c.por ? fotoPessoa(c.por, 'pfoto p40') : ''}<p><b>${esc(c.por ? c.por.nome : 'Alguém')}</b> convidou você para entrar como <b>${FUNCOES[c.funcao]}</b>${c.setor ? ` no setor <b>${esc(c.setor)}</b>` : ''}.</p></div>
+    <p class="hint">${esc(FUNCAO_DICA[c.funcao])}. O ambiente tem a sua própria agenda; a sua agenda pessoal continua do mesmo jeito.</p>
+    <div class="tools"><button class="btn" data-act="conv-recusar">Recusar</button><button class="btn primary" data-act="conv-aceitar">Aceitar e abrir</button></div></div>`);
+}
+/* Link de convite: ?convite=… fica guardado até a pessoa entrar com o Google. */
+(() => { const m = location.search.match(/[?&]convite=([a-f0-9]{20,64})/i); if (m){ try { localStorage.setItem('agendaInicial.conviteLink', m[1]); } catch(e){} history.replaceState(null, '', location.pathname + location.hash); } })();
+setTimeout(() => { if (!CLOUD.user) conviteLinkVer(); }, 2500);
+let conviteVisto = '';
+async function conviteLinkVer(){
+  let tok = ''; try { tok = localStorage.getItem('agendaInicial.conviteLink') || ''; } catch(e){}
+  if (!tok || conviteVisto === tok || $('#modal:not([hidden]) .convite')) return;
+  if (!CLOUD.user){
+    if (conviteVisto === 'sem-login') return; conviteVisto = 'sem-login'; modal(`<h3>Convite para a Agenda Inicial</h3><p>Entre com a sua conta Google para ver e aceitar o convite.</p><div class="tools"><button class="btn" data-act="conv-esquecer">Agora não</button><button class="btn primary" data-act="cloud-in">Entrar com o Google</button></div>`); return; }
+  conviteVisto = tok;
+  try { conviteResponderModal(await ambRpc('convite_ver', { token: tok }), tok); }
+  catch(e){ try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){} toast('Este convite não vale mais: ' + (e.message || e), 7000); }
+}
+function convitesBanner(){
+  if (!AMB.convites.length) return '';
+  const c = AMB.convites[0];
+  return `<div class="banner convite-b"><div><b>Convite para ${esc(c.ambiente)}</b><span class="muted">${esc(c.por ? c.por.nome : 'Alguém')} convidou você como ${FUNCOES[c.funcao]}${c.setor ? ' no setor ' + esc(c.setor) : ''}.${AMB.convites.length > 1 ? ` E mais ${AMB.convites.length - 1}.` : ''}</span></div><div class="tools"><button class="btn" data-act="conv-abrir" data-id="${c.id}">Ver convite</button></div></div>`;
+}
+
+/* ---------------- Equipe ---------------- */
+VIEWS.equipe = () => {
+  const a = ambAtual();
+  if (!a) return topbar('Equipe') + `<div class="page"><div class="kicker">Equipe</div><h1 class="title">Equipe</h1><div class="empty">Abra um ambiente de trabalho para ver a equipe.</div></div>`;
+  const gestor = posso(a, 'proprietario', 'gerente');
+  const filtro = ui.eqSetor === undefined ? (a.setor_id || '') : ui.eqSetor;
+  const cont = id => a.membros.filter(m => (m.setor_id || '') === id).length;
+  const pessoas = a.membros.filter(m => !filtro || m.setor_id === filtro).sort((x, y) => (x.id === AMB.eu?.id ? -1 : 0) - (y.id === AMB.eu?.id ? -1 : 0) || Object.keys(FUNCOES).indexOf(x.funcao) - Object.keys(FUNCOES).indexOf(y.funcao) || (x.nome || '').localeCompare(y.nome || ''));
+  const ate = t => new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  return topbar('Equipe', gestor ? `<button class="btn primary" data-act="cv-novo">${I.plus}Convidar</button>` : '') + `<div class="page">
+    <div class="kicker">Ambiente de trabalho</div>
+    <h1 class="title">${esc(a.nome)}</h1>
+    <p class="sub">${a.membros.length} pessoa${a.membros.length === 1 ? '' : 's'} · ${a.setores.length} setor${a.setores.length === 1 ? '' : 'es'} · você é <b title="${esc(FUNCAO_DICA[a.funcao])}">${FUNCOES[a.funcao]}</b></p>
+    <div class="sec"><div class="sec-h"><h2>Pessoas</h2>
+      <div class="seg eqseg"><button class="${!filtro ? 'on' : ''}" data-act="eq-setor" data-id="">Todos <small>${a.membros.length}</small></button>${a.setores.map(x => `<button class="${filtro === x.id ? 'on' : ''}" data-act="eq-setor" data-id="${x.id}">${esc(x.nome)} <small>${cont(x.id)}</small></button>`).join('')}</div></div>
+      <div class="eqlist">${pessoas.map(m => `<a href="#" class="eqp" data-act="eq-perfil" data-uid="${m.id}">${fotoPessoa(m)}<span class="nm"><b>${esc(m.nome)}${m.id === AMB.eu?.id ? ' <small class="muted">(você)</small>' : ''}</b><small>${esc(m.cargo || '—')}</small></span><span class="st">${esc(setorNome(a, m.setor_id) || '—')}</span><span class="fn"><span class="tag ${m.funcao === 'proprietario' ? 'acc' : ''}" title="${esc(FUNCAO_DICA[m.funcao])}">${FUNCOES[m.funcao]}</span></span><span class="em">${esc(m.email || '')}</span></a>`).join('') || '<div class="empty">Ninguém neste setor ainda.</div>'}</div>
+    </div>
+    ${gestor ? `<div class="sec"><div class="sec-h"><h2>Convites pendentes</h2></div>
+      ${a.convites.length ? `<table class="t"><colgroup><col><col style="width:132px"><col style="width:132px"><col style="width:96px"><col style="width:64px"></colgroup><thead><tr><th>Para</th><th>Função</th><th>Setor</th><th>Vale até</th><th></th></tr></thead><tbody>${a.convites.map(c => `<tr data-cid="${c.id}" data-tok="${esc(c.token)}"><td>${c.email ? esc(c.email) : `<span class="muted">Link</span> · ${c.usos}/${c.limite} usado${c.limite > 1 ? 's' : ''}`}</td><td>${FUNCOES[c.funcao]}</td><td>${esc(c.setor || '—')}</td><td class="num">${ate(c.expira_em)}</td><td class="acts"><button class="btn icon ghost" data-act="cv-copiar-linha" title="Copiar o link">${I.copy}</button><button class="btn icon ghost" data-act="cv-cancelar" title="Cancelar o convite">${I.x}</button></td></tr>`).join('')}</tbody></table>` : '<div class="empty">Nenhum convite pendente.</div>'}
+    </div>
+    <div class="sec"><div class="sec-h"><h2>Ambiente</h2></div>
+      <dl class="kv">
+        <dt>Nome</dt><dd>${esc(a.nome)} <button class="btn icon ghost" data-act="amb-renomear" title="Mudar o nome">${I.pen}</button></dd>
+        <dt>Setores</dt><dd><div class="setores">${a.setores.map(x => `<span class="tag">${esc(x.nome)}${posso(a, 'proprietario') ? ` <button class="x" data-act="amb-setor-rm" data-id="${x.id}" title="Excluir o setor">×</button>` : ''}</span>`).join('')}<button class="btn ghost mini" data-act="amb-setor-add">${I.plus}Setor</button></div></dd>
+        ${posso(a, 'proprietario') ? `<dt>Propriedade</dt><dd><button class="btn ghost mini" data-act="amb-transferir">Transferir para outra pessoa</button> <button class="btn ghost mini danger" data-act="amb-excluir">Excluir o ambiente</button></dd>` : ''}
+      </dl>
+    </div>` : ''}
+    ${a.funcao !== 'proprietario' ? `<div class="sec"><button class="btn ghost danger" data-act="amb-sair">Sair deste ambiente</button></div>` : ''}
+  </div>`;
+};
+function perfilMembro(uid){
+  const a = ambAtual(); if (!a) return;
+  const m = a.membros.find(x => x.id === uid); if (!m) return;
+  const eu = AMB.eu && m.id === AMB.eu.id, gestor = posso(a, 'proprietario', 'gerente');
+  const mudaFuncao = gestor && m.funcao !== 'proprietario' && !(a.funcao === 'gerente' && m.funcao === 'gerente' && !eu);
+  const mudaDados = eu || (gestor && !(a.funcao === 'gerente' && m.funcao === 'proprietario'));
+  const desde = m.entrou_em ? new Date(m.entrou_em).toLocaleDateString('pt-BR') : '';
+  modal(`<div class="perfil-m" data-uid="${m.id}">
+    <div class="pm-topo">${fotoPessoa(m, 'pfoto p120')}<div><div class="kicker">${esc(a.nome)}</div><h3>${esc(m.nome)}</h3><p>${esc(m.cargo || 'Cargo não informado')}</p><span class="tag ${m.funcao === 'proprietario' ? 'acc' : ''}" title="${esc(FUNCAO_DICA[m.funcao])}">${FUNCOES[m.funcao]}</span></div></div>
+    <dl class="kv">
+      <dt>Setor</dt><dd>${mudaDados ? `<select class="inp mini" id="pm-setor"><option value="">Sem setor</option>${a.setores.map(x => `<option value="${x.id}" ${x.id === m.setor_id ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select>` : esc(setorNome(a, m.setor_id) || '—')}</dd>
+      <dt>Cargo</dt><dd>${mudaDados ? `<input class="inp mini" id="pm-cargo" maxlength="80" value="${esc(m.cargo || '')}" placeholder="Ex.: Analista">` : esc(m.cargo || '—')}</dd>
+      ${mudaFuncao ? `<dt>Função</dt><dd><select class="inp mini" id="pm-funcao">${['gerente', 'coordenador', 'colaborador'].filter(f => a.funcao === 'proprietario' || f !== 'gerente' || m.funcao === 'gerente').map(f => `<option value="${f}" ${f === m.funcao ? 'selected' : ''}>${FUNCOES[f]}</option>`).join('')}</select></dd>` : ''}
+      <dt>E-mail</dt><dd>${m.email ? `<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>` : '—'}</dd>
+      ${desde ? `<dt>No ambiente desde</dt><dd>${desde}</dd>` : ''}
+    </dl>
+    <div class="tools">${posso(a, 'proprietario') && !eu ? `<button class="btn ghost danger" data-act="pm-remover">Remover do ambiente</button>` : ''}<span style="flex:1"></span><button class="btn" data-act="m-close">Fechar</button>${mudaDados || mudaFuncao ? '<button class="btn primary" data-act="pm-salvar">Salvar</button>' : ''}</div>
+  </div>`);
+}
+
 /* ---------------- Tags (#) ----------------
    #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
    "# Título" (com espaço) continua sendo título no caderno, e "##" continua mencionando arquivo. */
@@ -2493,7 +2779,8 @@ document.addEventListener('focusout', () => setTimeout(() => {
 /* ---------------- Nuvem (Supabase do Termo Inicial) ---------------- */
 const SB_URL = 'https://wkhlnthcfmacizhyotss.supabase.co';
 const SB_KEY = 'sb_publishable_KF3D3TUFqRJ34wHWqNR5RQ_CMLVeUO0';   // chave pública; o acesso é protegido por usuário no banco
-const SYNC_KEY = 'agendaInicial.nuvem';
+const SYNC_KEY_BASE = 'agendaInicial.nuvem';
+const syncKey = (a = AMB_ATUAL) => a ? `${SYNC_KEY_BASE}@${a}` : SYNC_KEY_BASE;
 const PONTE_URL = 'https://script.google.com/macros/s/AKfycbz9AptPJVY6JVxkSCEjuwkdPwzVzCvTVrcFgxx5gPC9g0OG8q3OduYQ_lyZdtne-80G/exec';   // Google Apps Script que repassa ao Supabase quando a rede bloqueia o supabase.co
 const PONTE_KEY = 'agendaInicial.ponte';
 const ponteChave = () => { try { return localStorage.getItem(PONTE_KEY) || ''; } catch(e){ return ''; } };
@@ -2507,9 +2794,9 @@ const netError = e => e && (e.name === 'TypeError' || /fetch|network|Load failed
 const DEVICE_SETTINGS = ['openerOn', 'openerFiles', 'winPath', 'basePath', 'notesSeen'];
 const DEVICE_FIELDS = new Set(['fileTime', 'renamedFrom']);
 const CLOUD = { sb: null, user: null, via: 'direto', state: 'off', last: 0, error: '', timer: null, busy: false, again: false };
-let SYNC = (() => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch(e){ return {}; } })();
-SYNC.sent = SYNC.sent || {}; SYNC.pulled = SYNC.pulled || '1970-01-01T00:00:00Z';
-const saveSync = () => { try { localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); } catch(e){} };
+function lerSync(a = AMB_ATUAL){ let x = {}; try { x = JSON.parse(localStorage.getItem(syncKey(a))) || {}; } catch(e){} x.sent = x.sent || {}; x.pulled = x.pulled || '1970-01-01T00:00:00Z'; if (a && !x.user){ try { const p = JSON.parse(localStorage.getItem(syncKey(''))) || {}; if (p.user) x.user = p.user; } catch(e){} } return x; }
+let SYNC = lerSync();
+const saveSync = () => { try { localStorage.setItem(syncKey(), JSON.stringify(SYNC)); } catch(e){} };
 function hashStr(str){ let h1 = 0xdeadbeef, h2 = 0x41c6ce57; for (let i = 0; i < str.length; i++){ const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); } h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909); return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36); }
 const clean = o => JSON.parse(JSON.stringify(o, (k, v) => DEVICE_FIELDS.has(k) ? undefined : v));
 function cloudItems(){
@@ -2531,7 +2818,7 @@ async function cloudClient(){
     const changed = (u && u.id) !== (CLOUD.user && CLOUD.user.id);
     CLOUD.user = u;
     if (u && changed){
-      if (SYNC.user && SYNC.user !== u.id){ SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; }
+      if (SYNC.user && SYNC.user !== u.id){ SYNC = { sent: {}, pulled: '1970-01-01T00:00:00Z' }; AMB.lista = []; }
       SYNC.user = u.id; saveSync(); cloudSync(true);
     }
     if (!u){ CLOUD.state = 'off'; }
@@ -2608,7 +2895,7 @@ function aplicarAdiadas(){
     if (local && localHash !== SYNC.sent[key]) continue;        // você mudou enquanto editava: a sua versão vale e será enviada
     applyRow(r); SYNC.sent[key] = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {}))); mudou = true;
   }
-  if (mudou){ saveSync(); try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); EDIT.pend = true; }
+  if (mudou){ saveSync(); try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); EDIT.pend = true; }
 }
 async function writePulledNotebooks(){
   if (FS.state !== 'granted') return;
@@ -2625,20 +2912,23 @@ async function cloudSync(full){
   try {
     const viaPonte = CLOUD.via === 'ponte';
     const sb = viaPonte ? null : await cloudClient();
+    const pref = ambPref();
     const ler = async from => {
       if (viaPonte){ const d = await ponte('ler', { desde: from, limite: 500 }); return d.itens || []; }
       const { data, error } = await sb.from('agendainicial_itens').select('tipo,id,dados,excluido,alterado_em,atualizado').gt('atualizado', from).order('atualizado', { ascending: true }).limit(500);
       if (error) throw error; return data;
     };
     const gravar = async rows => {
-      if (viaPonte) return ponte('gravar', { itens: rows });
+      if (viaPonte) return ponte('gravar', { itens: rows.map(r => Object.assign({}, r, { id: pref + r.id })) });
+      rows = rows.map(r => Object.assign({}, r, { id: pref + r.id }));
       const { error } = await sb.from('agendainicial_itens').upsert(rows, { onConflict: 'usuario,tipo,id' });
       if (error) throw error;
     };
     // 1. buscar o que mudou em outros aparelhos
     let changed = false, from = full && !SYNC.done ? '1970-01-01T00:00:00Z' : SYNC.pulled;
     for (;;){
-      const data = await ler(from);
+      const bruto = await ler(from);
+      const data = bruto.filter(r => pref ? r.id.startsWith(pref) : !r.id.includes('~')).map(r => pref ? Object.assign({}, r, { id: r.id.slice(pref.length) }) : r);
       const items = cloudItems();
       const emEdicao = chavesEmEdicao();
       for (const r of data){
@@ -2649,15 +2939,17 @@ async function cloudSync(full){
         if (localDirty && local && SYNC.done) continue;          // alteração local ainda não enviada: a local vale
         const remotoHash = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {})));
         if (local && !r.excluido && remotoHash === localHash){ SYNC.sent[key] = remotoHash; continue; }   // é o eco do que este aparelho enviou: nada muda
+        if (!local && !r.excluido && SYNC.done && SYNC.sent[key] && SYNC.sent[key] !== '×' && remotoHash === SYNC.sent[key]) continue;   // excluído aqui e ainda não enviado: a exclusão vale
         if (emEdicao.has(key)){ EDIT.linhas.push(r); continue; }   // está sendo editado agora: aplica quando sair do campo
         applyRow(r); changed = true;
         SYNC.sent[key] = r.excluido ? '×' : hashStr(JSON.stringify(clean(r.dados || {})));
         from = r.atualizado;
       }
+      if (bruto.length) from = bruto[bruto.length - 1].atualizado;
       SYNC.pulled = from;
-      if (data.length < 500) break;
+      if (bruto.length < 500) break;
     }
-    if (changed){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); writePulledNotebooks(); }
+    if (changed){ try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){} clearTimeout(saveTimer); saveTimer = setTimeout(writeDisk, 300); writePulledNotebooks(); }
     // 2. enviar o que mudou aqui (inclui exclusões)
     const items = cloudItems(), now = Date.now(), up = [];
     for (const [key, obj] of items){
@@ -2671,7 +2963,8 @@ async function cloudSync(full){
       for (const r of chunk) SYNC.sent[r._k] = r._h;
     }
     SYNC.done = true; saveSync();
-    grupoPuxar(); if (NUV.conectadas === null) nuvemConectadas();
+    grupoPuxar(); ambPuxar(); if (NUV.conectadas === null) nuvemConectadas();
+    ambSeguirMudanca();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
     if (changed) renderBg();
   } catch(e){
@@ -2904,7 +3197,15 @@ const temLocal = () => FS.state === 'granted';
 /* ---------------- Versões ---------------- */
 const UP = { notes: null, checked: 0, error: '', newer: null };
 const verNum = v => String(v || '0').split('.').map(n => parseInt(n, 10) || 0).reduce((a, n) => a * 1000 + n, 0);
-const isStandalone = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches || navigator.standalone === true;
+/* O botão de instalar aparece sempre que a agenda está aberta no navegador e some de vez depois de instalada
+   (a marca fica guardada neste navegador, que é o mesmo do aplicativo instalado). */
+const INST_KEY = 'agendaInicial.instalada';
+function mostrarInstalar(){
+  if (isStandalone()){ try { localStorage.setItem(INST_KEY, '1'); } catch(e){} return false; }
+  try { if (localStorage.getItem(INST_KEY)) return false; } catch(e){}
+  return true;
+}
 async function checkUpdate(manual){
   if (!/^https?:$/.test(location.protocol)) return;
   try {
@@ -3464,7 +3765,15 @@ const ACT = {
   'pdf-quick': a => { const k = a.dataset.k, t = today(); if (k === 'dia') return exportDay(t); const r = k === 'semana' ? weekRange(t) : monthRange(k === 'mes' ? t.slice(0,7) : addMonths(t.slice(0,7), -1)); exportPeriod(r[0], r[1], true); },
   'up-check': () => checkUpdate(true),
   'import-old': () => importOldFolder(),
-  'pwa-install': async () => { if (!window._bip) return; window._bip.prompt(); await window._bip.userChoice; window._bip = null; render(false); },
+  'pwa-install': async () => {
+    if (window._bip){ window._bip.prompt(); const r = await window._bip.userChoice; window._bip = null; if (r && r.outcome === 'accepted'){ try { localStorage.setItem(INST_KEY, '1'); } catch(e){} } render(false); return; }
+    const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const passo = ios ? 'No Safari, toque em <b>Compartilhar</b> (o quadrado com a seta para cima) e depois em <b>Adicionar à Tela de Início</b>.'
+      : IS_MOBILE ? 'Abra o menu do navegador (<b>⋮</b>) e toque em <b>Instalar aplicativo</b> ou <b>Adicionar à tela inicial</b>.'
+      : 'Clique no ícone de instalar na ponta direita da barra de endereço ou abra o menu do navegador (<b>⋮</b>) › <b>Transmitir, salvar e compartilhar</b> › <b>Instalar página como app</b>.';
+    modal(`<h3>Instalar como aplicativo</h3><p>${passo}</p><p class="muted small">Depois de instalada, a agenda abre com ícone próprio, em janela própria, e este botão some.</p><div class="tools"><button class="btn" data-act="inst-ja">Já instalei</button><button class="btn primary" data-act="m-close">Entendi</button></div>`);
+  },
+  'inst-ja': () => { try { localStorage.setItem(INST_KEY, '1'); } catch(e){} closeModal(); renderSide(); },
   'f-view': (a, ev) => {
     ev && ev.preventDefault();
     { const nb = nbById(a.closest('[data-fid]').dataset.fid); if (nb) return nbOpen(nb.id); }
@@ -3578,7 +3887,7 @@ const ACT = {
     async function walk(dir, path){
       for await (const [name, h] of dir.entries()){
         const p = path + '/' + name;
-        if (h.kind === 'directory') await walk(h, p);
+        if (h.kind === 'directory'){ if (!path && ['cadernos', 'dados', 'conversas'].includes(name)) continue; await walk(h, p); }
         else if (!known.has(p)){ const f = await h.getFile(); S.files.push({ id: uid(), name, path: p, size: f.size, date: ymd(new Date(f.lastModified)), addedAt: f.lastModified, link: '', entries: [] }); n++; }
       }
     }
@@ -3628,6 +3937,64 @@ const ACT = {
   'e-bullet': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (e.type === 'task' || e.type === 'event'){ if (e.status === 'open') completeEntry(e); else if (e.status === 'done') e.status = 'open'; else return; save(); } },
   'e-done': a => { const e = byId(a.closest('.entry').dataset.id); completeEntry(e); save(); },
   'e-reopen': a => { const e = byId(a.closest('.entry').dataset.id); e.status = 'open'; save(); },
+  'amb-menu': (a, ev) => { ev.stopPropagation(); if ($('#fmenu.ambmenu')){ closeMenu(); return; } ambMenu(a); if (CLOUD.user) ambPuxar(); },
+  'amb-ir': a => { closeMenu(); trocarAmbiente(a.dataset.id || ''); },
+  'amb-criar': () => { closeMenu(); ambCriarModal(); },
+  'amb-criar-ok': async () => {
+    const nome = $('#am-nome').value.trim(), setores = $('#am-setores').value.split(',').map(x => x.trim()).filter(Boolean), meu = $('#am-meu').value.trim();
+    if (nome.length < 2) return toast('Dê um nome ao ambiente.');
+    if (meu && !setores.some(x => x.toLowerCase() === meu.toLowerCase())) setores.push(meu);
+    const levar = !!($('#am-levar') && $('#am-levar').checked);
+    const e = await ambAcao('criar', { nome, setores, meu_setor: setores.find(x => x.toLowerCase() === meu.toLowerCase()) || '', cargo: $('#am-cargo').value.trim() });
+    if (!e) return; closeModal(); await trocarAmbiente(e.criado, levar); ui.view = 'equipe'; render();
+  },
+  'conv-abrir': a => { closeMenu(); const c = AMB.convites.find(x => x.id === a.dataset.id); if (c) conviteResponderModal(c); },
+  'conv-aceitar': async a => {
+    const box = a.closest('.convite'), tok = box.dataset.tok;
+    const e = await ambAcao('convite_aceitar', tok ? { token: tok } : { id: box.dataset.cid });
+    if (!e) return; try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){} closeModal();
+    if (e.entrou){ await trocarAmbiente(e.entrou); ui.view = 'equipe'; render(); }
+  },
+  'conv-recusar': async a => {
+    const box = a.closest('.convite'), tok = box.dataset.tok;
+    try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){}
+    if (tok){ closeModal(); return; }
+    if (await ambAcao('convite_recusar', { id: box.dataset.cid }, 'Convite recusado.')) closeModal();
+  },
+  'conv-esquecer': () => { try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){} closeModal(); },
+  'eq-setor': a => { ui.eqSetor = a.dataset.id; render(false); },
+  'eq-perfil': a => perfilMembro(a.dataset.uid),
+  'cv-novo': () => convidarModal(),
+  'cv-criar': async () => {
+    const a = ambAtual(), email = $('#cv-email').value.trim();
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast('Confira o e-mail.');
+    const e = await ambAcao('convidar', { ambiente: a.id, email, funcao: $('#cv-funcao').value, setor: $('#cv-setor').value, limite: +$('#cv-limite').value });
+    if (e && e.convite) conviteCriadoModal(e.convite);
+  },
+  'cv-copiar': async () => { const v = $('#cv-link').value; try { await navigator.clipboard.writeText(v); toast('Link copiado.'); } catch(e){ $('#cv-link').select(); } },
+  'cv-copiar-linha': async a => { const tr = a.closest('tr'); try { await navigator.clipboard.writeText(linkConvite({ token: tr.dataset.tok })); toast('Link do convite copiado.'); } catch(e){} },
+  'cv-cancelar': a => { if (confirm('Cancelar este convite? O link deixa de funcionar.')) ambAcao('convite_cancelar', { ambiente: AMB_ATUAL, id: a.closest('tr').dataset.cid }, 'Convite cancelado.'); },
+  'pm-salvar': async a => {
+    const box = a.closest('.perfil-m'), d = { ambiente: AMB_ATUAL, usuario: box.dataset.uid };
+    if ($('#pm-setor')) d.setor = $('#pm-setor').value; if ($('#pm-cargo')) d.cargo = $('#pm-cargo').value.trim(); if ($('#pm-funcao')) d.funcao = $('#pm-funcao').value;
+    if (await ambAcao('membro', d, 'Salvo.')) closeModal();
+  },
+  'pm-remover': async a => { const uid = a.closest('.perfil-m').dataset.uid, m = ambAtual().membros.find(x => x.id === uid); if (!confirm(`Remover ${m.nome} do ambiente? A pessoa deixa de ver a equipe e o que for do ambiente.`)) return; if (await ambAcao('remover', { ambiente: AMB_ATUAL, usuario: uid }, 'Pessoa removida.')) closeModal(); },
+  'amb-renomear': () => { const a = ambAtual(), n = prompt('Nome do ambiente', a.nome); if (n && n.trim() !== a.nome) ambAcao('renomear', { ambiente: a.id, nome: n.trim() }, 'Nome alterado.'); },
+  'amb-setor-add': () => { const n = prompt('Nome do novo setor'); if (n && n.trim()) ambAcao('setor_add', { ambiente: AMB_ATUAL, nome: n.trim() }, 'Setor criado.'); },
+  'amb-setor-rm': a => { const x = ambAtual().setores.find(s => s.id === a.dataset.id); if (confirm(`Excluir o setor ${x.nome}? As pessoas dele ficam sem setor.`)) ambAcao('setor_rm', { ambiente: AMB_ATUAL, setor: x.id }, 'Setor excluído.'); },
+  'amb-transferir': () => {
+    const a = ambAtual(), outros = a.membros.filter(m => m.id !== AMB.eu?.id);
+    if (!outros.length) return toast('Convide alguém antes de transferir a propriedade.');
+    modal(`<h3>Transferir a propriedade</h3><p>A pessoa escolhida vira proprietária de ${esc(a.nome)}, e você passa a gerente.</p><div class="form"><label>Novo proprietário<select class="inp" id="tr-quem">${outros.map(m => `<option value="${m.id}">${esc(m.nome)}</option>`).join('')}</select></label></div><div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="amb-transferir-ok">Transferir</button></div>`);
+  },
+  'amb-transferir-ok': async () => { if (await ambAcao('transferir', { ambiente: AMB_ATUAL, usuario: $('#tr-quem').value }, 'Propriedade transferida.')) closeModal(); },
+  'amb-excluir': async () => {
+    const a = ambAtual(), n = prompt(`Para excluir o ambiente para todos, digite o nome dele: ${a.nome}\n\nA equipe e os convites somem. A agenda deste ambiente continua guardada neste aparelho.`);
+    if (n === null) return; if (n.trim() !== a.nome) return toast('O nome não confere. Nada foi excluído.');
+    if (await ambAcao('excluir', { ambiente: a.id, confirmo: a.nome }, 'Ambiente excluído.')) trocarAmbiente('');
+  },
+  'amb-sair': async () => { const a = ambAtual(); if (!confirm(`Sair de ${a.nome}? Para voltar, alguém precisa convidar você de novo.`)) return; if (await ambAcao('remover', { ambiente: a.id, usuario: AMB.eu.id }, 'Você saiu do ambiente.')) trocarAmbiente(''); },
   'e-mais': (a, ev) => { ev.stopPropagation(); const e = byId(a.closest('.entry').dataset.id); if (!e) return; if ($('#fmenu') && $('#fmenu').dataset.eid === e.id){ closeMenu(); return; } menuEntrada(a, e); },
   'e-tipo': a => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) mudarTipo(e, a.dataset.t); },
   'e-cima': () => { const e = byId($('#fmenu').dataset.eid); closeMenu(); if (e) moverVertical(e, -1); },
@@ -3662,7 +4029,7 @@ const ACT = {
 document.addEventListener('mousedown', ev => {
   const sh = ev.target.closest('#fmenu .it[data-sh]');
   if (sh){ ev.preventDefault(); const p = $('#fmenu').dataset.p, k = sh.dataset.sh; closeMenu(); if (k === 'win') shareWindows(p); else localAction(k, p); return; }
-  if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]') && !ev.target.closest('[data-act="e-mais"]')) closeMenu();
+  if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]') && !ev.target.closest('[data-act="e-mais"]') && !ev.target.closest('[data-act="amb-menu"]')) closeMenu();
   if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
   const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
 });
@@ -3802,13 +4169,13 @@ document.addEventListener('dragleave', ev => { const d = ev.target.closest && ev
 document.addEventListener('drop', ev => { const d = ev.target.closest && ev.target.closest('#drop'); if (d){ ev.preventDefault(); d.classList.remove('over'); uploadFiles(ev.dataTransfer.files); } });
 $('#main').addEventListener('scroll', () => { const tb = $('.topbar'); tb && tb.classList.toggle('scrolled', $('#main').scrollTop > 4); });
 window.addEventListener('beforeunload', () => { if (NB.dirty) nbSave(); });
-window.addEventListener('storage', ev => { if (ev.key === LS_KEY && ev.newValue){ S = migrate(JSON.parse(ev.newValue)); render(false); } });
+window.addEventListener('storage', ev => { if (ev.key === lsKey() && ev.newValue){ S = migrate(JSON.parse(ev.newValue)); render(false); } });
 // Virada do dia com a agenda aberta
 setInterval(() => { if (ui._today !== today()){ const was = ui._today; ui._today = today(); if (was && ui.view === 'hoje' && ui.date === was && !editando()){ ui.date = today(); } renderBg(); } }, 60000);
 
 /* ---------------- Início ---------------- */
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window._bip = e; renderSide(); if (ui.view === 'config') render(false); });
-window.addEventListener('appinstalled', () => { window._bip = null; renderSide(); toast('Agenda Inicial instalada. Ela agora abre como aplicativo, com ícone próprio.', 5000); });
+window.addEventListener('appinstalled', () => { window._bip = null; try { localStorage.setItem(INST_KEY, '1'); } catch(e){} renderSide(); toast('Agenda Inicial instalada. Ela agora abre como aplicativo, com ícone próprio.', 5000); });
 if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(() => {});
   let reloaded = false;
