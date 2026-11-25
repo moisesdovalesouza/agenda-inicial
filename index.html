@@ -612,7 +612,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.20.0';    // versão do programa
+const APP_RELEASE = '1.20.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -1886,13 +1886,17 @@ function linkTags(f){
   return `<div class="ftags" data-tk="${tk}" data-tid="${f.id}">${(f.tags || []).map(t => tagChip(t, true)).join('')}${tags.join('')}<button class="btn icon ghost addlink" data-act="fl-add" title="Vincular a registros (tarefas, notas, eventos)">${I.link}</button><button class="btn icon ghost addlink" data-act="tag-add" data-tk="${tk}" data-tid="${f.id}" title="Classificar com tag">${I.hash}</button></div>`;
 }
 function fileTable(files, compact){
-  const cols = compact ? '<col><col style="width:36%"><col class="c-size" style="width:72px"><col style="width:148px">' : '<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:176px">';
-  return `<table class="t ftable"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${files.map(f => `<tr data-fid="${f.id}">
+  const linhas = files.map(f => `<tr data-fid="${f.id}">
       <td><div class="fname"><span class="ext">${esc(extOf(f.name))}</span><a href="#" data-act="f-view" title="Visualizar · ${esc(f.path)}">${esc(tituloDe(f))}</a><button class="btn icon ghost tt-ed" data-act="f-titulo" title="Mudar o título (a agenda aprende)">${I.pen}</button></div>${f.title ? `<div class="fsub">${esc(f.name)}${f.tituloFonte === 'aprendido' ? ' · título aprendido' : f.tituloFonte === 'regra' ? ' · título sugerido' : ''}</div>` : ''}</td>
       <td>${linkTags(f)}</td>
       ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
       <td class="num c-size">${fmtSize(f.size || 0)}</td>
-      <td class="acts">${temLocal() || !f.nuvem ? `<button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}` : ''}${f.nuvem ? `<button class="btn icon ghost" data-act="f-nuvem" title="Abrir no ${NUV_NOME[f.nuvem.prov]}">${I.cloud}</button>` : ''}<button class="btn icon ghost" data-act="f-info" title="Informações do documento">${I.info}</button>${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
+      <td class="acts">${temLocal() || !f.nuvem ? `<button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}` : ''}${f.nuvem ? `<button class="btn icon ghost" data-act="f-nuvem" title="Abrir no ${NUV_NOME[f.nuvem.prov]}">${I.cloud}</button>` : ''}<button class="btn icon ghost" data-act="f-info" title="Informações do documento">${I.info}</button>${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('');
+  /* A coluna de ações tem a largura do maior conjunto de botões da tabela (26 px cada), para nenhum ícone ser cortado. */
+  const nb = Math.max(1, ...[...linhas.matchAll(/<td class="acts">([\s\S]*?)<\/td>/g)].map(m => (m[1].match(/<button/g) || []).length));
+  const wa = nb * 26 + 8;
+  const cols = compact ? `<col><col style="width:36%"><col class="c-size" style="width:72px"><col style="width:${wa}px">` : `<col><col style="width:34%"><col class="c-date" style="width:92px"><col class="c-size" style="width:72px"><col style="width:${wa}px">`;
+  return `<table class="t ftable"><colgroup>${cols}</colgroup><thead><tr><th>Nome</th><th>Vínculos</th>${compact ? '' : '<th class="c-date">Dia</th>'}<th class="c-size">Tamanho</th><th></th></tr></thead><tbody>${linhas}</tbody></table>`;
 }
 function linkPicker(fid, date){
   const f = S.files.find(x => x.id === fid); if (!f) return;
