@@ -1,10 +1,10 @@
 {
- "version": "1.17.0",
+ "version": "1.18.0",
  "date": "2026-11-24",
  "notes": [
+  "Títulos dos documentos: ao enviar, a agenda sugere um título (RG, CNH, petição, comprovante…); mude pelo lápis ao lado do nome e ela aprende para os próximos arquivos parecidos. O arquivo na pasta mantém o nome original",
   "Cadernos: anexe arquivos direto na página (botão de clipe ou arrastando para o texto); o arquivo fica anexado ao caderno e é mencionado onde está o cursor",
   "Tags: escreva #palavra em registros, listas e cadernos (a agenda sugere as que você já usa) ou classifique registros, cadernos, listas e documentos com o botão #; clique numa tag para ver tudo o que a tem, e em Tags, no menu, estão todas",
-  "Correção: a sincronização não interrompe mais a edição de um texto nem o faz voltar à versão anterior; o que chega de outro aparelho espera você sair do campo",
-  "Anexos na nuvem: com a mesma conexão do Termo Inicial, os anexos vão também para o OneDrive (ou Google Drive) em Documentos › Agenda Inicial e abrem em qualquer aparelho, inclusive o celular; em Configurações › Anexos na nuvem há o botão para enviar os anexos atuais (o acesso é emprestado pelo próprio Termo Inicial; nada para configurar)"
+  "Correção: a sincronização não interrompe mais a edição de um texto nem o faz voltar à versão anterior; o que chega de outro aparelho espera você sair do campo"
  ]
 }
