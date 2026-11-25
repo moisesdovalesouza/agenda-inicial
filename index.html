@@ -317,6 +317,48 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .vload{display:grid;place-items:center;height:100%;color:var(--muted);font-size:13px}
 @media print{.viewer{display:none!important}}
 .fchips{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 4px}
+/* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
+.marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
+.pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
+.pdfv .vzoom{display:flex;flex-direction:column;align-items:center;gap:var(--s3)}
+.pdfpg{position:relative;background:#fff;box-shadow:0 0 0 1px var(--border);flex:none}
+.pdfpg canvas{display:block}
+.pdfpg .pgn{position:absolute;bottom:-18px;right:0;font:11px var(--mono);color:var(--faint)}
+.textLayer{position:absolute;text-align:initial;inset:0;overflow:clip;opacity:1;line-height:1;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;z-index:2}
+.textLayer :is(span,br){color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0% 0%}
+.textLayer span.markedContent{top:0;height:0}
+.textLayer ::selection{background:rgba(184,150,46,.35)}
+.textLayer br::selection{background:transparent}
+.textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:-1;cursor:default;user-select:none}
+.textLayer.selecting .endOfContent{top:0}
+[data-pagina]{position:relative}
+.marcas{position:absolute;inset:0;pointer-events:none;z-index:1}
+.marca{position:absolute}
+.marca-destaque,.marca-comentario{background:var(--cor-marcacao);opacity:.38;mix-blend-mode:multiply}
+.marca-comentario{opacity:.22;border-bottom:2px dotted var(--cor-marcacao)}
+.marca-sublinhado{border-bottom:2px solid var(--cor-marcacao)}
+.marca-tachado{background:linear-gradient(transparent calc(50% - 1px),var(--cor-marcacao) calc(50% - 1px),var(--cor-marcacao) calc(50% + 1px),transparent calc(50% + 1px))}
+.marca-pino{position:absolute;right:4px;width:12px;height:12px;border-radius:2px 2px 2px 0;background:var(--cor-marcacao);box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.marca-fita{position:absolute;top:0;right:24px;width:14px;height:28px;background:var(--cor-marcacao);clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%);z-index:3}
+.marcar-barra{position:fixed;z-index:90;display:flex;flex-direction:column;gap:var(--s2);padding:var(--s2);width:300px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.marcar-cores{display:flex;gap:var(--s2)}
+.marcar-cor{width:28px;height:28px;border:1px solid var(--border);border-radius:2px;background:var(--cor-marcacao);cursor:pointer;padding:0}
+.marcar-cor[aria-checked="true"]{outline:2px solid var(--text);outline-offset:2px}
+.marcar-acoes{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.marcar-barra textarea{width:100%;min-height:72px;resize:vertical}
+.marcar-barra .trecho{margin:0;padding-left:var(--s2);border-left:3px solid var(--border);font-size:13px;color:var(--muted);max-height:7em;overflow:auto}
+.marcar-barra .topo{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.marcar-barra .amostra{display:inline-block;width:12px;height:12px;background:var(--cor-marcacao);vertical-align:-1px;margin-right:6px}
+.vdocx [data-pagina]{position:relative}
+.vbar .mkinfo{padding:0 8px;gap:4px}.vbar .mkinfo small{font:12px var(--mono);color:var(--muted)}.vbar .mkinfo small:empty{display:none}
+/* Ficha do documento */
+.ficha dl.kv{margin:0}
+.ficha .refs{display:flex;flex-direction:column;gap:4px;margin:0}
+.ficha .refs a{color:var(--text)}
+.ficha .mlist{display:flex;flex-direction:column;gap:4px;max-height:180px;overflow:auto}
+.ficha .mlist a .small{white-space:nowrap;flex:none}.ficha .mlist a{display:flex;gap:var(--s2);align-items:baseline;color:var(--text);text-decoration:none;font-size:13px}
+.ficha .mlist a:hover{color:var(--accent-strong, var(--accent))}
+
 .fname .tt-ed{width:22px;height:22px;opacity:0;flex:none}
 tr:hover .fname .tt-ed,.fname .tt-ed:focus{opacity:1}
 .fsub{font-size:11.5px;color:var(--faint);margin-top:1px;padding-left:calc(38px + var(--s2));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -547,7 +589,7 @@ select.inp.mini{height:24px;font-size:12px;max-width:220px}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.18.0';    // versão do programa
+const APP_RELEASE = '1.19.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 const IDB_NAME = 'agendaInicial';
 const FOLDER_NAME = 'Agenda Inicial';
@@ -579,6 +621,8 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  info:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg>',
+  bookmark:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 2.5h7v11L8 10.8l-3.5 2.7z"/></svg>',
   pen:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M10.5 2.8l2.7 2.7L6 12.7l-3.3.6.6-3.3z"/></svg>',
   hash:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6.2 2.5L4.8 13.5M11.2 2.5l-1.4 11M2.8 5.8h11M2.2 10.2h11"/></svg>',
   cloud:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4.5 12.5h7.2a2.8 2.8 0 00.4-5.6A4 4 0 004.4 6a3.3 3.3 0 00.1 6.5z"/></svg>',
@@ -848,7 +892,7 @@ async function uploadFiles(fileList, link = '', entry = '', caderno = ''){
         while (S.files.some(x => x.path === `${sub}/${name}`)) name = `${base} (${i++})${ext}`;
         r = { name, path: `${sub}/${name}`, size: f.size };
       } else r = await storeFile(f, sub);
-      const rec = { id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), link, entries: entry ? [entry] : [] };
+      const rec = { id: uid(), name: r.name, path: r.path, size: r.size, date: today(), addedAt: Date.now(), modificado: f.lastModified || undefined, link, entries: entry ? [entry] : [] };
       if (caderno) rec.cadernos = [caderno];
       { const sg = sugerirTitulo(r.name); const so = x => simplesTxt(x).replace(/[^a-z0-9]+/g, ''); if (sg.titulo && so(sg.titulo) !== so(r.name.replace(/\.[^.]+$/, ''))){ rec.title = sg.titulo; rec.tituloFonte = sg.fonte; } }
       S.files.push(rec); criados.push(rec);
@@ -1689,7 +1733,7 @@ function fileTable(files, compact){
       <td>${linkTags(f)}</td>
       ${compact ? '' : `<td class="num c-date">${f.link ? `<a href="#" data-act="f-goday" data-d="${f.link}">${shortDate(f.link)}</a>` : '—'}</td>`}
       <td class="num c-size">${fmtSize(f.size || 0)}</td>
-      <td class="acts">${temLocal() || !f.nuvem ? `<button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}` : ''}${f.nuvem ? `<button class="btn icon ghost" data-act="f-nuvem" title="Abrir no ${NUV_NOME[f.nuvem.prov]}">${I.cloud}</button>` : ''}${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
+      <td class="acts">${temLocal() || !f.nuvem ? `<button class="btn icon ghost" data-act="f-view" title="Visualizar aqui">${I.eye}</button>${officeBtn(f.path)}${fileActs(f.path)}` : ''}${f.nuvem ? `<button class="btn icon ghost" data-act="f-nuvem" title="Abrir no ${NUV_NOME[f.nuvem.prov]}">${I.cloud}</button>` : ''}<button class="btn icon ghost" data-act="f-info" title="Informações do documento">${I.info}</button>${compact ? '' : `<button class="btn icon ghost" data-act="f-link" title="Mudar o dia do anexo">${I.sched}</button>`}<button class="btn icon ghost" data-act="f-del" title="Remover">${I.trash}</button></td></tr>`).join('')}</tbody></table>`;
 }
 function linkPicker(fid, date){
   const f = S.files.find(x => x.id === fid); if (!f) return;
@@ -1961,6 +2005,191 @@ function definirTitulo(f){
   if (!t || t === f.name){ delete f.title; delete f.tituloFonte; }
   else { f.title = t; f.tituloFonte = 'voce'; aprenderTitulo(f.name, t); }
   f.updatedAt = Date.now(); save();
+}
+
+/* ---------------- Leitor com marcações ----------------
+   Tradução do leitor do Termo Inicial (VisualizadorPdf, BarraMarcar e lib/anotacoes): mesmos tipos, cores e formato
+   (retângulos em fração da página), para as marcações passarem de um app para o outro quando os dois se unirem.
+   Vale para PDF (pdf.js 4.10.38, o mesmo do Termo Inicial) e para documentos do Word (cada página é uma seção). */
+const TIPOS_ANOTACAO = ['destaque', 'sublinhado', 'tachado', 'comentario', 'marcador'];
+const CORES_ANOTACAO = ['amarelo', 'verde', 'azul', 'rosa', 'laranja'];
+const NOME_TIPO_MARCA = { destaque: 'Destaque', sublinhado: 'Sublinhado', tachado: 'Tachado', comentario: 'Comentário', marcador: 'Página marcada' };
+const NOME_COR = { amarelo: 'Amarelo', verde: 'Verde', azul: 'Azul', rosa: 'Rosa', laranja: 'Laranja' };
+function juntarRetangulos(rs){
+  const ordenados = [...rs].filter(r => r[2] > 0.001 && r[3] > 0.001).sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+  const saida = [];
+  for (const r of ordenados){
+    const u = saida[saida.length - 1];
+    const mesmaLinha = u && Math.abs(u[1] - r[1]) < Math.min(u[3], r[3]) * 0.5;
+    if (mesmaLinha && r[0] <= u[0] + u[2] + 0.02){
+      const x = Math.min(u[0], r[0]), y = Math.min(u[1], r[1]), fx = Math.max(u[0] + u[2], r[0] + r[2]), fy = Math.max(u[1] + u[3], r[1] + r[3]);
+      saida[saida.length - 1] = [x, y, fx - x, fy - y];
+    } else saida.push([...r]);
+  }
+  return saida.map(r => r.map(v => Math.round(Math.min(1, Math.max(0, v)) * 10000) / 10000));
+}
+let PDFJS = null;
+async function pdfjs(){
+  if (!PDFJS){ PDFJS = await import(new URL('assets/lib/pdfjs/pdf.min.mjs', location.href).href); PDFJS.GlobalWorkerOptions.workerSrc = new URL('assets/lib/pdfjs/pdf.worker.min.mjs', location.href).href; }
+  return PDFJS;
+}
+const MK = { item: null, sel: null, cor: (() => { try { return localStorage.getItem('agendaInicial.cor') || 'amarelo'; } catch(e){ return 'amarelo'; } })() };
+const marcasDe = f => (f && f.marcas) || [];
+function desenharMarcas(pg){
+  if (!MK.item) return;
+  const n = +pg.dataset.pagina, ms = marcasDe(MK.item).filter(m => m.pagina === n);
+  pg.querySelectorAll(':scope > .marcas, :scope > .marca-fita').forEach(e => e.remove());
+  const camada = document.createElement('div'); camada.className = 'marcas';
+  camada.innerHTML = ms.filter(m => m.tipo !== 'marcador').flatMap(m => m.retangulos.map(r => `<span class="marca marca-${m.tipo} marca-cor-${m.cor}" style="left:${r[0] * 100}%;top:${r[1] * 100}%;width:${r[2] * 100}%;height:${r[3] * 100}%"></span>`)).join('')
+    + ms.filter(m => m.comentario && m.retangulos.length).map(m => `<span class="marca-pino marca-cor-${m.cor}" style="top:${m.retangulos[0][1] * 100}%"></span>`).join('');
+  pg.prepend(camada);
+  const fita = ms.find(m => m.tipo === 'marcador');
+  if (fita){ const f = document.createElement('span'); f.className = `marca-fita marca-cor-${fita.cor}`; f.title = 'Página marcada'; pg.appendChild(f); }
+}
+function redesenharTodas(){ $$('#vbody [data-pagina]').forEach(desenharMarcas); }
+async function abrirPdf(item, file, body, tok){
+  const lib = await pdfjs();
+  const doc = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+  if (tok !== V.token){ doc.destroy(); return; }
+  MK.item = item; V.pdf = doc;
+  body.classList.add('flush');
+  body.innerHTML = '<div class="pdfv" id="pdfv"><div class="vzoom" id="pdfpags"></div></div>';
+  const area = $('#pdfv'), pags = $('#pdfpags');
+  const p1 = await doc.getPage(1), b1 = p1.getViewport({ scale: 1 });
+  const largura = Math.max(320, Math.min(area.clientWidth - 48, 920));
+  for (let n = 1; n <= doc.numPages; n++){
+    const d = document.createElement('div'); d.className = 'pdfpg'; d.dataset.pagina = n;
+    d.style.width = largura + 'px'; d.style.height = Math.round(largura * b1.height / b1.width) + 'px';
+    d.innerHTML = `<span class="pgn">${n}</span>`;
+    pags.appendChild(d);
+  }
+  const feitas = new Set();
+  const io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting && !feitas.has(e.target)){ feitas.add(e.target); renderPagina(doc, e.target, largura); } }, { root: area, rootMargin: '800px 0px' });
+  pags.querySelectorAll('.pdfpg').forEach(d => io.observe(d));
+  V.cleanup = () => { io.disconnect(); try { doc.destroy(); } catch(e){} V.pdf = null; MK.item = null; fecharBarra(); };
+  if (V.pagina){ const alvo = pags.querySelector(`[data-pagina="${V.pagina}"]`); if (alvo) setTimeout(() => alvo.scrollIntoView({ block: 'start' }), 60); V.pagina = 0; }
+}
+async function renderPagina(doc, el, largura){
+  const lib = await pdfjs();
+  const p = await doc.getPage(+el.dataset.pagina);
+  const base = p.getViewport({ scale: 1 }), escala = largura / base.width, vp = p.getViewport({ scale: escala });
+  el.style.height = vp.height + 'px';
+  const c = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1);
+  c.width = Math.floor(vp.width * dpr); c.height = Math.floor(vp.height * dpr); c.style.width = vp.width + 'px'; c.style.height = vp.height + 'px';
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  el.prepend(c);
+  await p.render({ canvasContext: ctx, viewport: vp }).promise.catch(() => null);
+  const t = document.createElement('div'); t.className = 'textLayer'; t.style.setProperty('--scale-factor', String(escala));
+  el.appendChild(t);
+  await new lib.TextLayer({ textContentSource: p.streamTextContent(), container: t, viewport: vp }).render().catch(() => null);
+  desenharMarcas(el);
+}
+/* Seleção → barra de marcar; clique numa marcação → detalhe. */
+function fecharBarra(){ const b = $('#mbarra'); if (b) b.remove(); MK.sel = null; }
+function posBarra(x, y){ return { left: Math.max(8, Math.min(x, innerWidth - 312)) + 'px', top: Math.max(8, Math.min(y + 8, innerHeight - 260)) + 'px' }; }
+function abrirBarra(html, x, y){
+  const velha = $('#mbarra'); if (velha) velha.remove();
+  const b = document.createElement('div'); b.className = 'marcar-barra'; b.id = 'mbarra'; b.innerHTML = html;
+  Object.assign(b.style, posBarra(x, y)); document.body.appendChild(b);
+  b.addEventListener('keydown', ev => ev.stopPropagation());
+  b.addEventListener('mousedown', ev => { if (!ev.target.closest('textarea')) ev.preventDefault(); });
+  return b;
+}
+const coresHtml = (sel, act) => `<span class="marcar-cores">${CORES_ANOTACAO.map(c => `<button type="button" class="marcar-cor marca-cor-${c}" aria-checked="${sel === c}" title="${NOME_COR[c]}" data-act="${act}" data-cor="${c}"></button>`).join('')}</span>`;
+function barraMarcar(){
+  const sel = MK.sel; if (!sel) return;
+  const b = abrirBarra(`${coresHtml(MK.cor, 'mk-cor')}
+    <span class="marcar-acoes">${['destaque', 'sublinhado', 'tachado'].map(t => `<button class="btn" data-act="mk-marcar" data-tipo="${t}">${{ destaque: 'Destacar', sublinhado: 'Sublinhar', tachado: 'Tachar' }[t]}</button>`).join('')}<button class="btn" data-act="mk-comentar">Comentar</button></span>`, sel.x, sel.y);
+  return b;
+}
+function selecaoParaMarca(){
+  const s = getSelection(), texto = s ? s.toString().trim() : '';
+  if (!(s && !s.isCollapsed && texto && s.rangeCount)) return false;
+  const r = s.getRangeAt(0), no = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
+  const pg = no && no.closest('#vbody [data-pagina]'); if (!pg) return false;
+  const cx = pg.getBoundingClientRect();
+  const brutos = [...r.getClientRects()].filter(q => q.width > 1 && q.height > 1 && q.bottom > cx.top && q.top < cx.bottom);
+  const rs = juntarRetangulos(brutos.map(q => [(q.left - cx.left) / cx.width, (q.top - cx.top) / cx.height, q.width / cx.width, q.height / cx.height]));
+  if (!rs.length) return false;
+  const u = brutos[brutos.length - 1];
+  MK.sel = { pagina: +pg.dataset.pagina, retangulos: rs, texto: texto.slice(0, 2000), x: u.left, y: u.bottom };
+  barraMarcar(); return true;
+}
+/* No celular a seleção termina pelas alças, sem mouseup: espera a seleção parar de mudar. */
+let mkSelT = 0;
+document.addEventListener('selectionchange', () => {
+  if (!MK.item || !matchMedia('(pointer: coarse)').matches) return;
+  clearTimeout(mkSelT); mkSelT = setTimeout(() => { if (!$('#mbarra') || MK.sel) selecaoParaMarca(); }, 600);
+});
+document.addEventListener('mouseup', ev => {
+  if ($('#viewer').hidden || !MK.item || ev.target.closest('#mbarra')) return;
+  if (!ev.target.closest('#vbody')) return;
+  setTimeout(() => {
+    if (selecaoParaMarca()) return;
+    const s = getSelection(), texto = s ? s.toString().trim() : '';
+    if (s && !s.isCollapsed && texto) return;
+    fecharBarra();
+    const pg = ev.target.closest('[data-pagina]'); if (!pg) return;
+    const cx = pg.getBoundingClientRect(), px = (ev.clientX - cx.left) / cx.width, py = (ev.clientY - cx.top) / cx.height, n = +pg.dataset.pagina;
+    const m = marcasDe(MK.item).find(k => k.pagina === n && k.retangulos.some(([x, y, w, h]) => px >= x - .004 && px <= x + w + .004 && py >= y - .006 && py <= y + h + .006));
+    if (m) detalheMarca(m, ev.clientX, ev.clientY);
+  }, 0);
+});
+function novaMarca(tipo, comentario){
+  const sel = MK.sel, f = MK.item; if (!f) return;
+  if (tipo !== 'marcador' && !sel) return;
+  const m = { id: uid(), pagina: sel ? sel.pagina : vPaginaAtual(), tipo, cor: MK.cor, retangulos: sel ? sel.retangulos : [], texto: sel ? sel.texto : null, comentario: comentario || null, criado: Date.now() };
+  f.marcas = [...marcasDe(f), m]; f.updatedAt = Date.now(); save(false);
+  getSelection().removeAllRanges(); fecharBarra();
+  const pg = $(`#vbody [data-pagina="${m.pagina}"]`); if (pg) desenharMarcas(pg);
+  vAtualizarContagem();
+}
+function detalheMarca(m, x, y){
+  abrirBarra(`<div class="topo"><span class="marca-cor-${m.cor}"><span class="amostra"></span>${NOME_TIPO_MARCA[m.tipo]} · p. ${m.pagina}</span><button class="btn icon ghost" data-act="mk-fechar" title="Fechar">${I.x}</button></div>
+    ${m.texto ? `<p class="trecho">${esc(m.texto)}</p>` : ''}
+    ${coresHtml(m.cor, 'mk-recor').replace(/data-act="mk-recor"/g, `data-act="mk-recor" data-id="${m.id}"`)}
+    <textarea class="inp" id="mk-com" placeholder="Comentário sobre o trecho" maxlength="4000">${esc(m.comentario || '')}</textarea>
+    <span class="marcar-acoes"><button class="btn" data-act="mk-apagar" data-id="${m.id}">${I.trash}Apagar</button><button class="btn primary" data-act="mk-salvar" data-id="${m.id}">Salvar</button></span>`, x, y);
+}
+function mudarMarca(id, campos){
+  const f = MK.item; if (!f) return;
+  const m = marcasDe(f).find(k => k.id === id); if (!m) return;
+  Object.assign(m, campos); if (m.tipo === 'destaque' && m.comentario) m.tipo = 'comentario';
+  f.updatedAt = Date.now(); save(false); redesenharTodas();
+}
+function vPaginaAtual(){ return (() => { const a = $('#pdfv') || $('#vbody .vdocx') || $('#vbody'); const pgs = $$('#vbody [data-pagina]'); if (!a || !pgs.length) return 1; const topo = a.getBoundingClientRect().top + 40; let n = 1; for (const p of pgs){ if (p.getBoundingClientRect().top <= topo) n = +p.dataset.pagina; } return n; })(); }
+function vAtualizarContagem(){ const el = $('#vmk'); if (el && MK.item) el.textContent = marcasDe(MK.item).length || ''; }
+const marcasTools = () => `<span class="sep"></span><button class="btn icon ghost" data-act="mk-pagina" title="Marcar esta página">${I.bookmark}</button><button class="btn ghost mkinfo" data-act="f-info" title="Informações do documento e marcações">${I.info}<small id="vmk">${MK.item ? (marcasDe(MK.item).length || '') : ''}</small></button>`;
+
+/* ---------------- Ficha do documento ---------------- */
+async function fichaDoc(f){
+  if (!f) return;
+  const tk = f.kind === 'caderno' ? 'caderno' : 'arquivo';
+  const enc = p => encodeURI(p).replace(/#/g, '%23');
+  const registros = (f.entries || []).map(byId).filter(Boolean);
+  for (const e of S.entries) if (!registros.includes(e) && e.text && (e.text.includes(f.name) || (f.title && e.text.includes(f.title)))) registros.push(e);
+  const cadernos = S.files.filter(x => x.kind === 'caderno' && x.id !== f.id && ((f.cadernos || []).includes(x.id) || (x.md && (x.md.includes(enc(f.path)) || x.md.includes(f.path)))));
+  const listas = S.lists.filter(l => [l.notes, ...l.items.map(i => i.text)].join('\n').includes(f.title || f.name));
+  let disco = null; try { if (temLocal() && f.kind !== 'caderno') disco = await fileOf(f); } catch(e){}
+  const dt = t => t ? new Date(t).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+  const ms = marcasDe(f).slice().sort((a, b) => a.pagina - b.pagina || (a.retangulos[0] || [0, 0])[1] - (b.retangulos[0] || [0, 0])[1]);
+  modal(`<div class="ficha" data-fid="${f.id}">
+    <h3>${esc(tituloDe(f))}</h3>
+    <dl class="kv">
+      <dt>Título</dt><dd>${esc(tituloDe(f))} ${f.kind === 'caderno' ? '' : `<button class="btn icon ghost" data-act="f-titulo" title="Mudar o título">${I.pen}</button>`}${f.tituloFonte === 'aprendido' ? '<span class="muted small"> · aprendido</span>' : f.tituloFonte === 'regra' ? '<span class="muted small"> · sugerido</span>' : ''}</dd>
+      <dt>Arquivo</dt><dd>${esc(f.name)} <span class="muted small">· ${esc(extOf(f.name).toUpperCase())} · ${fmtSize(f.size || (disco && disco.size) || 0)}</span></dd>
+      <dt>Data do arquivo</dt><dd>${dt(f.modificado || (disco && disco.lastModified))}</dd>
+      <dt>Anexado em</dt><dd>${dt(f.addedAt)}</dd>
+      <dt>Alterado na agenda</dt><dd>${dt(f.updatedAt || f.addedAt)}</dd>
+      <dt>Onde está</dt><dd>Documentos › Agenda Inicial › ${esc(f.path.split('/').join(' › '))}${f.nuvem ? ` · <a href="#" data-act="f-nuvem">abrir no ${NUV_NOME[f.nuvem.prov]}</a>` : ''}</dd>
+      <dt>Tags</dt><dd><div class="tagline" data-tk="${tk}" data-tid="${f.id}">${tagLine(tk, f.id, f)}${tagsTexto(textoDe(tk, f)).filter(t => !(f.tags || []).some(x => tagKey(x) === tagKey(t))).map(t => tagChip(t)).join('')}</div></dd>
+      <dt>Registros</dt><dd>${registros.length ? `<div class="refs">${registros.map(e => `<a href="#" data-act="fl-go" data-e="${e.id}">${bulletOf(e)} ${esc(e.text)} <span class="muted small">· ${e.date ? shortDate(e.date) : ''}</span></a>`).join('')}</div>` : '<span class="muted">—</span>'}</dd>
+      <dt>Cadernos</dt><dd>${cadernos.length ? `<div class="refs">${cadernos.map(x => `<a href="#" data-act="nb-open" data-id="${x.id}">${esc(x.title)}</a>`).join('')}</div>` : '<span class="muted">—</span>'}</dd>
+      <dt>Listas</dt><dd>${listas.length ? `<div class="refs">${listas.map(l => `<a href="#" data-act="go-list" data-id="${l.id}">${esc(l.title || 'Sem título')}</a>`).join('')}</div>` : '<span class="muted">—</span>'}</dd>
+      <dt>Marcações</dt><dd>${ms.length ? `<div class="mlist">${ms.map(m => `<a href="#" data-act="mk-ir" data-p="${m.pagina}"><span class="marca-cor-${m.cor}"><span class="amostra" style="display:inline-block;width:10px;height:10px;background:var(--cor-marcacao)"></span></span><span class="muted small">p. ${m.pagina}</span><span>${esc(NOME_TIPO_MARCA[m.tipo])}${m.texto ? ': ' + esc(m.texto.slice(0, 90)) : ''}${m.comentario ? ` <i class="muted">— ${esc(m.comentario.slice(0, 80))}</i>` : ''}</span></a>`).join('')}</div>` : '<span class="muted">Nenhuma. Abra o documento e selecione um trecho.</span>'}</dd>
+    </dl>
+    <div class="tools"><button class="btn" data-act="m-close">Fechar</button>${f.kind === 'caderno' ? `<button class="btn primary" data-act="nb-open" data-id="${f.id}">Abrir caderno</button>` : `<button class="btn primary" data-act="ficha-abrir">${I.eye}Abrir</button>`}</div>
+  </div>`);
 }
 
 /* ---------------- Tags (#) ----------------
@@ -2598,9 +2827,17 @@ async function showViewer(){
   const ext = extOf(item.name);
   try {
     if (kind === 'pdf'){
-      body.classList.add('flush');
-      V.url = URL.createObjectURL(new Blob([file], { type: 'application/pdf' }));
-      body.innerHTML = `<iframe src="${V.url}#view=FitH" title="${esc(item.name)}"></iframe>`;
+      const anotavel = !!item.id && S.files.includes(item);
+      try {
+        if (!anotavel) throw new Error('avulso');
+        await abrirPdf(item, file, body, tok);
+        vBar(item, zoomTools() + marcasTools());
+      } catch(e){
+        if (e.message !== 'avulso') console.warn('pdf.js', e);
+        body.classList.add('flush');
+        V.url = URL.createObjectURL(new Blob([file], { type: 'application/pdf' }));
+        body.innerHTML = `<iframe src="${V.url}#view=FitH" title="${esc(item.name)}"></iframe>`;
+      }
     }
     else if (kind === 'image'){
       V.url = URL.createObjectURL(new Blob([file], { type: MIME[ext] || file.type }));
@@ -2632,6 +2869,7 @@ async function showViewer(){
       if (tok !== V.token) return;
       body.innerHTML = '<div class="vdocx vzoom"><div id="vdoc"></div></div>';
       await window.docx.renderAsync(await file.arrayBuffer(), $('#vdoc'), null, { className: 'docx', inWrapper: true, breakPages: true, renderHeaders: true, renderFooters: true, renderFootnotes: true, renderEndnotes: true, useBase64URL: true, experimental: true });
+      if (item.id && S.files.includes(item)){ MK.item = item; $$('#vdoc section.docx').forEach((sec, k) => { sec.dataset.pagina = k + 1; desenharMarcas(sec); }); vBar(item, zoomTools() + marcasTools()); V.cleanup = () => { MK.item = null; fecharBarra(); }; if (V.pagina){ const a = $(`#vdoc [data-pagina="${V.pagina}"]`); if (a) setTimeout(() => a.scrollIntoView({ block: 'start' }), 60); V.pagina = 0; } }
     }
     else if (kind === 'sheet'){
       await lib('xlsx');
@@ -3094,6 +3332,19 @@ const ACT = {
   'f-share': (a, ev) => { ev.stopPropagation(); if ($('#fmenu') && $('#fmenu').dataset.p === a.dataset.p){ closeMenu(); return; } shareMenu(a, a.dataset.p); },
   'side-toggle': () => document.body.classList.toggle('side-open'),
   'pf-foto': () => fotoTrocar(),
+  'mk-cor': a => { MK.cor = a.dataset.cor; try { localStorage.setItem('agendaInicial.cor', MK.cor); } catch(e){} $$('#mbarra .marcar-cor').forEach(b => b.setAttribute('aria-checked', b.dataset.cor === MK.cor)); },
+  'mk-marcar': a => novaMarca(a.dataset.tipo),
+  'mk-comentar': () => { const b = $('#mbarra'); if (!b) return; b.querySelector('.marcar-acoes').outerHTML = `<textarea class="inp" id="mk-novo" placeholder="Comentário sobre o trecho" maxlength="4000"></textarea><span class="marcar-acoes"><button class="btn" data-act="mk-voltar">Voltar</button><button class="btn primary" data-act="mk-salvar-novo">Salvar</button></span>`; setTimeout(() => $('#mk-novo').focus(), 20); },
+  'mk-voltar': () => barraMarcar(),
+  'mk-salvar-novo': () => { const t = ($('#mk-novo') || {}).value || ''; if (t.trim()) novaMarca('comentario', t.trim()); },
+  'mk-fechar': () => fecharBarra(),
+  'mk-recor': a => { mudarMarca(a.dataset.id, { cor: a.dataset.cor }); $$('#mbarra .marcar-cor').forEach(b => b.setAttribute('aria-checked', b.dataset.cor === a.dataset.cor)); },
+  'mk-salvar': a => { mudarMarca(a.dataset.id, { comentario: (($('#mk-com') || {}).value || '').trim() || null }); fecharBarra(); },
+  'mk-apagar': a => { const f = MK.item; if (!f) return; f.marcas = marcasDe(f).filter(m => m.id !== a.dataset.id); if (!f.marcas.length) delete f.marcas; f.updatedAt = Date.now(); save(false); fecharBarra(); redesenharTodas(); vAtualizarContagem(); },
+  'mk-pagina': () => { const f = MK.item; if (!f) return; const n = vPaginaAtual(); const ja = marcasDe(f).find(m => m.tipo === 'marcador' && m.pagina === n); if (ja){ f.marcas = marcasDe(f).filter(m => m !== ja); save(false); redesenharTodas(); toast(`Página ${n} desmarcada.`); } else { MK.sel = null; novaMarca('marcador'); toast(`Página ${n} marcada.`); } vAtualizarContagem(); },
+  'mk-ir': a => { const fid = a.closest('[data-fid]').dataset.fid, f = S.files.find(x => x.id === fid); closeModal(); if (MK.item === f && !$('#viewer').hidden){ const pg = $(`#vbody [data-pagina="${a.dataset.p}"]`); if (pg) pg.scrollIntoView({ block: 'start' }); return; } V.pagina = +a.dataset.p; openViewer([f], 0); },
+  'f-info': a => { const el = a.closest('[data-fid]'); const f = el ? S.files.find(x => x.id === el.dataset.fid) : MK.item || V.list[V.i]; fichaDoc(f); },
+  'ficha-abrir': a => { const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); closeModal(); if (f && !(!temLocal() && nuvemAbrir(f))) openViewer([f], 0); },
   'f-titulo': a => { const f = S.files.find(x => x.id === a.closest('[data-fid]').dataset.fid); if (f) definirTitulo(f); },
   'nb-anexar': () => { nbGuardarCursor(); const inp = document.createElement('input'); inp.type = 'file'; inp.multiple = true; inp.onchange = () => nbAnexar(inp.files); inp.click(); },
   'nb-anexo': (a, ev) => { ev && ev.preventDefault(); const f = S.files.find(x => x.id === a.dataset.fid); if (f && !(!temLocal() && nuvemAbrir(f))) openViewer([f], 0); },
