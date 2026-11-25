@@ -1,14 +1,14 @@
 {
- "version": "1.21.0",
+ "version": "1.22.0",
  "date": "2026-11-25",
  "notes": [
+  "Sininho de notificações no canto superior direito: convites para aceitar ali mesmo, avisos da equipe (quem entrou no ambiente, mudança de função), compromissos de hoje com aviso 15 minutos antes, itens planejados que chegam hoje, o ponto pendente e as novidades de cada versão",
+  "Avisos também fora da agenda (Windows ou celular), se você ativar no próprio sininho",
+  "As novidades de cada versão passam a ficar no sininho, em vez do aviso solto",
   "Ambientes de trabalho: crie a sua empresa (botão abaixo do nome da agenda), com setores, e convide colegas por e-mail ou por link. Funções: proprietário, gerente, coordenador e colaborador. Cada ambiente tem a sua própria agenda; ao criar, você pode levar para ele tudo o que já está na agenda",
   "Equipe: novo menu com as pessoas do ambiente, por setor, com perfil, cargo e função; convites pendentes e configurações do ambiente",
   "Cadernos criados pela agenda não aparecem mais como arquivos; no registro, o caderno vinculado abre direto",
   "Botão discreto para instalar a agenda como aplicativo, que some depois de instalada",
-  "Correção: um item apagado logo depois de sincronizar não volta mais",
-  "Tabela de arquivos: a coluna de botões passa a ter a largura de todos os ícones, sem cortar nenhum",
-  "Registros: mude a ordem arrastando pelo símbolo (para cima, para baixo ou, soltando mais à direita, para dentro de outro item); o botão ⋯ do registro muda o tipo (tarefa, evento, nota), sobe, desce e troca o nível; ao editar o texto, Alt ↑/↓ move e Tab/Shift+Tab muda o nível",
-  "Novo desenho dos registros: símbolos redesenhados com o mesmo tamanho e traço, seta de recolher junto do símbolo e guias de nível descendo do centro do item de cima, tudo numa grade de 24 px"
+  "Correção: um item apagado logo depois de sincronizar não volta mais"
  ]
 }

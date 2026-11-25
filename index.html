@@ -372,6 +372,36 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .perfil-m .kv{grid-template-columns:140px 1fr;margin:0 0 var(--s4)}
 .perfil-m .tools{display:flex;gap:var(--s2);align-items:center}
 @media (max-width:900px){.eqp{grid-template-columns:40px minmax(0,1fr) auto}.eqp .st,.eqp .em{display:none}.form .dupla{grid-template-columns:1fr}}
+
+/* ---------- Sininho ---------- */
+.sino{position:relative}
+.sino .nb{position:absolute;top:1px;right:-3px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--accent);color:#fff;font:600 9px/14px var(--mono);text-align:center;box-shadow:0 0 0 2px var(--bg);pointer-events:none}
+.npop{position:fixed;z-index:60;width:380px;max-width:calc(100vw - 16px);max-height:min(72vh,640px);display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.npop .ntopo{display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 var(--s3);border-bottom:1px solid var(--border)}
+.npop .ntopo b{font-size:14px}
+.npop .lnk{border:0;background:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0}
+.npop .lnk:hover{color:var(--text);text-decoration:underline}
+.npop .nlista{overflow:auto;padding:0 0 var(--s1)}
+.npop .nh{padding:var(--s3) var(--s3) var(--s1);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.npop .ni{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:var(--s3);align-items:start;padding:var(--s2) var(--s3);cursor:pointer}
+.npop .ni:hover{background:var(--hover)}
+.npop .ni.nova::before{content:"";position:absolute;left:6px;top:16px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.npop .ni.urg{background:var(--accent-bg)}
+.npop .nic{width:24px;height:24px;display:grid;place-items:center;color:var(--muted)}
+.npop .nic svg{width:16px;height:16px}
+.npop .nc{display:flex;flex-direction:column;gap:2px;min-width:0;line-height:18px}
+.npop .nc b{font-size:13px;font-weight:500;color:var(--text)}
+.npop .ni.nova .nc b{font-weight:600}
+.npop .nc small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.npop .nt{font:11px var(--mono);color:var(--faint);line-height:18px;white-space:nowrap}
+.npop .nacts{display:flex;gap:var(--s2);margin-top:var(--s1)}
+.npop .nvazio{padding:var(--s5,32px) var(--s3);text-align:center;color:var(--muted);font-size:13px}
+.npop .nperm{display:grid;grid-template-columns:1fr auto;gap:var(--s2);align-items:center;padding:var(--s2) var(--s3);border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.pfoto.p24{width:24px;height:30px;margin-top:-3px}.pfoto.p24 .ini{font-size:9px}
+.novidades{margin:0 0 var(--s3);padding-left:20px;line-height:1.55}.novidades li{margin-bottom:var(--s1)}
+.entry.pisca{animation:pisca 1.6s ease}
+@keyframes pisca{0%,60%{background:var(--accent-bg)}100%{background:transparent}}
+@media (max-width:900px){.npop{left:8px;right:8px!important;width:auto}}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -660,7 +690,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.21.0';    // versão do programa
+const APP_RELEASE = '1.22.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -698,6 +728,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  bell:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5V7.2a4 4 0 0 1 8 0v4.3l1 1H3z"/><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0"/></svg>',
   team:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.2c.4-2.3 2.1-3.6 4.2-3.6s3.8 1.3 4.2 3.6"/><circle cx="11.4" cy="6.2" r="1.8"/><path d="M11.2 9.7c1.6.1 2.7 1.1 3 3"/></svg>',
   dots:'<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="12.5" cy="8" r="1.2"/></svg>',
   info:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 7.2v4M8 4.8v.1" stroke-linecap="round"/></svg>',
@@ -1597,7 +1628,7 @@ function renderSide(){
       ${gOn() ? `<div class="row"><span><span class="dot ${G.error ? 'err' : 'ok'}"></span>${G.error ? 'Google: ' + esc(G.error) : 'Google Agenda conectado'}</span></div>` : ''}
     </div>`;
 }
-function topbar(crumb, tools = ''){ return `<div class="topbar"><button class="btn ghost icon mob-menu" data-act="side-toggle" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg></button><div class="crumbs" style="flex:1"><span class="cr-pre">Agenda / </span><b>${crumb}</b></div><div class="tools">${tools}</div></div>`; }
+function topbar(crumb, tools = ''){ return `<div class="topbar"><button class="btn ghost icon mob-menu" data-act="side-toggle" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg></button><div class="crumbs" style="flex:1"><span class="cr-pre">Agenda / </span><b>${crumb}</b></div><div class="tools">${tools}${sinoBtn()}</div></div>`; }
 function render(withG = true){
   applyTheme(); renderSide();
   const v = VIEWS[ui.view] || VIEWS.hoje;
@@ -2440,6 +2471,7 @@ async function ambRpc(acao, dados = {}){
 function ambAplicar(e){
   if (!e) return;
   AMB.lista = e.ambientes || []; AMB.convites = e.convites_para_mim || []; AMB.eu = e.eu || null; AMB.carregado = true;
+  setTimeout(sinoAtualizar, 0);
   try { localStorage.setItem('agendaInicial.ambientes', JSON.stringify({ lista: AMB.lista, convites: AMB.convites, eu: AMB.eu })); } catch(_){}
   if (AMB_ATUAL && !AMB.lista.some(a => a.id === AMB_ATUAL)){ toast('Você não faz mais parte desse ambiente. Voltando para a agenda pessoal.', 6000); trocarAmbiente(''); return; }
   const a = ambAtual();
@@ -2640,6 +2672,113 @@ function perfilMembro(uid){
     <div class="tools">${posso(a, 'proprietario') && !eu ? `<button class="btn ghost danger" data-act="pm-remover">Remover do ambiente</button>` : ''}<span style="flex:1"></span><button class="btn" data-act="m-close">Fechar</button>${mudaDados || mudaFuncao ? '<button class="btn primary" data-act="pm-salvar">Salvar</button>' : ''}</div>
   </div>`);
 }
+
+/* ---------------- Sininho (notificações) ----------------
+   Duas fontes: avisos de outras pessoas, que vêm do servidor (inicial_notificacoes), e avisos do próprio dia,
+   calculados aqui (compromissos, registros planejados, ponto, atualização). Convites aparecem para responder ali mesmo. */
+const NT = { itens: [], naoLidas: 0, busy: false, aberto: false };
+const NT_LIDAS = 'agendaInicial.notifLidas', NT_AVISADOS = 'agendaInicial.notifAvisados';
+const conjunto = k => { try { return new Set(JSON.parse(localStorage.getItem(k) || '[]')); } catch(e){ return new Set(); } };
+const guardarConjunto = (k, set) => { try { localStorage.setItem(k, JSON.stringify([...set].slice(-500))); } catch(e){} };
+async function notifRpc(acao, dados = {}){
+  if (CLOUD.via === 'ponte') return ponte('rpc', { fn: 'agendainicial_ponte_notif', args: { p_acao: acao, p_dados: dados } });
+  const sb = await cloudClient();
+  const { data, error } = await sb.rpc('inicial_notif', { acao, dados });
+  if (error) throw error; return data;
+}
+function notifAplicar(r){ if (!r) return; NT.itens = r.itens || []; NT.naoLidas = r.nao_lidas || 0; sinoAtualizar(); }
+async function notifPuxar(){
+  if (!CLOUD.user || NT.busy) return;
+  NT.busy = true;
+  try { const antes = new Set(NT.itens.map(n => n.id)), r = await notifRpc('listar'); notifAplicar(r);
+    const novas = NT.itens.filter(n => !n.lida && !antes.has(n.id) && antes.size);
+    for (const n of novas.slice(0, 3)) avisarSistema(n.titulo, n.texto || '', 'srv:' + n.id);
+  } catch(e){ console.warn('notificações', e); }
+  finally { NT.busy = false; }
+}
+const minutosDe = hm => { const [h, m] = (hm || '').split(':').map(Number); return h * 60 + (m || 0); };
+const agoraMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+function quandoTexto(diff){ if (diff > 59) return `em ${Math.floor(diff / 60)} h${diff % 60 ? ' ' + (diff % 60) + ' min' : ''}`; if (diff > 0) return `em ${diff} min`; if (diff > -60) return diff === 0 ? 'agora' : `começou há ${-diff} min`; return 'já passou'; }
+/* Avisos do dia, calculados neste aparelho */
+function avisosDoDia(){
+  const d = today(), agora = agoraMin(), out = [];
+  const comp = S.entries.filter(e => e.date === d && e.time && !['cancelled', 'migrated', 'scheduled'].includes(e.status) && !(e.type === 'task' && e.status === 'done'))
+    .map(e => ({ id: `evt:${e.id}:${d}`, ic: 'event', titulo: e.text, hora: e.time, act: 'nt-dia', eid: e.id }))
+    .concat(gOn() ? gEvents(d).filter(ev => ev.start).map(ev => ({ id: `g:${ev.id}:${d}`, ic: 'event', titulo: ev.title, hora: ev.start, act: 'nt-dia', g: 1 })) : []);
+  for (const c of comp.sort((a, b) => a.hora.localeCompare(b.hora))){
+    const diff = minutosDe(c.hora) - agora;
+    if (diff < -60) continue;
+    out.push(Object.assign(c, { grupo: 'hoje', texto: `${c.hora} · ${quandoTexto(diff)}`, urgente: diff >= 0 && diff <= 15, conta: diff >= 0 && diff <= 15 }));
+  }
+  const ini = parse(d).getTime();
+  const plan = S.entries.filter(e => e.date === d && !e.parent && e.createdAt < ini && e.status === 'open' && e.type !== 'note');
+  if (plan.length) out.push({ id: `futuro:${d}`, grupo: 'hoje', ic: 'futuro', titulo: `${plan.length} ${plan.length === 1 ? 'item planejado chega' : 'itens planejados chegam'} hoje`, texto: plan.slice(0, 3).map(e => e.text).join(' · ') + (plan.length > 3 ? ' …' : ''), act: 'nt-dia', conta: true });
+  const p = pontoInfo();
+  if (p.pending){ const ref = p.refOf(p.mk); out.push({ id: `ponto:${ref}`, grupo: 'hoje', ic: 'ponto', titulo: `Registrar o ponto de ${MES[parse(ref + '-01').getMonth()]}`, texto: p.fbd === d ? 'Hoje é o 1º dia útil do mês' : `O 1º dia útil foi ${shortDate(p.fbd)}`, act: 'nt-ponto', conta: true }); }
+  if (UP.notes && UP.notes.length && S.settings.notesSeen === APP_RELEASE) out.push({ id: `versao:${APP_RELEASE}`, grupo: 'agenda', ic: 'versao', titulo: `Agenda atualizada para a versão ${APP_RELEASE}`, texto: UP.notes[0], act: 'nt-versao', conta: true });
+  return out;
+}
+function sinoContagem(){
+  const lidas = conjunto(NT_LIDAS);
+  return AMB.convites.length + NT.naoLidas + avisosDoDia().filter(a => a.conta && !lidas.has(a.id)).length;
+}
+function sinoAtualizar(){
+  const n = sinoContagem();
+  $$('.sino').forEach(b => { const c = b.querySelector('.nb'); if (c){ c.textContent = n > 99 ? '99+' : n; c.hidden = !n; } b.title = n ? `Notificações (${n} nova${n === 1 ? '' : 's'})` : 'Notificações'; });
+  if (NT.aberto) sinoDesenhar();
+  if ('setAppBadge' in navigator){ try { n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch(e){} }
+}
+const sinoBtn = () => { const n = sinoContagem(); return `<button class="btn icon ghost sino" data-act="sino" title="Notificações" aria-label="Notificações">${I.bell}<span class="nb" ${n ? '' : 'hidden'}>${n > 99 ? '99+' : n}</span></button>`; };
+const NT_ICONE = { event: () => bulletSvg({ type: 'event', status: 'open' }), futuro: () => I.list, ponto: () => I.clock, versao: () => I.dl, entrou: () => I.team, funcao: () => I.team, removido: () => I.team, convite: () => I.mail };
+function tempoAtras(t){ const m = Math.round((Date.now() - new Date(t).getTime()) / 60000); if (m < 1) return 'agora'; if (m < 60) return `${m} min`; const h = Math.round(m / 60); if (h < 24) return `${h} h`; const d = Math.round(h / 24); return d === 1 ? 'ontem' : `${d} dias`; }
+function sinoDesenhar(){
+  let el = $('#npop');
+  if (!el){ el = document.createElement('div'); el.id = 'npop'; el.className = 'npop'; document.body.appendChild(el); }
+  const lidas = conjunto(NT_LIDAS), dia = avisosDoDia();
+  const item = (o) => `<div class="ni${o.lida ? '' : ' nova'}${o.urgente ? ' urg' : ''}" ${o.act ? `data-act="${o.act}"` : ''} data-nid="${esc(o.id)}" ${o.eid ? `data-eid="${o.eid}"` : ''} ${o.amb ? `data-amb="${o.amb}"` : ''}>
+    <span class="nic">${o.de ? fotoPessoa(o.de, 'pfoto p24') : (NT_ICONE[o.ic] || (() => I.bell))()}</span>
+    <span class="nc"><b>${esc(o.titulo)}</b>${o.texto ? `<small>${esc(o.texto)}</small>` : ''}${o.extra || ''}</span>
+    <span class="nt">${esc(o.quando || '')}</span></div>`;
+  const conv = AMB.convites.map(c => `<div class="ni nova convite" data-cid="${c.id}" data-tok="">
+    <span class="nic">${c.por ? fotoPessoa(c.por, 'pfoto p24') : I.mail}</span>
+    <span class="nc"><b>Convite para ${esc(c.ambiente)}</b><small>${esc(c.por ? c.por.nome : 'Alguém')} convidou você como ${FUNCOES[c.funcao]}${c.setor ? ' · ' + esc(c.setor) : ''}</small>
+      <span class="nacts"><button class="btn mini" data-act="conv-recusar">Recusar</button><button class="btn mini primary" data-act="conv-aceitar">Aceitar</button></span></span>
+    <span class="nt"></span></div>`).join('');
+  const hoje = dia.filter(a => a.grupo === 'hoje').map(a => item(Object.assign({}, a, { lida: !a.conta || lidas.has(a.id) })));
+  const srv = NT.itens.map(n => item({ id: 'srv:' + n.id, ic: n.tipo, titulo: n.titulo, texto: n.texto, de: n.de, quando: tempoAtras(n.criado_em), lida: n.lida, act: 'nt-srv', amb: n.ambiente_id || '' }));
+  const app = dia.filter(a => a.grupo === 'agenda').map(a => item(Object.assign({}, a, { lida: lidas.has(a.id) })));
+  const sec = (t, arr) => arr.length ? `<div class="nh">${t}</div>${arr.join('')}` : '';
+  const perm = 'Notification' in window && Notification.permission === 'default';
+  el.innerHTML = `<div class="ntopo"><b>Notificações</b>${sinoContagem() ? '<button class="lnk" data-act="nt-todas">Marcar todas como lidas</button>' : ''}</div>
+    <div class="nlista">${sec('Para responder', conv ? [conv] : [])}${sec('Hoje', hoje)}${sec('Avisos', srv)}${sec('Agenda', app)}
+    ${!conv && !hoje.length && !srv.length && !app.length ? `<div class="nvazio">Nada por aqui.${CLOUD.user ? '' : ' Entre com o Google para receber avisos da equipe.'}</div>` : ''}</div>
+    ${perm ? `<div class="nperm"><span>Avisar também fora da agenda, 15 minutos antes dos compromissos.</span><button class="btn mini" data-act="nt-permitir">Ativar</button></div>` : ''}`;
+  const b = $$('.sino').find(x => x.offsetParent);
+  if (b){ const r = b.getBoundingClientRect(); el.style.top = (r.bottom + 6) + 'px'; el.style.right = Math.max(8, innerWidth - r.right) + 'px'; }
+}
+function sinoAbrir(){ NT.aberto = true; sinoDesenhar(); if (CLOUD.user) notifPuxar(); if (CLOUD.user) ambPuxar(); }
+function sinoFechar(){ NT.aberto = false; const el = $('#npop'); if (el) el.remove(); }
+function marcarLidas(ids){
+  const loc = ids.filter(i => !i.startsWith('srv:')), srv = ids.filter(i => i.startsWith('srv:')).map(i => i.slice(4));
+  if (loc.length){ const l = conjunto(NT_LIDAS); loc.forEach(i => l.add(i)); guardarConjunto(NT_LIDAS, l); }
+  if (srv.length){ NT.itens.forEach(n => { if (srv.includes(n.id) && !n.lida){ n.lida = true; NT.naoLidas = Math.max(0, NT.naoLidas - 1); } }); notifRpc('lidas', { ids: srv }).then(notifAplicar).catch(() => {}); }
+  sinoAtualizar();
+}
+/* Aviso do sistema (Windows/celular), com a agenda aberta, quando a pessoa permitir. */
+function avisarSistema(titulo, texto, tag){
+  try { if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const n = new Notification(titulo, { body: texto, tag, icon: 'assets/icone-192.png', badge: 'assets/icone-192.png' }); n.onclick = () => { window.focus(); n.close(); sinoAbrir(); };
+  } catch(e){}
+}
+/* A cada minuto: compromissos que começam em até 15 minutos viram aviso (uma vez cada). */
+function sinoTique(){
+  const av = conjunto(NT_AVISADOS);
+  for (const a of avisosDoDia().filter(x => x.urgente && !av.has(x.id))){
+    av.add(a.id); toast(`${a.hora} · ${a.titulo} — ${a.texto.split(' · ')[1]}`, 8000); avisarSistema(a.titulo, a.texto, a.id);
+  }
+  guardarConjunto(NT_AVISADOS, av); sinoAtualizar();
+}
+setInterval(sinoTique, 60000); setTimeout(sinoTique, 4000);
 
 /* ---------------- Tags (#) ----------------
    #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
@@ -2963,7 +3102,7 @@ async function cloudSync(full){
       for (const r of chunk) SYNC.sent[r._k] = r._h;
     }
     SYNC.done = true; saveSync();
-    grupoPuxar(); ambPuxar(); if (NUV.conectadas === null) nuvemConectadas();
+    grupoPuxar(); ambPuxar(); notifPuxar(); if (NUV.conectadas === null) nuvemConectadas();
     ambSeguirMudanca();
     CLOUD.state = 'ok'; CLOUD.last = Date.now(); CLOUD.error = '';
     if (changed) renderBg();
@@ -3217,7 +3356,7 @@ async function checkUpdate(manual){
     if (UP.newer){ const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); }
     if (manual) toast(UP.newer ? `Versão ${m.version} disponível. Recarregando…` : `Você está na versão mais recente (${APP_RELEASE}).`);
     if (UP.newer && manual) setTimeout(() => location.reload(), 800);
-    if (S.settings.notesSeen !== APP_RELEASE && UP.notes){ const had = !!S.settings.notesSeen || S.entries.length > 0; S.settings.notesSeen = APP_RELEASE; save(false); if (had) toast(`Agenda atualizada para a versão ${APP_RELEASE}. Veja as novidades em Configurações.`, 5000); }
+    if (S.settings.notesSeen !== APP_RELEASE && UP.notes){ const had = !!S.settings.notesSeen || S.entries.length > 0; S.settings.notesSeen = APP_RELEASE; save(false); if (!had){ const l = conjunto(NT_LIDAS); l.add('versao:' + APP_RELEASE); guardarConjunto(NT_LIDAS, l); } sinoAtualizar(); }
   } catch(e){ UP.error = e.message; if (manual) toast('Sem conexão para verificar agora.'); }
   renderSide(); if (ui.view === 'config') render(false);
 }
@@ -3937,6 +4076,13 @@ const ACT = {
   'e-bullet': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (e.type === 'task' || e.type === 'event'){ if (e.status === 'open') completeEntry(e); else if (e.status === 'done') e.status = 'open'; else return; save(); } },
   'e-done': a => { const e = byId(a.closest('.entry').dataset.id); completeEntry(e); save(); },
   'e-reopen': a => { const e = byId(a.closest('.entry').dataset.id); e.status = 'open'; save(); },
+  'sino': (a, ev) => { ev.stopPropagation(); NT.aberto ? sinoFechar() : sinoAbrir(); },
+  'nt-todas': () => { marcarLidas([...avisosDoDia().filter(x => x.conta).map(x => x.id), ...NT.itens.filter(n => !n.lida).map(n => 'srv:' + n.id)]); notifRpc('lidas').then(notifAplicar).catch(() => {}); },
+  'nt-dia': (a, ev) => { marcarLidas([a.dataset.nid]); sinoFechar(); ui.date = today(); go('hoje'); const id = a.dataset.eid; if (id) setTimeout(() => { const li = $(`.entry[data-id="${id}"]`); if (li){ li.scrollIntoView({ block: 'center' }); li.classList.add('pisca'); setTimeout(() => li.classList.remove('pisca'), 1600); } }, 60); },
+  'nt-ponto': a => { marcarLidas([a.dataset.nid]); sinoFechar(); go('ponto'); },
+  'nt-versao': a => { marcarLidas([a.dataset.nid]); sinoFechar(); modal(`<h3>Novidades da versão ${APP_RELEASE}</h3><ul class="novidades">${(UP.notes || []).map(n => `<li>${esc(n)}</li>`).join('')}</ul><div class="tools"><button class="btn primary" data-act="m-close">Fechar</button></div>`); },
+  'nt-srv': async a => { marcarLidas([a.dataset.nid]); sinoFechar(); const amb = a.dataset.amb; if (amb && AMB.lista.some(x => x.id === amb)){ if (amb !== AMB_ATUAL) await trocarAmbiente(amb); go('equipe'); } },
+  'nt-permitir': async () => { try { const r = await Notification.requestPermission(); toast(r === 'granted' ? 'Pronto: os avisos aparecem também fora da agenda.' : 'Os avisos continuam só aqui no sininho.'); } catch(e){} if (NT.aberto) sinoDesenhar(); },
   'amb-menu': (a, ev) => { ev.stopPropagation(); if ($('#fmenu.ambmenu')){ closeMenu(); return; } ambMenu(a); if (CLOUD.user) ambPuxar(); },
   'amb-ir': a => { closeMenu(); trocarAmbiente(a.dataset.id || ''); },
   'amb-criar': () => { closeMenu(); ambCriarModal(); },
@@ -3952,7 +4098,7 @@ const ACT = {
   'conv-aceitar': async a => {
     const box = a.closest('.convite'), tok = box.dataset.tok;
     const e = await ambAcao('convite_aceitar', tok ? { token: tok } : { id: box.dataset.cid });
-    if (!e) return; try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){} closeModal();
+    if (!e) return; try { localStorage.removeItem('agendaInicial.conviteLink'); } catch(_){} closeModal(); sinoFechar();
     if (e.entrou){ await trocarAmbiente(e.entrou); ui.view = 'equipe'; render(); }
   },
   'conv-recusar': async a => {
@@ -4029,6 +4175,7 @@ const ACT = {
 document.addEventListener('mousedown', ev => {
   const sh = ev.target.closest('#fmenu .it[data-sh]');
   if (sh){ ev.preventDefault(); const p = $('#fmenu').dataset.p, k = sh.dataset.sh; closeMenu(); if (k === 'win') shareWindows(p); else localAction(k, p); return; }
+  if (NT.aberto && !ev.target.closest('#npop') && !ev.target.closest('.sino')) sinoFechar();
   if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]') && !ev.target.closest('[data-act="e-mais"]') && !ev.target.closest('[data-act="amb-menu"]')) closeMenu();
   if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
   const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
