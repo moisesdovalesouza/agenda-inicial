@@ -346,6 +346,8 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .eqseg button small{font:11px var(--mono);color:var(--faint);margin-left:4px}
 .eqseg button.on{background:var(--hover);color:var(--text)}
 .eqlist{display:flex;flex-direction:column}
+.eqamb{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:var(--s3);align-items:center;padding:var(--s3) 0;border-bottom:1px solid var(--border)}
+.eqamb .ic{color:var(--muted)}.eqamb .ic svg{width:18px;height:18px}.eqamb .nm b{display:block;font-weight:600}.eqamb .nm small{font-size:13px;color:var(--muted)}.eqamb .tools{display:flex;gap:var(--s2)}
 .eqp{display:grid;grid-template-columns:40px minmax(0,1.4fr) minmax(0,.8fr) 120px minmax(0,1.2fr);gap:var(--s3);align-items:center;padding:var(--s2) 0;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}
 .eqp:hover{background:var(--hover)}
 .eqp .nm b{display:block;font-weight:600}.eqp .nm small,.eqp .st,.eqp .em{font-size:13px;color:var(--muted)}
@@ -355,14 +357,14 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .setores .tag .x:hover{color:var(--text)}
 .btn.mini{height:24px;font-size:12px;padding:0 var(--s2)}
 .btn.danger,.btn.ghost.danger{color:#b4453a}
-.form{display:flex;flex-direction:column;gap:var(--s3);margin:0 0 var(--s3)}
-.form label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-.form label small{font-size:11px}
-.form .dupla{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
-.form .chk{flex-direction:row;gap:var(--s2);align-items:flex-start;padding:var(--s2);border:1px solid var(--border);border-radius:var(--r)}
-.form .chk input{margin-top:3px}
-.form .chk b{display:block;color:var(--text);font-weight:600}
-.form .chk small{display:block;font-size:12px;line-height:17px}
+.mform{display:flex;flex-direction:column;gap:var(--s3);margin:0 0 var(--s3)}
+.mform label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.mform label small{font-size:11px}
+.mform .dupla{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.mform .chk{flex-direction:row;gap:var(--s2);align-items:flex-start;padding:var(--s2);border:1px solid var(--border);border-radius:var(--r)}
+.mform .chk input{margin-top:3px}
+.mform .chk b{display:block;color:var(--text);font-weight:600}
+.mform .chk small{display:block;font-size:12px;line-height:17px}
 .linkbox{display:grid;grid-template-columns:1fr auto;gap:var(--s2);margin:0 0 var(--s3)}
 .linkbox .inp{font:12px var(--mono)}
 .convite .quem{display:grid;grid-template-columns:32px 1fr;gap:var(--s3);align-items:center;margin:0 0 var(--s3)}
@@ -371,7 +373,7 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .perfil-m .pm-topo h3{margin:2px 0 2px}.perfil-m .pm-topo p{margin:0 0 var(--s2)}
 .perfil-m .kv{grid-template-columns:140px 1fr;margin:0 0 var(--s4)}
 .perfil-m .tools{display:flex;gap:var(--s2);align-items:center}
-@media (max-width:900px){.eqp{grid-template-columns:40px minmax(0,1fr) auto}.eqp .st,.eqp .em{display:none}.form .dupla{grid-template-columns:1fr}}
+@media (max-width:900px){.eqp{grid-template-columns:40px minmax(0,1fr) auto}.eqp .st,.eqp .em{display:none}.mform .dupla{grid-template-columns:1fr}}
 
 /* ---------- Sininho ---------- */
 .sino{position:relative}
@@ -690,7 +692,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.22.0';    // versão do programa
+const APP_RELEASE = '1.22.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -1610,7 +1612,7 @@ function renderSide(){
       ${nav('arquivos','files','Arquivos', (n => n ? `<span class="cnt">${n}</span>` : '')(arquivos().length))}
       ${nav('ponto','ponto','Ponto', p.pending ? '<span class="pill">pendente</span>' : '')}
       ${nav('tags','hash','Tags', (n => n ? `<span class="cnt">${n}</span>` : '')(todasTags().length))}
-      ${AMB_ATUAL ? nav('equipe','team','Equipe', (a => a ? `<span class="cnt">${a.membros.length}</span>` : '')(ambAtual())) : ''}
+      ${AMB_ATUAL || AMB.lista.length ? nav('equipe','team','Equipe', (a => a ? `<span class="cnt">${a.membros.length}</span>` : '')(ambAtual())) : ''}
       <div class="grp">Listas</div>
       ${S.lists.map(l => `<a class="${ui.view === 'lista' && ui.listId === l.id ? 'on' : ''}" data-act="go-list" data-id="${l.id}">${I.list}<span>${esc(l.title || 'Sem título')}</span><span class="cnt">${l.items.filter(i => !i.done).length || ''}</span></a>`).join('')}
       <a data-act="list-new">${I.plus}<span class="muted">Nova lista</span></a>
@@ -2493,6 +2495,24 @@ const esperar = ms => new Promise(r => setTimeout(r, ms));
 async function nuvemParada(){ for (let i = 0; i < 200 && CLOUD.busy; i++) await esperar(100); }
 /* Troca a agenda da tela pela do ambiente escolhido. Com "levar", o conteúdo atual muda para o ambiente
    (a agenda de origem fica vazia, e os outros aparelhos seguem a mudança sozinhos). */
+function mesclarAgendas(base, extra){
+  const ids = k => new Set((base[k] || []).map(x => x.id));
+  for (const k of ['entries', 'files']){ const tem = ids(k); for (const x of extra[k] || []) if (!tem.has(x.id)) base[k].push(x); }
+  const tl = ids('lists');
+  for (const l of extra.lists || []){
+    if (tl.has(l.id)) continue;
+    const mesma = base.lists.find(b => b.title === l.title && l.title === 'Lista geral');
+    if (mesma){ const ti = new Set(mesma.items.map(i => i.id)); for (const i of l.items) if (!ti.has(i.id)) mesma.items.push(i); if (l.notes && !mesma.notes.includes(l.notes)) mesma.notes = [mesma.notes, l.notes].filter(Boolean).join('\n\n'); mesma.updatedAt = Date.now(); }
+    else base.lists.push(l);
+  }
+  for (const [d, v] of Object.entries(extra.days || {})){
+    const b = base.days[d];
+    if (!b || !b.notes) base.days[d] = Object.assign({}, b || {}, v);
+    else if (v.notes && !b.notes.includes(v.notes)) b.notes = b.notes + '\n\n' + v.notes;
+  }
+  for (const [m, t] of Object.entries((extra.ponto && extra.ponto.done) || {})) if (!base.ponto.done[m]) base.ponto.done[m] = t;
+  return base;
+}
 async function trocarAmbiente(id, levar = false){
   if (id === AMB_ATUAL) return;
   if (ui.view === 'caderno' && NB.dirty) nbSave();
@@ -2507,7 +2527,12 @@ async function trocarAmbiente(id, levar = false){
   }
   AMB_ATUAL = id; try { localStorage.setItem(AMB_KEY, id); } catch(e){}
   SYNC = lerSync();
-  if (levar){ S = atual; delete S.settings.movidoPara; S.updatedAt = Date.now(); try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){} }
+  if (levar){
+    /* Se o ambiente já tem agenda neste aparelho, junta as duas (nada do ambiente é perdido). */
+    const ja = localStorage.getItem(lsKey());
+    S = ja ? mesclarAgendas(load(), atual) : atual;
+    delete S.settings.movidoPara; S.updatedAt = Date.now(); try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch(e){}
+  }
   else {
     S = load();
     if (!origem && id){ const novo = !localStorage.getItem(lsKey()) ; if (novo){ S.profile = JSON.parse(JSON.stringify(atual.profile)); const keep = {}; for (const k of [...DEVICE_SETTINGS, 'theme', 'logo', 'logoWide']) if (atual.settings[k] !== undefined) keep[k] = atual.settings[k]; Object.assign(S.settings, keep); } }
@@ -2561,7 +2586,7 @@ function ambCriarModal(){
   const temConteudo = !AMB_ATUAL && (S.entries.length || S.lists.length || S.files.length);
   modal(`<h3>Criar ambiente de trabalho</h3>
     <p>Um ambiente é a agenda de uma empresa ou equipe. Você fica como proprietário e convida os colegas.</p>
-    <div class="form">
+    <div class="mform">
       <label>Nome da empresa<input class="inp" id="am-nome" placeholder="Ex.: Cagece" maxlength="80" value="${esc(!AMB_ATUAL && S.profile.empresa ? S.profile.empresa : '')}"></label>
       <label>Setores <small class="muted">separados por vírgula</small><input class="inp" id="am-setores" placeholder="Ex.: CGPAR, GECOT, GEJUR" value="${esc(!AMB_ATUAL && S.profile.setor ? S.profile.setor : '')}"></label>
       <div class="dupla"><label>O seu setor<input class="inp" id="am-meu" placeholder="Ex.: CGPAR" value="${esc(!AMB_ATUAL && S.profile.setor ? S.profile.setor : '')}"></label>
@@ -2576,7 +2601,7 @@ function convidarModal(){
   const funcoes = ['colaborador', 'coordenador', 'gerente'];
   modal(`<h3>Convidar para ${esc(a.nome)}</h3>
     <p>Com e-mail, o convite chega para a pessoa quando ela entrar na agenda com essa conta do Google. Sem e-mail, sai um link que você manda por WhatsApp ou e-mail.</p>
-    <div class="form">
+    <div class="mform">
       <label>E-mail da conta Google <small class="muted">opcional</small><input class="inp" id="cv-email" type="email" placeholder="nome@empresa.com.br"></label>
       <div class="dupla"><label>Função<select class="inp" id="cv-funcao">${funcoes.map(f => `<option value="${f}" title="${esc(FUNCAO_DICA[f])}">${FUNCOES[f]}</option>`).join('')}</select></label>
       <label>Setor<select class="inp" id="cv-setor"><option value="">Sem setor</option>${a.setores.map(x => `<option value="${x.id}" ${x.id === a.setor_id ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label></div>
@@ -2626,7 +2651,13 @@ function convitesBanner(){
 /* ---------------- Equipe ---------------- */
 VIEWS.equipe = () => {
   const a = ambAtual();
-  if (!a) return topbar('Equipe') + `<div class="page"><div class="kicker">Equipe</div><h1 class="title">Equipe</h1><div class="empty">Abra um ambiente de trabalho para ver a equipe.</div></div>`;
+  if (!a){
+    const tem = S.entries.length || S.lists.length || arquivos().length || notebooks().length;
+    return topbar('Equipe') + `<div class="page"><div class="kicker">Equipe</div><h1 class="title">Seus ambientes</h1>
+      <p class="sub">Você está na <b>agenda pessoal</b>. A equipe aparece dentro de cada ambiente de trabalho.</p>
+      <div class="sec"><div class="eqlist">${AMB.lista.map(x => `<div class="eqamb"><span class="ic">${I.team}</span><span class="nm"><b>${esc(x.nome)}</b><small>${x.membros.length} pessoa${x.membros.length === 1 ? '' : 's'} · você é ${FUNCOES[x.funcao]}${setorNome(x, x.setor_id) ? ' · ' + esc(setorNome(x, x.setor_id)) : ''}</small></span>
+        <span class="tools">${tem ? `<button class="btn" data-act="amb-levar" data-id="${x.id}" title="Junta os registros, listas, cadernos e arquivos desta agenda pessoal aos do ambiente">Levar a agenda pessoal para cá</button>` : ''}<button class="btn primary" data-act="amb-ir" data-id="${x.id}">Abrir</button></span></div>`).join('') || '<div class="empty">Você ainda não faz parte de nenhum ambiente.</div>'}</div></div></div>`;
+  }
   const gestor = posso(a, 'proprietario', 'gerente');
   const filtro = ui.eqSetor === undefined ? (a.setor_id || '') : ui.eqSetor;
   const cont = id => a.membros.filter(m => (m.setor_id || '') === id).length;
@@ -4084,7 +4115,12 @@ const ACT = {
   'nt-srv': async a => { marcarLidas([a.dataset.nid]); sinoFechar(); const amb = a.dataset.amb; if (amb && AMB.lista.some(x => x.id === amb)){ if (amb !== AMB_ATUAL) await trocarAmbiente(amb); go('equipe'); } },
   'nt-permitir': async () => { try { const r = await Notification.requestPermission(); toast(r === 'granted' ? 'Pronto: os avisos aparecem também fora da agenda.' : 'Os avisos continuam só aqui no sininho.'); } catch(e){} if (NT.aberto) sinoDesenhar(); },
   'amb-menu': (a, ev) => { ev.stopPropagation(); if ($('#fmenu.ambmenu')){ closeMenu(); return; } ambMenu(a); if (CLOUD.user) ambPuxar(); },
-  'amb-ir': a => { closeMenu(); trocarAmbiente(a.dataset.id || ''); },
+  'amb-ir': a => { closeMenu(); trocarAmbiente(a.dataset.id || '').then(() => { if (a.closest('.eqamb')){ ui.view = 'equipe'; render(); } }); },
+  'amb-levar': async a => {
+    const x = AMB.lista.find(k => k.id === a.dataset.id); if (!x) return;
+    if (!confirm(`Levar a agenda pessoal para ${x.nome}?\n\nRegistros, listas, cadernos, arquivos e anotações desta agenda passam para o ambiente e se juntam ao que já estiver lá. A agenda pessoal fica vazia, e os outros aparelhos seguem a mudança sozinhos.`)) return;
+    await trocarAmbiente(x.id, true); ui.view = 'equipe'; render();
+  },
   'amb-criar': () => { closeMenu(); ambCriarModal(); },
   'amb-criar-ok': async () => {
     const nome = $('#am-nome').value.trim(), setores = $('#am-setores').value.split(',').map(x => x.trim()).filter(Boolean), meu = $('#am-meu').value.trim();
@@ -4132,7 +4168,7 @@ const ACT = {
   'amb-transferir': () => {
     const a = ambAtual(), outros = a.membros.filter(m => m.id !== AMB.eu?.id);
     if (!outros.length) return toast('Convide alguém antes de transferir a propriedade.');
-    modal(`<h3>Transferir a propriedade</h3><p>A pessoa escolhida vira proprietária de ${esc(a.nome)}, e você passa a gerente.</p><div class="form"><label>Novo proprietário<select class="inp" id="tr-quem">${outros.map(m => `<option value="${m.id}">${esc(m.nome)}</option>`).join('')}</select></label></div><div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="amb-transferir-ok">Transferir</button></div>`);
+    modal(`<h3>Transferir a propriedade</h3><p>A pessoa escolhida vira proprietária de ${esc(a.nome)}, e você passa a gerente.</p><div class="mform"><label>Novo proprietário<select class="inp" id="tr-quem">${outros.map(m => `<option value="${m.id}">${esc(m.nome)}</option>`).join('')}</select></label></div><div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="amb-transferir-ok">Transferir</button></div>`);
   },
   'amb-transferir-ok': async () => { if (await ambAcao('transferir', { ambiente: AMB_ATUAL, usuario: $('#tr-quem').value }, 'Propriedade transferida.')) closeModal(); },
   'amb-excluir': async () => {
