@@ -1,14 +1,14 @@
 {
- "version": "1.24.0",
+ "version": "1.25.0",
  "date": "2026-11-26",
  "notes": [
+  "A agenda agora abre só para quem entrou com a conta Google (ou pela chave da rede do trabalho), numa tela de entrada no visual do Termo Inicial. Quem já entrou neste aparelho continua abrindo normalmente, mesmo sem internet",
+  "Tutorial de boas-vindas para quem entra pela primeira vez: seus dados com foto, os símbolos, o registro em uma linha, como organizar e a equipe. Dá para rever em Configurações",
+  "Todas as agendas: uma página com o que está em cada agenda (pessoal e ambientes), com o nome da agenda ao lado de cada item — hoje, pendentes, próximos 7 dias, cadernos e listas",
+  "O tipo (tarefa, evento, nota) e a prioridade passam a ser escolhidos só nos botões; o “o”, o “-” e o “*” no começo da linha não mudam mais o registro. Começar com o horário (14h) continua valendo",
   "Formatação nos registros, listas e anotações: Ctrl+B negrito, Ctrl+I itálico, Ctrl+Shift+S tachado e Ctrl+Shift+H marca-texto amarelo (ou digitando **negrito**, *itálico*, ~~tachado~~ e ==marca-texto==)",
   "Novo registro também no fim da lista do dia, de forma discreta (aparece ao passar o mouse); nas listas, novo item no fim",
   "Configurações › Aparência: tamanho do texto (por aparelho) e a opção de levar os concluídos para o fim da lista",
-  "Layout próprio para o celular, no estilo do Notion: abas embaixo (Hoje, Calendário, + Novo, Avisos e Menu), página Menu com tudo o que fica na barra lateral, e janelas que sobem de baixo",
-  "No celular, o botão ⋯ de cada registro abre todas as ações (concluir, editar, tipo, posição, nível, tag, anexo, migrar, excluir); o + abre o registro rápido, nova lista, novo caderno e envio de arquivos",
-  "Configurações › Aparência › Layout: automático (celular nos telefones), computador ou celular",
-  "Legenda do calendário com os mesmos símbolos dos registros",
-  "Correção: a página Perfil voltou ao formato de antes (os campos tinham ficado centralizados e estreitos)"
+  "Layout próprio para o celular, no estilo do Notion: abas embaixo (Hoje, Calendário, + Novo, Avisos e Menu), página Menu com tudo o que fica na barra lateral, e janelas que sobem de baixo"
  ]
 }
