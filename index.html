@@ -542,6 +542,12 @@ input[type="search"]::-webkit-search-cancel-button{filter:grayscale(1) opacity(.
 .ftrecho mark{padding:0}
 .pick .b svg{width:14px;height:14px;color:var(--muted)}
 .pick .ftrecho{display:block}
+
+.barrafmt{position:fixed;left:0;right:0;z-index:90;display:flex;gap:4px;height:44px;padding:4px 8px;background:var(--bg);border-top:1px solid var(--border);box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.barrafmt[hidden]{display:none}
+html.cel body.escrevendo .tabbar{display:none}
+.barrafmt button{width:48px;height:36px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);font:16px/1 var(--serif,Georgia,serif)}
+.barrafmt button mark{padding:0 3px}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -831,7 +837,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.26.0';    // versão do programa
+const APP_RELEASE = '1.26.1';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -3298,6 +3304,28 @@ function buscaArquivosTela(){
   buscarArquivos(q, ordem, (f, onde, tr) => { achados.set(f.id, { onde, tr }); desenhar(); status(0, 0); }, (i, n, sem) => { if (sem) semPasta = true; status(i, n); if (i === n && !achados.size) res.innerHTML = '<div class="empty">Nenhum arquivo com esse termo.</div>'; });
   desenhar(); status(0, 1);
 }
+
+/* Celular: o sistema não deixa um site pôr opções no menu de copiar/colar. Como no Notion, uma barra
+   fica logo acima do teclado enquanto se escreve, com negrito, itálico, tachado e marca-texto. */
+const ehEditavelFmt = t => t && t.id !== 'nbdoc' && (t.isContentEditable || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && /^(text|search|)$/.test(t.type || '') && ['qtext', 'qfim', 'litext', 'tu-teste'].includes(t.id)));
+function barraFmt(){
+  let b = $('#barrafmt');
+  const t = document.activeElement;
+  if (!CEL || !ehEditavelFmt(t)){ if (b) b.hidden = true; document.body.classList.remove('escrevendo'); return; }
+  if (!b){
+    b = document.createElement('div'); b.id = 'barrafmt'; b.className = 'barrafmt';
+    b.innerHTML = [['b', '<b>B</b>', 'Negrito'], ['i', '<i>I</i>', 'Itálico'], ['s', '<s>S</s>', 'Tachado'], ['h', '<mark>M</mark>', 'Marca-texto']].map(([k, h, t]) => `<button data-mk="${k}" aria-label="${t}">${h}</button>`).join('');
+    b.addEventListener('pointerdown', ev => ev.preventDefault());
+    b.addEventListener('click', ev => { const k = ev.target.closest('[data-mk]'); const el = document.activeElement; if (k && ehEditavelFmt(el)) marcarSelecao(el, MARCAS[k.dataset.mk]); });
+    document.body.appendChild(b);
+  }
+  const vv = window.visualViewport;
+  b.style.top = ((vv ? vv.offsetTop + vv.height : innerHeight) - 44) + 'px';
+  b.hidden = false; document.body.classList.add('escrevendo');
+}
+document.addEventListener('focusin', () => setTimeout(barraFmt, 50));
+document.addEventListener('focusout', () => setTimeout(barraFmt, 80));
+if (window.visualViewport){ visualViewport.addEventListener('resize', barraFmt); visualViewport.addEventListener('scroll', barraFmt); }
 
 /* ---------------- Tags (#) ----------------
    #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
