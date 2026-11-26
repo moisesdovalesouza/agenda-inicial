@@ -533,6 +533,15 @@ html.cel .tutorial .tools{margin:0 -16px;padding:12px 16px calc(12px + env(safe-
 .tag.agrot{font-size:11px;border-color:var(--accent);color:var(--accent-strong)}
 .tag.agrot.pes{border-color:var(--border);color:var(--muted)}
 .tdia{margin:16px 0 4px;font-size:12px;font-weight:600;color:var(--muted)}
+
+/* ---------- Pesquisa em arquivos ---------- */
+input[type="search"]::-webkit-search-cancel-button{filter:grayscale(1) opacity(.55);cursor:pointer}
+.fbusca-st{min-height:18px;margin:0 0 8px;font-size:12px;color:var(--muted)}
+.ftrecho{margin-top:2px;font-size:12px;line-height:17px;color:var(--muted);white-space:normal}
+.ftrecho .onde{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-strong)}
+.ftrecho mark{padding:0}
+.pick .b svg{width:14px;height:14px;color:var(--muted)}
+.pick .ftrecho{display:block}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -822,7 +831,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.25.0';    // versão do programa
+const APP_RELEASE = '1.26.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -1812,6 +1821,7 @@ function render(withG = true){
   main.innerHTML = v() + `<div class="page" style="padding-top:0"><div class="foot-note">Agenda Inicial · ferramenta de uso pessoal${S.profile.name ? ' de ' + esc(S.profile.name) : ''}. Seus dados ficam ${FS.state === 'granted' ? 'na pasta ' + esc(FOLDER_NAME) + ', no seu computador' : (FS.state === 'unsupported' ? 'neste aparelho' : 'neste navegador até você autorizar a pasta ' + esc(FOLDER_NAME))}${CLOUD.user ? ' e na sua conta na nuvem' : '; nada é enviado para a internet'}.</div></div>`;
   ui.rendering = false;
   notasFormatadas();
+  if (ui.view === 'arquivos' && $('#fres')) buscaArquivosTela();
   main.scrollTop = st;
   if (ui.focusItem){ const el = $(`.check[data-iid="${ui.focusItem}"] .txt`); ui.focusItem = null; if (el){ el.focus(); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); } }
   if (ui.subFor && $('#subtext') && ui.focusSub){ ui.focusSub = false; $('#subtext').focus(); }
@@ -2165,8 +2175,8 @@ function linkPicker(fid, date){
     <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="fl-save" data-fid="${fid}">Salvar vínculos</button></div>`);
 }
 VIEWS.arquivos = () => {
-  const q = (ui.fq || '').toLowerCase();
-  const files = arquivos().filter(f => !q || simplesTxt([f.name, f.title || '', ...tagsDe(f.kind === 'caderno' ? 'caderno' : 'arquivo', f).map(t => '#' + t)].join(' ')).includes(simplesTxt(q))).sort((a,b) => b.addedAt - a.addedAt);
+  const q = (ui.fq || '').trim();
+  const files = arquivos().sort((a,b) => b.addedAt - a.addedAt);
   return topbar('Arquivos', FS.state === 'unsupported' && !nuvemAtiva() ? `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo deste aparelho">${I.eye}</button>` : `<button class="btn icon ghost" data-act="v-local" title="Visualizar um arquivo do computador sem enviá-lo para a agenda">${I.eye}</button><button class="btn icon ghost" data-act="f-scan" title="Reindexar: incluir arquivos copiados manualmente para a pasta arquivos">${I.sync}</button><button class="btn primary" data-act="f-up">${I.plus}Enviar arquivos</button>`) + `
   <div class="page">
     <div class="kicker">Biblioteca</div>
@@ -2174,8 +2184,8 @@ VIEWS.arquivos = () => {
     <p class="sub">Tudo o que você envia é gravado em <b>arquivos/AAAA-MM/</b>, dentro da pasta Agenda Inicial.</p>
     ${FS.state !== 'granted' ? `<div class="banner info"><div><b>A pasta do sistema não está conectada</b><span class="muted">${FS.state === 'unsupported' ? (IS_MOBILE ? 'No celular dá para ver a lista e os vínculos; os arquivos em si ficam no computador.' : 'Abra a agenda no Chrome ou no Edge para enviar arquivos.') : 'Conecte para poder enviar e abrir arquivos.'}</span></div><div class="tools">${FS.state !== 'unsupported' ? `<button class="btn primary" data-act="${FS.state === 'prompt' ? 'fs-reconnect' : 'fs-connect'}">${I.folder}${FS.state === 'prompt' ? 'Reativar' : 'Conectar pasta'}</button>` : ''}</div></div>` : ''}
     ${FS.state === 'unsupported' && !nuvemAtiva() ? '' : `<div class="drop" id="drop">Arraste arquivos para cá ou <a href="#" data-act="f-up">escolha no computador</a>.</div>`}
-    <div class="sec"><div class="sec-h"><h2>${(n => `${n} arquivo${n === 1 ? '' : 's'}`)(arquivos().length)}</h2><div class="tools"><input class="inp" id="fq" placeholder="Filtrar por nome, título ou #tag" value="${esc(ui.fq || '')}" style="width:220px"></div></div>
-    ${files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
+    <div class="sec"><div class="sec-h"><h2>${(n => `${n} arquivo${n === 1 ? '' : 's'}`)(arquivos().length)}</h2><div class="tools"><input class="inp busca" id="fq" type="search" placeholder="Pesquisar nome, informações e conteúdo" value="${esc(ui.fq || '')}" style="width:300px" autocomplete="off"></div></div>
+    ${q ? `<div class="fbusca-st" id="fst"></div><div id="fres"></div>` : files.length ? fileTable(files) : '<div class="empty">Nenhum arquivo.</div>'}</div>
   </div>`;
 };
 
@@ -3200,6 +3210,94 @@ VIEWS.todas = () => {
     ${lsts.length ? `<div class="sec"><div class="sec-h"><h2>Listas</h2></div>${lsts.map(({ g, l }) => `<div class="trow" data-act="todas-abrir" data-amb="${g.id}" data-lista="${l.id}"><span class="tb">${I.list}</span><span class="tt">${esc(l.title || 'Sem título')} <small class="muted">· ${l.items.filter(i => !i.done).length} em aberto</small></span>${rot(g)}</div>`).join('')}</div>` : ''}
   </div>`;
 };
+
+/* ---------------- Pesquisa em arquivos ----------------
+   Em três etapas, para não fazer esperar: 1) nome e título, 2) informações (tags, pasta, registros, cadernos,
+   marcações e comentários), 3) conteúdo, lido em segundo plano. Cada achado entra no fim da lista; a ordem
+   dos que já apareceram nunca muda. O texto extraído fica guardado neste aparelho para as próximas buscas. */
+const BUSCA = { token: 0 };
+const TXT_MEM = new Map();
+let IDB_TXT = null;
+function idbTxt(){
+  if (!IDB_TXT) IDB_TXT = new Promise(res => { try { const r = indexedDB.open('agendaInicial.textos', 1); r.onupgradeneeded = () => r.result.createObjectStore('t'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch(e){ res(null); } });
+  return IDB_TXT;
+}
+const comLimite = (pr, ms, padrao) => Promise.race([pr, new Promise(r => setTimeout(() => r(padrao), ms))]);
+async function idbGet(k){ const db = await comLimite(idbTxt(), 1500, null); if (!db) return undefined; return comLimite(new Promise(res => { try { const q = db.transaction('t').objectStore('t').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); } catch(e){ res(undefined); } }), 1500, undefined); }
+async function idbSet(k, v){ const db = await idbTxt(); if (!db) return; try { db.transaction('t', 'readwrite').objectStore('t').put(v, k); } catch(e){} }
+const xmlTexto = x => x.replace(/<\/(w:p|a:p|text:p|si|row)>/g, '\n').replace(/<[^>]+>/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#(\d+);/g, (m, n) => String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCodePoint(parseInt(n, 16))).replace(/[ \t]+/g, ' ');
+async function textoDoArquivo(f){
+  const chave = `${f.id}:${f.size || ''}:${f.modificado || f.updatedAt || f.addedAt || ''}`;
+  if (TXT_MEM.has(chave)) return TXT_MEM.get(chave);
+  const guardado = await idbGet(chave); if (typeof guardado === 'string'){ TXT_MEM.set(chave, guardado); return guardado; }
+  if (FS.state !== 'granted' && !f.file) return null;                // sem a pasta, não há como ler o conteúdo
+  let t = '';
+  try {
+    const file = await fileOf(f); if (!file || file.size > 40e6) return '';
+    const ext = extOf(f.name).toLowerCase();
+    if (['txt', 'md', 'csv', 'json', 'html', 'htm', 'xml', 'rtf', 'log'].includes(ext) || f.kind === 'caderno') t = await file.text();
+    else if (ext === 'pdf'){
+      const lib = await pdfjs(), doc = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+      for (let n = 1; n <= Math.min(doc.numPages, 80); n++){ const c = await (await doc.getPage(n)).getTextContent(); t += c.items.map(i => i.str + (i.hasEOL ? '\n' : '')).join('') + '\n'; }
+      doc.destroy();
+    } else if (['docx', 'pptx', 'xlsx', 'odt', 'ods', 'odp'].includes(ext)){
+      await lib('jszip'); const z = await window.JSZip.loadAsync(await file.arrayBuffer());
+      const nomes = Object.keys(z.files).filter(n => ext === 'docx' ? /^word\/(document|header\d*|footer\d*|footnotes)\.xml$/.test(n) : ext === 'pptx' ? /^ppt\/slides\/slide\d+\.xml$/.test(n) : ext === 'xlsx' ? /^xl\/(sharedStrings|worksheets\/sheet\d+)\.xml$/.test(n) : n === 'content.xml');
+      for (const n of nomes) t += xmlTexto(await z.file(n).async('string')) + '\n';
+    }
+  } catch(e){ console.warn('texto de', f.name, e); return ''; }
+  t = t.slice(0, 600000);
+  TXT_MEM.set(chave, t); idbSet(chave, t);
+  return t;
+}
+function infoDoArquivo(f){
+  const tk = f.kind === 'caderno' ? 'caderno' : 'arquivo';
+  const regs = (f.entries || []).map(byId).filter(Boolean).map(e => e.text);
+  const cads = S.files.filter(x => x.kind === 'caderno' && (f.cadernos || []).includes(x.id)).map(x => x.title);
+  const marcas = (f.marcas || []).flatMap(m => [m.texto || '', m.comentario || '']);
+  return [['pasta', f.path], ...tagsDe(tk, f).map(t => ['tag', '#' + t]), ['texto', f.preview || ''], ...regs.map(r => ['registro', r]), ...cads.map(c => ['caderno', c]), ...marcas.map(m => ['marcação', m]), ['data', f.link ? brDate(f.link) : '']].filter(x => x[1]);
+}
+function trechoDe(texto, q){
+  const s = simplesTxt(texto), i = s.indexOf(q); if (i < 0) return '';
+  const a = Math.max(0, i - 50), b = Math.min(texto.length, i + q.length + 70);
+  const antes = texto.slice(a, i).replace(/\s+/g, ' '), meio = texto.slice(i, i + q.length), depois = texto.slice(i + q.length, b).replace(/\s+/g, ' ');
+  return `${a ? '…' : ''}${esc(antes)}<mark>${esc(meio)}</mark>${esc(depois)}${b < texto.length ? '…' : ''}`;
+}
+/* Busca progressiva. onAchou(f, onde, trecho) é chamado na ordem em que os resultados aparecem. */
+async function buscarArquivos(q, lista, onAchou, onProgresso){
+  const tok = ++BUSCA.token, nq = simplesTxt(q.trim()); if (!nq) return;
+  const achou = new Set(), add = (f, onde, tr) => { achou.add(f.id); onAchou(f, onde, tr || ''); };
+  for (const f of lista) if (simplesTxt([f.name, f.title || ''].join(' ')).includes(nq)) add(f, 'nome');
+  for (const f of lista) if (!achou.has(f.id)){ const p = infoDoArquivo(f).find(([, v]) => simplesTxt(v).includes(nq)); if (p) add(f, 'info', `${p[0]}: ${trechoDe(p[1], nq)}`); }
+  const resto = lista.filter(f => !achou.has(f.id));
+  onProgresso && onProgresso(0, resto.length);
+  for (let i = 0; i < resto.length; i++){
+    await new Promise(r => setTimeout(r, 0));
+    if (tok !== BUSCA.token) return;
+    const t = await textoDoArquivo(resto[i]);
+    if (tok !== BUSCA.token) return;
+    if (t && simplesTxt(t).includes(nq)) add(resto[i], 'conteudo', trechoDe(t, nq));
+    onProgresso && onProgresso(i + 1, resto.length, t === null);
+  }
+}
+const ONDE = { nome: '', info: 'nas informações', conteudo: 'no conteúdo' };
+function marcarTrechos(cont, achados){
+  for (const [id, a] of achados){
+    if (!a.tr && !ONDE[a.onde]) continue;
+    const td = cont.querySelector(`tr[data-fid="${id}"] td`); if (!td || td.querySelector('.ftrecho')) continue;
+    td.insertAdjacentHTML('beforeend', `<div class="ftrecho"><span class="onde">${ONDE[a.onde]}</span>${a.tr ? ' · ' + a.tr : ''}</div>`);
+  }
+}
+function buscaArquivosTela(){
+  const q = (ui.fq || '').trim(), res = $('#fres'), st = $('#fst'); if (!res) return;
+  if (!q){ BUSCA.token++; return; }
+  const ordem = arquivos().sort((a, b) => b.addedAt - a.addedAt), achados = new Map();
+  let semPasta = false;
+  const desenhar = () => { const fs = [...achados.keys()].map(id => S.files.find(x => x.id === id)).filter(Boolean); res.innerHTML = fs.length ? fileTable(fs) : ''; marcarTrechos(res, achados); };
+  const status = (i, n) => { if (!st) return; st.innerHTML = `${achados.size} encontrado${achados.size === 1 ? '' : 's'}${n && i < n ? ` · procurando no conteúdo (${i} de ${n})…` : semPasta ? ' · o conteúdo só é pesquisado com a pasta Agenda Inicial conectada' : ' · busca concluída'}`; };
+  buscarArquivos(q, ordem, (f, onde, tr) => { achados.set(f.id, { onde, tr }); desenhar(); status(0, 0); }, (i, n, sem) => { if (sem) semPasta = true; status(i, n); if (i === n && !achados.size) res.innerHTML = '<div class="empty">Nenhum arquivo com esse termo.</div>'; });
+  desenhar(); status(0, 1);
+}
 
 /* ---------------- Tags (#) ----------------
    #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
@@ -4238,13 +4336,20 @@ function nbTableTab(ev){
 function attachPicker(entryId, q){
   const e = byId(entryId); if (!e) return;
   if (!ui.att || ui.attFor !== entryId){ ui.att = new Set(filesOf(entryId).map(f => f.id)); ui.attFor = entryId; }
-  const norm = t => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  const list = S.files.filter(f => !q || norm(f.kind === 'caderno' ? f.title : f.name).includes(norm(q))).sort((a, b) => (b.updatedAt || b.addedAt) - (a.updatedAt || a.addedAt)).slice(0, 60);
-  const rows = list.map(f => `<label class="pick"><input type="checkbox" data-att="${f.id}" ${ui.att.has(f.id) ? 'checked' : ''}><span class="b">${f.kind === 'caderno' ? '▤' : '·'}</span><span>${esc(f.kind === 'caderno' ? f.title : f.name)} <span class="faint small">${f.kind === 'caderno' ? 'caderno' : extOf(f.name)}</span></span></label>`).join('');
-  if (q !== undefined && $('#att-list')){ $('#att-list').innerHTML = rows || '<div class="empty" style="padding:var(--s2) var(--s3)">Nada encontrado.</div>'; return; }
+  const ordem = S.files.slice().sort((a, b) => (b.updatedAt || b.addedAt) - (a.updatedAt || a.addedAt));
+  const linha = (f, onde, tr) => `<label class="pick"><input type="checkbox" data-att="${f.id}" ${ui.att.has(f.id) ? 'checked' : ''}><span class="b">${f.kind === 'caderno' ? I.notebook : I.clip}</span><span>${esc(f.kind === 'caderno' ? f.title : tituloDe(f))} <span class="faint small">${f.kind === 'caderno' ? 'caderno' : extOf(f.name)}</span>${onde && ONDE[onde] ? `<span class="ftrecho"><span class="onde">${ONDE[onde]}</span>${tr ? ' · ' + tr : ''}</span>` : ''}</span></label>`;
+  const rows = ordem.slice(0, 60).map(f => linha(f)).join('');
+  if (q !== undefined && $('#att-list')){
+    const lst = $('#att-list'), st = $('#att-st');
+    if (!q.trim()){ BUSCA.token++; lst.innerHTML = rows || '<div class="empty" style="padding:var(--s2) var(--s3)">Nenhum arquivo ou caderno na agenda ainda.</div>'; if (st) st.textContent = ''; return; }
+    lst.innerHTML = ''; let n = 0, sem = false;
+    buscarArquivos(q, ordem, (f, onde, tr) => { n++; lst.insertAdjacentHTML('beforeend', linha(f, onde, tr)); },
+      (i, tot, semPasta) => { if (semPasta) sem = true; if (st) st.textContent = `${n} encontrado${n === 1 ? '' : 's'}${i < tot ? ` · procurando no conteúdo (${i} de ${tot})…` : sem ? ' · o conteúdo só é pesquisado com a pasta conectada' : ''}`; if (i === tot && !n) lst.innerHTML = '<div class="empty" style="padding:var(--s2) var(--s3)">Nada encontrado.</div>'; });
+    return;
+  }
   modal(`<h3>Anexar ao registro</h3><p>${esc(e.text)}</p>
     <div style="display:flex;gap:var(--s2);margin:0 0 var(--s3)"><button class="btn" data-act="att-upload" data-e="${e.id}">${I.clip}Enviar do computador</button><button class="btn" data-act="att-newnb" data-e="${e.id}">${I.notebook}Novo caderno</button></div>
-    <input class="inp" id="att-q" data-e="${e.id}" placeholder="Buscar arquivos e cadernos da agenda" style="width:100%;margin:0 0 var(--s2)" autocomplete="off">
+    <input class="inp" id="att-q" type="search" data-e="${e.id}" placeholder="Pesquisar nome, informações e conteúdo" style="width:100%;margin:0 0 var(--s1)" autocomplete="off"><div class="fbusca-st" id="att-st"></div>
     <div class="picklist" id="att-list">${rows || '<div class="empty" style="padding:var(--s2) var(--s3)">Nenhum arquivo ou caderno na agenda ainda.</div>'}</div>
     <div class="tools"><button class="btn" data-act="m-close">Cancelar</button><button class="btn primary" data-act="att-save" data-e="${e.id}">Salvar anexos</button></div>`);
 }
@@ -4770,12 +4875,12 @@ document.addEventListener('keydown', ev => {
 document.addEventListener('input', ev => {
   const t = ev.target;
   if (t.id === 'nbdoc'){ nbChanged(); nbMentionCheck(); return; }
-  if (t.id === 'att-q'){ attachPicker(t.dataset.e, t.value); return; }
+  if (t.id === 'att-q'){ clearTimeout(ui.attT); ui.attT = setTimeout(() => attachPicker(t.dataset.e, t.value), 200); return; }
   if (t.id === 'daynotes'){ autosize(t); (S.days[ui.date] = S.days[ui.date] || {}).notes = t.value; if (!t.value) delete S.days[ui.date]; save(false); }
   if (t.id === 'lnotes'){ autosize(t); S.lists.find(x => x.id === ui.listId).notes = t.value; save(false); }
   if (t.id === 'ltitle'){ S.lists.find(x => x.id === ui.listId).title = t.value; save(false); renderSide(); }
   if (t.dataset && t.dataset.prof){ S.profile[t.dataset.prof] = t.value; save(false); renderSide(); refreshProfilePreview(); if (t.dataset.prof === 'name' || t.dataset.prof === 'registro') grupoAgendar(); }
-  if (t.id === 'fq'){ ui.fq = t.value; const pos = t.selectionStart; render(false); const n = $('#fq'); n.focus(); n.setSelectionRange(pos, pos); }
+  if (t.id === 'fq'){ ui.fq = t.value; clearTimeout(ui.fqT); ui.fqT = setTimeout(() => { const pos = t.selectionStart; render(false); const n = $('#fq'); if (n){ n.focus(); n.setSelectionRange(pos, pos); } }, 220); }
   if (t.id === 'win-path'){ S.settings.winPath = t.value.trim(); save(false); }
   if (t.id === 'g-cal'){ S.google.calName = t.value.trim() || 'Cagece'; save(false); }
   if (t.id === 'ponto-url'){ S.ponto.url = t.value.trim(); save(false); }
