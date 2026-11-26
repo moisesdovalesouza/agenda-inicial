@@ -1,14 +1,14 @@
 {
- "version": "1.26.1",
+ "version": "1.26.2",
  "date": "2026-11-26",
  "notes": [
+  "As dicas de uso do registro rápido e das listas ficam num ⓘ ao lado do botão Adicionar (passe o mouse ou toque)",
+  "O novo registro no fim da lista mostra as mesmas opções do registro rápido: tarefa, evento, nota, prioridade e horário",
   "Celular: barra de formatação acima do teclado enquanto você escreve, com negrito, itálico, tachado e marca-texto",
   "Pesquisa em Arquivos e na janela de anexar a um registro: procura primeiro no nome, depois nas informações (tags, registros, cadernos, marcações e comentários) e, em segundo plano, dentro do conteúdo de PDF, Word, Excel, PowerPoint e textos, com um trecho mostrando onde o termo aparece. Os resultados entram no fim da lista, sem mudar a ordem dos que já apareceram",
   "A agenda agora abre só para quem entrou com a conta Google (ou pela chave da rede do trabalho), numa tela de entrada no visual do Termo Inicial. Quem já entrou neste aparelho continua abrindo normalmente, mesmo sem internet",
   "Tutorial de boas-vindas para quem entra pela primeira vez: seus dados com foto, os símbolos, o registro em uma linha, como organizar e a equipe. Dá para rever em Configurações",
   "Todas as agendas: uma página com o que está em cada agenda (pessoal e ambientes), com o nome da agenda ao lado de cada item — hoje, pendentes, próximos 7 dias, cadernos e listas",
-  "O tipo (tarefa, evento, nota) e a prioridade passam a ser escolhidos só nos botões; o “o”, o “-” e o “*” no começo da linha não mudam mais o registro. Começar com o horário (14h) continua valendo",
-  "Formatação nos registros, listas e anotações: Ctrl+B negrito, Ctrl+I itálico, Ctrl+Shift+S tachado e Ctrl+Shift+H marca-texto amarelo (ou digitando **negrito**, *itálico*, ~~tachado~~ e ==marca-texto==)",
-  "Novo registro também no fim da lista do dia, de forma discreta (aparece ao passar o mouse); nas listas, novo item no fim"
+  "O tipo (tarefa, evento, nota) e a prioridade passam a ser escolhidos só nos botões; o “o”, o “-” e o “*” no começo da linha não mudam mais o registro. Começar com o horário (14h) continua valendo"
  ]
 }

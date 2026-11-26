@@ -548,6 +548,24 @@ input[type="search"]::-webkit-search-cancel-button{filter:grayscale(1) opacity(.
 html.cel body.escrevendo .tabbar{display:none}
 .barrafmt button{width:48px;height:36px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);color:var(--text);font:16px/1 var(--serif,Georgia,serif)}
 .barrafmt button mark{padding:0 3px}
+
+/* ---------- Dicas (ⓘ) e registro no fim com opções ---------- */
+.qx{display:flex;align-items:center;gap:var(--s2)}
+.dica{position:relative;display:inline-flex}
+.dica>.btn{color:var(--faint)}
+.dica:hover>.btn,.dica.on>.btn{color:var(--text)}
+.dicapop{display:none;position:absolute;top:calc(100% + 6px);right:-8px;z-index:50;width:min(380px,calc(100vw - 32px));padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);font-size:13px;line-height:1.6;color:var(--muted);text-align:left;white-space:normal}
+.dica:hover>.dicapop,.dica.on>.dicapop{display:block}
+.dicapop .kbd{white-space:nowrap}
+html.cel .dica:hover>.dicapop{display:none}html.cel .dica.on>.dicapop{display:block}
+.entries .addfim.ativo{opacity:1;align-items:start}
+.entries .addfim.ativo .bul,.entries .addfim.ativo .sig{height:28px}
+.entries .addfim .sig{display:flex;align-items:center;justify-content:flex-start;padding-left:1px;color:var(--accent)}.entries .addfim .sig svg{width:8px;height:8px}
+.entries .addfim.ativo .bul svg{width:16px;height:16px;color:var(--text)}
+.fimlinha{display:grid;grid-template-columns:minmax(0,1fr) auto 104px;gap:var(--s2);align-items:center}
+.fimlinha .typebtns button{width:24px;height:24px}
+.fimlinha .time{height:26px;width:104px;font-size:13px}
+html.cel .fimlinha{grid-template-columns:minmax(0,1fr) auto}html.cel .fimlinha .qfim{grid-column:1/-1}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -773,7 +791,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
   /* registro rápido em duas linhas: tipo e horário em cima, texto e botão embaixo */
   .qlog{grid-template-columns:auto 1fr auto auto;row-gap:var(--s1);padding:var(--s1)}
   .qlog .typebtns{grid-area:1/1}
-  .qlog>.chk,.qlog>span:empty{grid-area:1/3}
+  .qlog>.qx{grid-area:1/3}
   .qlog .time{grid-area:1/4}
   .qlog .typebtns~.txt{grid-area:2/1/3/4;height:36px;padding:0 var(--s1);border-top:1px solid var(--border)}
   .qlog .typebtns~.btn.primary{grid-area:2/4;align-self:end}
@@ -837,7 +855,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.26.1';    // versão do programa
+const APP_RELEASE = '1.26.2';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -2018,8 +2036,7 @@ VIEWS.lista = () => {
     <input class="title-edit" id="ltitle" value="${esc(l.title)}" placeholder="Sem título">
     <p class="sub">${open} em aberto · ${done} concluído${done === 1 ? '' : 's'}</p>
     <div class="tagline" data-tk="lista" data-tid="${l.id}" style="margin:calc(-1 * var(--s3)) 0 var(--s4)">${tagLine('lista', l.id, l)}${tagsTexto(textoDe('lista', l)).filter(t => !(l.tags || []).some(x => tagKey(x) === tagKey(t))).map(t => tagChip(t)).join('')}</div>
-    <div class="qlog" style="grid-template-columns:1fr auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)"><button class="btn primary" data-act="li-add">Adicionar</button></div>
-    <div class="hint">Formatação: <span class="kbd">Ctrl+B</span> · <span class="kbd">Ctrl+I</span> · <span class="kbd">Ctrl+Shift+S</span> · <span class="kbd">Ctrl+Shift+H</span>. Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.</div>
+    <div class="qlog" style="grid-template-columns:1fr auto auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)">${dicaBtn(`Formatação: <span class="kbd">Ctrl+B</span> · <span class="kbd">Ctrl+I</span> · <span class="kbd">Ctrl+Shift+S</span> · <span class="kbd">Ctrl+Shift+H</span>. Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.`)}<button class="btn primary" data-act="li-add">Adicionar</button></div>
     <div class="sec">${rows || '<div class="empty">Lista vazia.</div>'}<div class="addfim lfim" data-act="li-add-fim">${I.plus}<span>Novo item</span></div></div>
     ${done ? `<div style="margin-top:var(--s2)"><button class="btn ghost" data-act="li-clear">Limpar concluídos</button></div>` : ''}
     <div class="sec"><div class="sec-h"><h2>Notas</h2></div><textarea class="notes autosize dotgrid" id="lnotes" placeholder="Anotações desta lista…">${esc(l.notes)}</textarea></div>
@@ -4433,6 +4450,8 @@ function pickDate(cb, initial, ev){
 function nextBusiness(s){ let d = addDays(s, 1); while (!isBusiness(d)) d = addDays(d, 1); return d; }
 
 /* ---------------- Ações ---------------- */
+const DICA_REG = () => `O tipo e a prioridade ficam nos botões à esquerda. Começar com <span class="kbd">14h</span> ou <span class="kbd">14:30</span> já põe o horário. Ex.: <i>14h Reunião com a GECOT</i>. Formatação: <span class="kbd">Ctrl+B</span> negrito · <span class="kbd">Ctrl+I</span> itálico · <span class="kbd">Ctrl+Shift+S</span> tachado · <span class="kbd">Ctrl+Shift+H</span> marca-texto. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).`;
+const dicaBtn = html => `<span class="dica"><button type="button" class="btn icon ghost" data-act="dica" aria-label="Dicas de uso">${I.info}</button><span class="dicapop" role="tooltip">${html}</span></span>`;
 function qlogHtml(){ return `    <div>
       <div class="qlog">
         <div class="typebtns">
@@ -4443,10 +4462,9 @@ function qlogHtml(){ return `    <div>
         </div>
         <input class="txt" id="qtext" placeholder="Registro rápido: tarefa, compromisso ou nota…" autocomplete="off">
         <input class="inp time" id="qtime" type="time" title="Horário (opcional)">
-        ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
+        <span class="qx">${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : ''}${dicaBtn(DICA_REG())}</span>
         <button class="btn primary" data-act="qadd">Adicionar</button>
       </div>
-      <div class="hint">O tipo e a prioridade ficam nos botões à esquerda. Começar com <span class="kbd">14h</span> ou <span class="kbd">14:30</span> já põe o horário. Ex.: <i>14h Reunião com a GECOT</i>. Formatação: <span class="kbd">Ctrl+B</span> negrito · <span class="kbd">Ctrl+I</span> itálico · <span class="kbd">Ctrl+Shift+S</span> tachado · <span class="kbd">Ctrl+Shift+H</span> marca-texto. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
     </div>
 `; }
 function quickAdd(){
@@ -4488,18 +4506,31 @@ const ACT = {
   },
   'set-fonte': a => { try { localStorage.setItem(FONTE_KEY, a.dataset.z); } catch(e){} aplicarFonte(); render(false); },
   'set-concfim': a => { S.settings.concluidosFim = a.checked; save(); },
-  'add-fim': a => {
+  'dica': (a, ev) => { ev.stopPropagation(); const d = a.closest('.dica'); const on = !d.classList.contains('on'); $$('.dica.on').forEach(x => x.classList.remove('on')); d.classList.toggle('on', on);
+    if (on && CEL){ const p = d.querySelector('.dicapop'), r = a.getBoundingClientRect(); Object.assign(p.style, { position: 'fixed', left: '16px', right: '16px', width: 'auto', top: Math.min(r.bottom + 6, innerHeight - 280) + 'px' }); } },
+  'fim-tipo': a => { ui.fimTipo = a.dataset.t; const li = a.closest('.addfim'); li.querySelectorAll('[data-act="fim-tipo"]').forEach(b => b.classList.toggle('on', b === a)); li.querySelector('.bul').innerHTML = bulletSvg({ type: ui.fimTipo, status: 'open' }); $('#qfim').focus(); },
+  'fim-prio': a => { ui.fimPrio = !ui.fimPrio; a.classList.toggle('on', ui.fimPrio); a.closest('.addfim').querySelector('.sig').innerHTML = ui.fimPrio ? PRIO_SVG : ''; $('#qfim').focus(); },
+  'add-fim': (a, ev) => {
     if (a.querySelector('input')) return;
-    a.classList.add('ativo'); a.querySelector('.txt').innerHTML = '<input class="qfim" id="qfim" placeholder="Novo registro… (14h no começo põe o horário)" autocomplete="off">';
+    const tp = ui.fimTipo || 'task';
+    a.classList.add('ativo');
+    a.querySelector('.bul').innerHTML = bulletSvg({ type: tp, status: 'open' });
+    a.querySelector('.sig').innerHTML = ui.fimPrio ? PRIO_SVG : '';
+    a.querySelector('.txt').innerHTML = `<span class="fimlinha"><input class="qfim" id="qfim" placeholder="Novo registro…" autocomplete="off">
+      <span class="typebtns">${[['task', 'Tarefa'], ['event', 'Evento / compromisso'], ['note', 'Nota']].map(([t, n]) => `<button type="button" data-act="fim-tipo" data-t="${t}" class="${tp === t ? 'on' : ''}" title="${n}">${bulletSvg({ type: t, status: 'open' })}</button>`).join('')}<button type="button" data-act="fim-prio" class="${ui.fimPrio ? 'on' : ''}" title="Prioridade">${PRIO_SVG}</button></span>
+      <input class="inp time" id="qfimh" type="time" title="Horário (opcional)"></span>`;
+    a.addEventListener('pointerdown', k => { if (k.target.closest('button')) k.preventDefault(); });
     const inp = $('#qfim'); inp.focus();
-    const sair = () => { if (!inp.dataset.seguir && !inp.value.trim()) render(false); };
+    const sair = () => { if (inp.dataset.seguir || inp.value.trim() || a.contains(document.activeElement)) return; render(false); };
+    $('#qfimh').addEventListener('blur', () => setTimeout(sair, 120));
+    $('#qfimh').addEventListener('keydown', k => { if (k.key === 'Enter'){ k.preventDefault(); inp.focus(); inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' })); } });
     inp.addEventListener('blur', () => setTimeout(sair, 120));
     inp.addEventListener('keydown', k => {
       if (k.key === 'Escape'){ inp.value = ''; inp.blur(); }
       if (k.key === 'Enter' && inp.value.trim()){
         k.preventDefault(); inp.dataset.seguir = '1'; const q = parseQuick(inp.value);
-        addEntry({ type: ui.qtype || 'task', text: q.text, date: ui.date, time: q.time || '', prio: false });
-        inp.value = ''; save(); setTimeout(() => ACT['add-fim']($('#main .entries .addfim')), 30);
+        addEntry({ type: ui.fimTipo || 'task', text: q.text, date: ui.date, time: q.time || $('#qfimh').value || '', prio: !!ui.fimPrio });
+        ui.fimPrio = false; inp.value = ''; save(); setTimeout(() => ACT['add-fim']($('#main .entries .addfim')), 30);
       }
     });
   },
@@ -4826,6 +4857,7 @@ document.addEventListener('mousedown', ev => {
   const sh = ev.target.closest('#fmenu .it[data-sh]');
   if (sh){ ev.preventDefault(); const p = $('#fmenu').dataset.p, k = sh.dataset.sh; closeMenu(); if (k === 'win') shareWindows(p); else localAction(k, p); return; }
   if (NT.aberto && !ev.target.closest('#npop') && !ev.target.closest('.sino')) sinoFechar();
+  if (!ev.target.closest('.dica')) $$('.dica.on').forEach(x => x.classList.remove('on'));
   if ($('#fmenu') && !ev.target.closest('#fmenu') && !ev.target.closest('[data-act="f-share"]') && !ev.target.closest('[data-act="e-mais"]') && !ev.target.closest('[data-act="amb-menu"]')) closeMenu();
   if (ev.target.closest('#nbbar .btn')) ev.preventDefault();
   const it = ev.target.closest('#mpop .it'); if (it){ ev.preventDefault(); nbPopPick(+it.dataset.mi); }
