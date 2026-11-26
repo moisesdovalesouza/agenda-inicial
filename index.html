@@ -199,6 +199,7 @@ label.chk input{accent-color:var(--accent)}
 .cal .it.done{color:var(--faint);text-decoration:line-through}
 .cal .it.ponto{background:var(--accent-bg);color:var(--accent-strong);padding:0 4px;border-radius:2px;font-weight:600}
 .cal .more{font-size:11px;color:var(--muted)}
+.legend b svg{width:14px;height:14px;vertical-align:-3px}.legend b.lp svg{width:8px;height:8px;vertical-align:1px}
 .legend{display:flex;flex-wrap:wrap;gap:var(--s3);font-size:12px;color:var(--muted);margin-top:var(--s2)}
 .legend span b{font-family:var(--mono);color:var(--text);margin-right:4px}
 
@@ -404,6 +405,70 @@ body.vonly .vpanel{border:0;border-radius:0;box-shadow:none}
 .entry.pisca{animation:pisca 1.6s ease}
 @keyframes pisca{0%,60%{background:var(--accent-bg)}100%{background:transparent}}
 @media (max-width:900px){.npop{left:8px;right:8px!important;width:auto}}
+
+/* =================== Layout de celular (html.cel) — inspirado no Notion no celular =================== */
+.tabbar{display:none}
+.emob{display:none}
+html.cel .app{display:block}
+html.cel .side{display:none}
+html.cel .main{height:100dvh;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+html.cel .topbar{position:sticky;top:0;z-index:20;height:52px;padding:0 4px 0 16px;gap:4px;background:var(--bg);border-bottom:1px solid var(--border)}
+html.cel .topbar .mob-menu,html.cel .topbar .cr-pre,html.cel .topbar .sino{display:none}
+html.cel .topbar .crumbs b{font-size:16px;font-weight:600}
+html.cel .topbar .tools{gap:0}
+html.cel .topbar .tools .btn{height:40px;min-width:40px}
+html.cel .page{padding:16px 16px 32px}
+html.cel h1.title{font-size:28px;line-height:1.2;margin-top:4px}
+html.cel .kicker{margin-top:8px}
+/* abas */
+html.cel .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;height:calc(60px + env(safe-area-inset-bottom));padding:0 4px env(safe-area-inset-bottom);background:var(--bg);border-top:1px solid var(--border)}
+html.cel .tabbar button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:60px;border:0;background:none;color:var(--muted);font-size:10px;letter-spacing:.02em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html.cel .tabbar button svg{width:22px;height:22px}
+html.cel .tabbar button.on{color:var(--text)}
+html.cel .tabbar button.on span{font-weight:600}
+html.cel .tabbar .novo{justify-self:center;width:44px;height:44px;border-radius:8px;background:var(--accent);color:#fff}
+html.cel .tabbar .novo svg{width:22px;height:22px}
+html.cel .tabbar .nb{position:absolute;top:7px;left:calc(50% + 4px);min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--accent);color:#fff;font:600 10px/16px var(--mono);font-style:normal;box-shadow:0 0 0 2px var(--bg)}
+/* página Menu: a barra lateral em linhas grandes */
+html.cel .mmenu .brand{padding:0 0 16px}
+html.cel .mmenu .ambsel{width:100%;margin:0 0 16px;height:48px;font-size:14px}
+html.cel .mmenu nav,html.cel .mmenu .nav{display:flex;flex-direction:column}
+html.cel .mmenu a[data-act]{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center;min-height:48px;padding:0 4px;border-bottom:1px solid var(--border);border-radius:0;font-size:16px;color:var(--text)}
+html.cel .mmenu a[data-act] svg{width:20px;height:20px;color:var(--muted)}
+html.cel .mmenu a[data-v="hoje"],html.cel .mmenu a[data-v="cal"]{display:none}
+html.cel .mmenu .install{margin:16px 0}
+html.cel .mmenu .install .btn{height:44px}
+/* registros: ações por folha */
+html.cel .entry{min-height:40px;padding-top:6px;padding-bottom:6px}
+html.cel .entry .acts{visibility:hidden;pointer-events:none}
+html.cel .emob{display:grid;place-items:center;align-self:start;width:36px;height:28px;margin-right:-8px;border:0;background:none;color:var(--faint);grid-column:4;grid-row:1}
+html.cel .emob svg{width:18px;height:18px}
+/* folha */
+.folha-fundo{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,0);transition:background .2s}
+.folha-fundo.on{background:rgba(0,0,0,.4)}
+.folha{position:fixed;left:0;right:0;bottom:0;z-index:71;max-height:88dvh;overflow:auto;padding:8px 16px calc(16px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--border);border-radius:12px 12px 0 0;transform:translateY(100%);transition:transform .22s ease}
+.folha.on{transform:none}
+.folha .alca{width:36px;height:4px;margin:0 auto 12px;border-radius:2px;background:var(--border)}
+.folha .ftit{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;font-size:16px;font-weight:600}
+.folha .ftit small{font-size:13px;font-weight:400;color:var(--muted)}
+.folha .ftit .fbul{width:20px;flex:none;align-self:center}.folha .ftit .fbul svg{width:16px;height:16px}
+.folha .qlog{margin:0 0 16px}
+.folha .hint{display:none}
+.folha .fgrade{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.folha .fgrade button{display:flex;align-items:center;gap:10px;height:48px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:14px;text-align:left}
+.folha .fgrade svg{width:18px;height:18px;color:var(--muted)}
+.folha .flista{display:flex;flex-direction:column}
+.folha .fi{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:center;min-height:48px;padding:0 4px;border:0;border-bottom:1px solid var(--border);background:none;color:var(--text);font-size:15px;text-align:left}
+.folha .fi svg{width:18px;height:18px;color:var(--muted)}
+/* janelas viram folhas no celular */
+html.cel .modal{align-items:flex-end;padding:0}
+html.cel .modal .box{width:100%;max-width:none;max-height:90dvh;overflow:auto;margin:0;border-radius:12px 12px 0 0;padding:20px 16px calc(16px + env(safe-area-inset-bottom))}
+/* avisos em página */
+.npop.pagina{position:static;width:auto;max-width:none;max-height:none;border:0;box-shadow:none;background:transparent}
+.npop.pagina .ntopo{padding:0;border:0;height:auto;margin-bottom:8px}.npop.pagina .ntopo b{display:none}
+.npop.pagina .ni{padding:10px 4px 10px 16px;border-bottom:1px solid var(--border)}
+.npop.pagina .nh{padding-left:0}
+html.cel .ambmenu{left:8px!important;right:8px;width:auto!important}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -672,6 +737,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
   <aside class="side" id="side"></aside>
   <main class="main" id="main"></main>
 </div>
+<nav class="tabbar" id="tabbar" aria-label="Navegação"></nav>
 <input type="date" id="dp" tabindex="-1">
 <input type="file" id="fpick" multiple hidden>
 <input type="file" id="fpick1" hidden>
@@ -692,7 +758,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.22.1';    // versão do programa
+const APP_RELEASE = '1.23.0';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -730,6 +796,7 @@ function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.cl
 
 /* ---------------- Ícones ---------------- */
 const I = {
+  menu:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg>',
   bell:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5V7.2a4 4 0 0 1 8 0v4.3l1 1H3z"/><path d="M6.6 14a1.5 1.5 0 0 0 2.8 0"/></svg>',
   team:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.2c.4-2.3 2.1-3.6 4.2-3.6s3.8 1.3 4.2 3.6"/><circle cx="11.4" cy="6.2" r="1.8"/><path d="M11.2 9.7c1.6.1 2.7 1.1 3 3"/></svg>',
   dots:'<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="12.5" cy="8" r="1.2"/></svg>',
@@ -842,6 +909,17 @@ function save(renderAfter = true){
 
 /* ---------------- Pasta do sistema (File System Access) ---------------- */
 const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+/* Dois layouts: computador (barra lateral) e celular (abas embaixo, como o Notion no celular).
+   Automático: celular em telefones; tablets e computadores ficam com o layout de computador. */
+const LAYOUT_KEY = 'agendaInicial.layout';
+function calcCel(){
+  let p = 'auto'; try { p = localStorage.getItem(LAYOUT_KEY) || 'auto'; } catch(e){}
+  if (p === 'celular') return true; if (p === 'computador') return false;
+  if (/iPhone|iPod|Android.+Mobile|Windows Phone|Mobile.+Firefox/i.test(navigator.userAgent)) return true;
+  return matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 600;
+}
+let CEL = calcCel();
+document.documentElement.classList.toggle('cel', CEL);
 const FS = { root: null, state: 'none', lastWrite: 0 }; // state: none | granted | prompt | unsupported
 const fsSupported = 'showDirectoryPicker' in window;
 function idb(){ return new Promise((res, rej) => { const r = indexedDB.open(IDB_NAME, 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
@@ -1116,6 +1194,15 @@ function shareMenu(btn, p){
   el.style.top = (r.bottom + 6 + 230 > innerHeight ? r.top - 236 : r.bottom + 6) + 'px';
 }
 function closeMenu(){ const el = $('#fmenu'); if (el) el.remove(); }
+/* Folha que sobe de baixo (celular): novo registro e ações de um registro. */
+function folha(html, cls = ''){
+  fecharFolha();
+  const f = document.createElement('div'); f.className = 'folha-fundo'; f.dataset.act = 'folha-fechar';
+  const p = document.createElement('div'); p.className = 'folha ' + cls; p.id = 'folha'; p.innerHTML = '<div class="alca"></div>' + html;
+  document.body.append(f, p); requestAnimationFrame(() => { f.classList.add('on'); p.classList.add('on'); });
+  return p;
+}
+function fecharFolha(){ $$('.folha-fundo, #folha').forEach(x => x.remove()); }
 async function shareWindows(p){
   try {
     const f = S.files.find(x => x.path === p) || { name: p.split('/').pop(), path: p };
@@ -1568,7 +1655,7 @@ function entryRow(e, opt = {}){
     <span class="txt" data-act="e-edit">${opt.prefix || ''}${e.time ? `<span class="time" data-act="e-time">${e.time}${e.end ? '–' + e.end : ''}</span>` : ''}<span class="t">${comTags(esc(e.text))}</span></span>
     <span class="meta">${meta.join('')}</span>
     ${(fs => fs.length || (e.tags || []).length ? `<span class="fchips" data-tk="registro" data-tid="${e.id}">${(e.tags || []).map(t => tagChip(t)).join('')}${fs.map(f => `<a class="fchip" href="#" data-act="f-chip" data-e="${e.id}" data-fid="${f.id}" title="${f.kind === 'caderno' ? 'Abrir o caderno ' + esc(f.title || f.name) : 'Visualizar ' + esc(f.name)}">${f.kind === 'caderno' ? I.notebook : I.clip}<span>${esc(f.kind === 'caderno' ? (f.title || f.name) : tituloDe(f))}</span></a>`).join('')}</span>` : '')(filesOf(e.id))}
-    <span class="acts">${acts.map(([a,t,ic]) => `<button data-act="e-${a}" title="${t}">${ic}</button>`).join('')}</span>
+    <span class="acts">${acts.map(([a,t,ic]) => `<button data-act="e-${a}" title="${t}">${ic}</button>`).join('')}</span>${CEL ? `<button class="emob" data-act="e-folha" aria-label="Ações do registro">${I.dots}</button>` : ''}
   </li>`;
 }
 function gRow(ev, showDate){
@@ -1594,6 +1681,22 @@ function storageLine(){
   return '<a href="#" data-act="fs-connect"><span class="dot warn"></span>Autorizar pasta Documentos</a>';
 }
 function renderSide(){
+  renderSideDesk();
+  if (!CEL) return;
+  ui.sideHtml = $('#side').innerHTML; $('#side').innerHTML = '';
+  const mm = $('#mmenu'); if (mm) mm.innerHTML = ui.sideHtml;
+  renderTabbar();
+}
+function renderTabbar(){
+  const v = ui.view, n = sinoContagem();
+  const tab = (vv, ic, label, on, extra = '') => `<button class="${on ? 'on' : ''}" data-act="go" data-v="${vv}" aria-label="${label}">${ic}${extra}<span>${label}</span></button>`;
+  $('#tabbar').innerHTML = tab('hoje', I.today, 'Hoje', v === 'hoje')
+    + tab('cal', I.cal, 'Calendário', v === 'cal')
+    + `<button class="novo" data-act="m-novo" aria-label="Novo registro">${I.plus}</button>`
+    + tab('avisos', I.bell, 'Avisos', v === 'avisos', n ? `<i class="nb">${n > 99 ? '99+' : n}</i>` : '')
+    + tab('menu', I.menu, 'Menu', !['hoje', 'cal', 'avisos'].includes(v));
+}
+function renderSideDesk(){
   const p = pontoInfo();
   const nav = (v, ic, label, extra = '') => `<a class="${ui.view === v ? 'on' : ''}" data-act="go" data-v="${v}">${I[ic]}<span>${label}</span>${extra}</a>`;
   const openToday = S.entries.filter(e => e.date === today() && e.type === 'task' && e.status === 'open').length;
@@ -1690,21 +1793,7 @@ VIEWS.hoje = () => {
     ${FS.state === 'none' ? `<div class="banner"><div><b>Autorize a pasta Documentos (só uma vez)</b><span class="muted">A janela abre em Documentos: clique em <b>Selecionar pasta</b> e depois em <b>Permitir</b>. A agenda cria sozinha a pasta <b>${esc(FOLDER_NAME)}</b> e guarda lá seus dados e anexos.</span></div><div class="tools"><button class="btn primary" data-act="fs-connect">${I.folder}Autorizar</button></div></div>` : ''}
     ${isToday && p.pending ? `<div class="banner"><div><b>Registrar o ponto de ${MES[parse(p.refOf(p.mk)+'-01').getMonth()]}</b><span class="muted">Hoje ${p.fbd === d ? 'é' : 'já passou'} o 1º dia útil de ${MES[parse(d).getMonth()]} (${shortDate(p.fbd)}).${p.linked ? '' : ' Nenhum arquivo vinculado ainda.'}</span></div><div class="tools">${p.linked ? `<button class="btn primary" data-act="ponto-open">${I.open}Abrir o ponto</button>` : `<button class="btn primary" data-act="go" data-v="ponto">Vincular arquivo</button>`}<button class="btn" data-act="ponto-done" data-k="${p.mk}">${I.check}Feito</button></div></div>` : ''}
 
-    <div>
-      <div class="qlog">
-        <div class="typebtns">
-          <button data-act="qtype" data-t="task" class="${ui.qtype === 'task' ? 'on' : ''}" title="Tarefa">${bulletSvg({ type: 'task', status: 'open' })}</button>
-          <button data-act="qtype" data-t="event" class="${ui.qtype === 'event' ? 'on' : ''}" title="Evento / compromisso">${bulletSvg({ type: 'event', status: 'open' })}</button>
-          <button data-act="qtype" data-t="note" class="${ui.qtype === 'note' ? 'on' : ''}" title="Nota">${bulletSvg({ type: 'note', status: 'open' })}</button>
-          <button data-act="qprio" class="${ui.qprio ? 'on' : ''}" title="Prioridade">${PRIO_SVG}</button>
-        </div>
-        <input class="txt" id="qtext" placeholder="Registro rápido: tarefa, compromisso ou nota…" autocomplete="off">
-        <input class="inp time" id="qtime" type="time" title="Horário (opcional)">
-        ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
-        <button class="btn primary" data-act="qadd">Adicionar</button>
-      </div>
-      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
-    </div>
+    ${CEL ? '' : qlogHtml()}
 
     <div class="sec">
       <div class="sec-h"><h2>Registro do dia</h2><div class="tools">${(ps => ps.length ? `<button class="btn icon ghost" data-act="fold-all" title="${ps.some(x => !x.collapsed) ? 'Recolher todos os itens dentro' : 'Expandir tudo'}">${ps.some(x => !x.collapsed) ? I.foldall : I.unfoldall}</button>` : '')(S.entries.filter(x => x.date === d && kids(x.id).length))}${gOn() ? `<button class="btn ghost" data-act="g-refresh" title="Atualizar do Google">${I.sync}Atualizar</button>` : ''}</div></div>
@@ -1758,7 +1847,7 @@ VIEWS.cal = () => {
     <h1 class="title">${monthName(mk)}</h1>
     <p class="sub">1º dia útil: ${longDate(firstBusinessDay(mk))} · clique em um dia para abrir a página dele</p>
     <div class="cal">${WDS.map(w => `<div class="wd">${w}</div>`).join('')}${cells.join('')}</div>
-    <div class="legend"><span><b>•</b>tarefa</span><span><b>×</b>concluída</span><span><b>○</b>evento</span><span><b>–</b>nota</span><span><b>&gt;</b>migrada</span><span><b>&lt;</b>agendada</span><span><b>*</b>prioridade</span><span style="color:var(--accent-strong)"><b style="color:inherit">○</b>Google Agenda</span></div>
+    <div class="legend">${[[{ type: 'task', status: 'open' }, 'tarefa'], [{ type: 'task', status: 'done' }, 'concluída'], [{ type: 'event', status: 'open' }, 'evento'], [{ type: 'note', status: 'open' }, 'nota'], [{ type: 'task', status: 'migrated' }, 'migrada'], [{ type: 'task', status: 'scheduled' }, 'agendada']].map(([e, t]) => `<span><b>${bulletSvg(e)}</b>${t}</span>`).join('')}<span><b class="lp">${PRIO_SVG}</b>prioridade</span><span style="color:var(--accent-strong)"><b style="color:inherit">${bulletSvg({ type: 'event', status: 'open' })}</b>Google Agenda</span></div>
   </div>`;
 };
 
@@ -2160,6 +2249,8 @@ VIEWS.config = () => {
       <div class="form">
         <span class="muted">Tema</span>
         <div><div class="seg"><button data-act="set-theme" data-k="light" class="${S.settings.theme === 'light' ? 'on' : ''}">Claro</button><button data-act="set-theme" data-k="dark" class="${S.settings.theme === 'dark' ? 'on' : ''}">Escuro</button><button data-act="set-theme" data-k="auto" class="${S.settings.theme === 'auto' ? 'on' : ''}">Automático</button></div></div>
+        <span class="muted">Layout</span>
+        <div><div class="seg">${[['auto', 'Automático'], ['computador', 'Computador'], ['celular', 'Celular']].map(([k, t]) => `<button data-act="set-layout" data-k="${k}" class="${(localStorage.getItem(LAYOUT_KEY) || 'auto') === k ? 'on' : ''}">${t}</button>`).join('')}</div><div class="hint">Automático usa o layout de celular nos telefones e o de computador nos demais.</div></div>
         <span class="muted">Logo institucional</span>
         <div style="display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap">
           ${S.settings.logo ? `<img src="${S.settings.logo}" alt="" style="max-height:32px;max-width:160px;border:1px solid var(--border);padding:2px;background:#fff">` : '<span class="muted">Nenhuma imagem</span>'}
@@ -2649,6 +2740,8 @@ function convitesBanner(){
 }
 
 /* ---------------- Equipe ---------------- */
+VIEWS.menu = () => topbar('Menu') + `<div class="page mmenu" id="mmenu">${ui.sideHtml || ''}</div>`;
+VIEWS.avisos = () => topbar('Avisos') + `<div class="page mavisos"><div class="kicker">Notificações</div><h1 class="title">Avisos</h1><div class="npop pagina" id="mavisos">${sinoConteudo()}</div></div>`;
 VIEWS.equipe = () => {
   const a = ambAtual();
   if (!a){
@@ -2757,6 +2850,7 @@ function sinoAtualizar(){
   const n = sinoContagem();
   $$('.sino').forEach(b => { const c = b.querySelector('.nb'); if (c){ c.textContent = n > 99 ? '99+' : n; c.hidden = !n; } b.title = n ? `Notificações (${n} nova${n === 1 ? '' : 's'})` : 'Notificações'; });
   if (NT.aberto) sinoDesenhar();
+  if (CEL){ renderTabbar(); const m = $('#mavisos'); if (m) m.innerHTML = sinoConteudo(); }
   if ('setAppBadge' in navigator){ try { n ? navigator.setAppBadge(n) : navigator.clearAppBadge(); } catch(e){} }
 }
 const sinoBtn = () => { const n = sinoContagem(); return `<button class="btn icon ghost sino" data-act="sino" title="Notificações" aria-label="Notificações">${I.bell}<span class="nb" ${n ? '' : 'hidden'}>${n > 99 ? '99+' : n}</span></button>`; };
@@ -2780,12 +2874,30 @@ function sinoDesenhar(){
   const app = dia.filter(a => a.grupo === 'agenda').map(a => item(Object.assign({}, a, { lida: lidas.has(a.id) })));
   const sec = (t, arr) => arr.length ? `<div class="nh">${t}</div>${arr.join('')}` : '';
   const perm = 'Notification' in window && Notification.permission === 'default';
-  el.innerHTML = `<div class="ntopo"><b>Notificações</b>${sinoContagem() ? '<button class="lnk" data-act="nt-todas">Marcar todas como lidas</button>' : ''}</div>
+  el.innerHTML = sinoConteudo();
+  const b = $$('.sino').find(x => x.offsetParent);
+  if (b){ const r = b.getBoundingClientRect(); el.style.top = (r.bottom + 6) + 'px'; el.style.right = Math.max(8, innerWidth - r.right) + 'px'; }
+}
+function sinoConteudo(){
+  const lidas = conjunto(NT_LIDAS), dia = avisosDoDia();
+  const item = (o) => `<div class="ni${o.lida ? '' : ' nova'}${o.urgente ? ' urg' : ''}" ${o.act ? `data-act="${o.act}"` : ''} data-nid="${esc(o.id)}" ${o.eid ? `data-eid="${o.eid}"` : ''} ${o.amb ? `data-amb="${o.amb}"` : ''}>
+    <span class="nic">${o.de ? fotoPessoa(o.de, 'pfoto p24') : (NT_ICONE[o.ic] || (() => I.bell))()}</span>
+    <span class="nc"><b>${esc(o.titulo)}</b>${o.texto ? `<small>${esc(o.texto)}</small>` : ''}${o.extra || ''}</span>
+    <span class="nt">${esc(o.quando || '')}</span></div>`;
+  const conv = AMB.convites.map(c => `<div class="ni nova convite" data-cid="${c.id}" data-tok="">
+    <span class="nic">${c.por ? fotoPessoa(c.por, 'pfoto p24') : I.mail}</span>
+    <span class="nc"><b>Convite para ${esc(c.ambiente)}</b><small>${esc(c.por ? c.por.nome : 'Alguém')} convidou você como ${FUNCOES[c.funcao]}${c.setor ? ' · ' + esc(c.setor) : ''}</small>
+      <span class="nacts"><button class="btn mini" data-act="conv-recusar">Recusar</button><button class="btn mini primary" data-act="conv-aceitar">Aceitar</button></span></span>
+    <span class="nt"></span></div>`).join('');
+  const hoje = dia.filter(a => a.grupo === 'hoje').map(a => item(Object.assign({}, a, { lida: !a.conta || lidas.has(a.id) })));
+  const srv = NT.itens.map(n => item({ id: 'srv:' + n.id, ic: n.tipo, titulo: n.titulo, texto: n.texto, de: n.de, quando: tempoAtras(n.criado_em), lida: n.lida, act: 'nt-srv', amb: n.ambiente_id || '' }));
+  const app = dia.filter(a => a.grupo === 'agenda').map(a => item(Object.assign({}, a, { lida: lidas.has(a.id) })));
+  const sec = (t, arr) => arr.length ? `<div class="nh">${t}</div>${arr.join('')}` : '';
+  const perm = 'Notification' in window && Notification.permission === 'default';
+  return `<div class="ntopo"><b>Notificações</b>${sinoContagem() ? '<button class="lnk" data-act="nt-todas">Marcar todas como lidas</button>' : ''}</div>
     <div class="nlista">${sec('Para responder', conv ? [conv] : [])}${sec('Hoje', hoje)}${sec('Avisos', srv)}${sec('Agenda', app)}
     ${!conv && !hoje.length && !srv.length && !app.length ? `<div class="nvazio">Nada por aqui.${CLOUD.user ? '' : ' Entre com o Google para receber avisos da equipe.'}</div>` : ''}</div>
     ${perm ? `<div class="nperm"><span>Avisar também fora da agenda, 15 minutos antes dos compromissos.</span><button class="btn mini" data-act="nt-permitir">Ativar</button></div>` : ''}`;
-  const b = $$('.sino').find(x => x.offsetParent);
-  if (b){ const r = b.getBoundingClientRect(); el.style.top = (r.bottom + 6) + 'px'; el.style.right = Math.max(8, innerWidth - r.right) + 'px'; }
 }
 function sinoAbrir(){ NT.aberto = true; sinoDesenhar(); if (CLOUD.user) notifPuxar(); if (CLOUD.user) ambPuxar(); }
 function sinoFechar(){ NT.aberto = false; const el = $('#npop'); if (el) el.remove(); }
@@ -3906,13 +4018,30 @@ function pickDate(cb, initial, ev){
 function nextBusiness(s){ let d = addDays(s, 1); while (!isBusiness(d)) d = addDays(d, 1); return d; }
 
 /* ---------------- Ações ---------------- */
+function qlogHtml(){ return `    <div>
+      <div class="qlog">
+        <div class="typebtns">
+          <button data-act="qtype" data-t="task" class="${ui.qtype === 'task' ? 'on' : ''}" title="Tarefa">${bulletSvg({ type: 'task', status: 'open' })}</button>
+          <button data-act="qtype" data-t="event" class="${ui.qtype === 'event' ? 'on' : ''}" title="Evento / compromisso">${bulletSvg({ type: 'event', status: 'open' })}</button>
+          <button data-act="qtype" data-t="note" class="${ui.qtype === 'note' ? 'on' : ''}" title="Nota">${bulletSvg({ type: 'note', status: 'open' })}</button>
+          <button data-act="qprio" class="${ui.qprio ? 'on' : ''}" title="Prioridade">${PRIO_SVG}</button>
+        </div>
+        <input class="txt" id="qtext" placeholder="Registro rápido: tarefa, compromisso ou nota…" autocomplete="off">
+        <input class="inp time" id="qtime" type="time" title="Horário (opcional)">
+        ${gOn() ? `<label class="chk small" title="Também criar na agenda ${esc(S.google.calName || 'Cagece')} do Google"><input type="checkbox" id="qg" ${S.google.pushDefault ? 'checked' : ''}>Google</label>` : '<span></span>'}
+        <button class="btn primary" data-act="qadd">Adicionar</button>
+      </div>
+      <div class="hint">Atalhos ao digitar: <span class="kbd">o</span> evento · <span class="kbd">-</span> nota · <span class="kbd">*</span> prioridade · <span class="kbd">14h</span> ou <span class="kbd">14:30</span> horário. Ex.: <i>o 14h Reunião com a GECOT</i>. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).</div>
+    </div>
+`; }
 function quickAdd(){
   const inp = $('#qtext'); if (!inp) return;
   const raw = inp.value; if (!raw.trim()) return;
   const q = parseQuick(raw);
   const type = q.type || ui.qtype, time = q.time || $('#qtime').value || '';
   const e = addEntry({ type, text: q.text, date: ui.date, time, prio: q.prio || ui.qprio });
-  inp.value = ''; $('#qtime').value = ''; ui.qprio = false;
+  inp.value = ''; $('#qtime').value = ''; ui.qprio = false; $$('[data-act="qprio"]').forEach(b => b.classList.remove('on'));
+  if (CEL && $('#folha')) toast(e.date === today() ? 'Registrado em Hoje.' : `Registrado em ${shortDate(e.date)}.`);
   const push = $('#qg') && $('#qg').checked && type === 'event';
   save();
   if (push) gPush(e);
@@ -3925,6 +4054,7 @@ const ACT = {
   'list-del': () => { const l = S.lists.find(x => x.id === ui.listId); if (l && confirm(`Excluir a lista "${l.title || 'Sem título'}"?`)){ S.lists = S.lists.filter(x => x !== l); ui.view = 'hoje'; save(); } },
   'theme': () => { const o = ['auto','light','dark']; S.settings.theme = o[(o.indexOf(S.settings.theme) + 1) % 3]; save(); },
   'set-theme': a => { S.settings.theme = a.dataset.k; save(); },
+  'set-layout': a => { try { localStorage.setItem(LAYOUT_KEY, a.dataset.k); } catch(e){} CEL = calcCel(); document.documentElement.classList.toggle('cel', CEL); if (!CEL && ['menu', 'avisos'].includes(ui.view)) ui.view = 'hoje'; $('#side').innerHTML = ''; $('#tabbar').innerHTML = ''; render(); },
   'fs-connect': (a, ev) => { ev.preventDefault(); connectFolder(); },
   'fs-reconnect': (a, ev) => { ev.preventDefault(); reconnectFolder(); },
   'print': () => window.print(),
@@ -4107,7 +4237,37 @@ const ACT = {
   'e-bullet': a => { const e = byId(a.closest('.entry').dataset.id); if (!e) return; if (e.type === 'task' || e.type === 'event'){ if (e.status === 'open') completeEntry(e); else if (e.status === 'done') e.status = 'open'; else return; save(); } },
   'e-done': a => { const e = byId(a.closest('.entry').dataset.id); completeEntry(e); save(); },
   'e-reopen': a => { const e = byId(a.closest('.entry').dataset.id); e.status = 'open'; save(); },
-  'sino': (a, ev) => { ev.stopPropagation(); NT.aberto ? sinoFechar() : sinoAbrir(); },
+  'm-novo': () => {
+    if (!['hoje'].includes(ui.view)) ui.date = today();
+    folha(`<div class="ftit">Novo registro <small>${ui.date === today() ? 'Hoje' : shortDate(ui.date)}</small></div>${qlogHtml()}
+      <div class="fgrade">
+        <button data-act="folha-run" data-alvo="list-new">${I.list}<span>Nova lista</span></button>
+        <button data-act="folha-run" data-alvo="nb-new">${I.notebook}<span>Novo caderno</span></button>
+        <button data-act="folha-run" data-alvo="f-up">${I.clip}<span>Enviar arquivo</span></button>
+        <button data-act="folha-run" data-alvo="go" data-v="futuro">${I.future}<span>Registro futuro</span></button>
+      </div>`, 'fnovo');
+    setTimeout(() => $('#qtext') && $('#qtext').focus(), 250);
+  },
+  'folha-fechar': () => fecharFolha(),
+  'folha-run': (a, ev) => {
+    const alvo = a.dataset.alvo, id = a.dataset.id; fecharFolha();
+    if (id){
+      const li = $(`#main .entry[data-id="${id}"]`); if (!li) return;
+      const b = alvo === 'e-bullet' ? li.querySelector('.bul') : alvo === 'e-edit' ? li.querySelector('[data-act="e-edit"]') : li.querySelector(`.acts [data-act="${alvo}"]`);
+      if (b) setTimeout(() => b.dispatchEvent(new MouseEvent('click', { bubbles: true })), 30);
+      return;
+    }
+    ACT[alvo] && ACT[alvo](a, ev);
+  },
+  'e-folha': (a, ev) => {
+    ev.stopPropagation();
+    const li = a.closest('.entry'), e = byId(li.dataset.id); if (!e) return;
+    const it = (alvo, ic, t) => `<button class="fi" data-act="folha-run" data-alvo="${alvo}" data-id="${e.id}">${ic}<span>${t}</span></button>`;
+    const acts = [...li.querySelectorAll('.acts [data-act]')].map(b => it(b.dataset.act, b.innerHTML, b.title));
+    folha(`<div class="ftit"><span class="fbul">${bulletSvg(e)}</span>${esc(e.text)}</div>
+      <div class="flista">${it('e-edit', I.pen, 'Editar o texto')}${acts.join('')}</div>`, 'facoes');
+  },
+  'sino': (a, ev) => { ev.stopPropagation(); if (CEL){ go('avisos'); if (CLOUD.user){ notifPuxar(); ambPuxar(); } return; } NT.aberto ? sinoFechar() : sinoAbrir(); },
   'nt-todas': () => { marcarLidas([...avisosDoDia().filter(x => x.conta).map(x => x.id), ...NT.itens.filter(n => !n.lida).map(n => 'srv:' + n.id)]); notifRpc('lidas').then(notifAplicar).catch(() => {}); },
   'nt-dia': (a, ev) => { marcarLidas([a.dataset.nid]); sinoFechar(); ui.date = today(); go('hoje'); const id = a.dataset.eid; if (id) setTimeout(() => { const li = $(`.entry[data-id="${id}"]`); if (li){ li.scrollIntoView({ block: 'center' }); li.classList.add('pisca'); setTimeout(() => li.classList.remove('pisca'), 1600); } }, 60); },
   'nt-ponto': a => { marcarLidas([a.dataset.nid]); sinoFechar(); go('ponto'); },
