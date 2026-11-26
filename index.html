@@ -566,6 +566,14 @@ html.cel .dica:hover>.dicapop{display:none}html.cel .dica.on>.dicapop{display:bl
 .fimlinha .typebtns button{width:24px;height:24px}
 .fimlinha .time{height:26px;width:104px;font-size:13px}
 html.cel .fimlinha{grid-template-columns:minmax(0,1fr) auto}html.cel .fimlinha .qfim{grid-column:1/-1}
+
+.bolhafmt{position:fixed;z-index:95;display:flex;gap:2px;padding:3px;background:#1f1f1f;border-radius:var(--r);box-shadow:0 4px 14px rgba(0,0,0,.22)}
+.bolhafmt[hidden]{display:none}
+.bolhafmt button{width:34px;height:28px;border:0;border-radius:2px;background:transparent;color:#f4f1ea;font:15px/1 var(--serif,Georgia,serif);cursor:pointer}
+.bolhafmt button:hover{background:rgba(255,255,255,.12)}
+.bolhafmt .mk{padding:1px 4px;background:rgba(242,197,0,.55);color:#1f1f1f;border-radius:1px}
+html[data-theme="dark"] .bolhafmt{background:#f4f1ea}html[data-theme="dark"] .bolhafmt button{color:#1f1f1f}html[data-theme="dark"] .bolhafmt button:hover{background:rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){html[data-theme="auto"] .bolhafmt{background:#f4f1ea}html[data-theme="auto"] .bolhafmt button{color:#1f1f1f}html[data-theme="auto"] .bolhafmt button:hover{background:rgba(0,0,0,.08)}}
 /* ---------- Leitor com marcações (do Termo Inicial: VisualizadorPdf / BarraMarcar) ---------- */
 .marca-cor-amarelo{--cor-marcacao:#f2c500}.marca-cor-verde{--cor-marcacao:#3fae5f}.marca-cor-azul{--cor-marcacao:#3f8fe0}.marca-cor-rosa{--cor-marcacao:#e0609a}.marca-cor-laranja{--cor-marcacao:#ef8a2c}
 .pdfv{height:100%;overflow:auto;background:var(--bg2);padding:var(--s4) var(--s3) 96px}
@@ -855,7 +863,7 @@ body.arrastando,body.arrastando *{cursor:grabbing!important;user-select:none}
    ===================================================================== */
 
 const APP_VERSION = 1;          // versão do formato dos dados
-const APP_RELEASE = '1.26.2';    // versão do programa
+const APP_RELEASE = '1.26.3';    // versão do programa
 const LS_KEY = 'agendaInicial.v1';
 /* Cada ambiente de trabalho (empresa) tem a sua própria agenda: no navegador, na pasta e na nuvem. '' = agenda pessoal. */
 const AMB_KEY = 'agendaInicial.ambiente';
@@ -2036,7 +2044,7 @@ VIEWS.lista = () => {
     <input class="title-edit" id="ltitle" value="${esc(l.title)}" placeholder="Sem título">
     <p class="sub">${open} em aberto · ${done} concluído${done === 1 ? '' : 's'}</p>
     <div class="tagline" data-tk="lista" data-tid="${l.id}" style="margin:calc(-1 * var(--s3)) 0 var(--s4)">${tagLine('lista', l.id, l)}${tagsTexto(textoDe('lista', l)).filter(t => !(l.tags || []).some(x => tagKey(x) === tagKey(t))).map(t => tagChip(t)).join('')}</div>
-    <div class="qlog" style="grid-template-columns:1fr auto auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)">${dicaBtn(`Formatação: <span class="kbd">Ctrl+B</span> · <span class="kbd">Ctrl+I</span> · <span class="kbd">Ctrl+Shift+S</span> · <span class="kbd">Ctrl+Shift+H</span>. Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.`)}<button class="btn primary" data-act="li-add">Adicionar</button></div>
+    <div class="qlog" style="grid-template-columns:1fr auto auto"><input class="txt" id="litext" placeholder="Novo item… (Enter)">${dicaBtn(`Formatação: selecione um trecho e use a barrinha que aparece. Ao editar um item: <span class="kbd">Enter</span> cria o próximo · <span class="kbd">Tab</span> transforma em subitem · <span class="kbd">Shift+Tab</span> volta um nível · até ${MAXSUB} níveis.`)}<button class="btn primary" data-act="li-add">Adicionar</button></div>
     <div class="sec">${rows || '<div class="empty">Lista vazia.</div>'}<div class="addfim lfim" data-act="li-add-fim">${I.plus}<span>Novo item</span></div></div>
     ${done ? `<div style="margin-top:var(--s2)"><button class="btn ghost" data-act="li-clear">Limpar concluídos</button></div>` : ''}
     <div class="sec"><div class="sec-h"><h2>Notas</h2></div><textarea class="notes autosize dotgrid" id="lnotes" placeholder="Anotações desta lista…">${esc(l.notes)}</textarea></div>
@@ -3164,8 +3172,9 @@ const TUT_PASSOS = [
     <p class="muted">No registro rápido, os botões à esquerda escolhem o tipo (${bulletSvg({ type: 'task', status: 'open' })} tarefa, ${bulletSvg({ type: 'event', status: 'open' })} evento, ${bulletSvg({ type: 'note', status: 'open' })} nota) e a prioridade. Começar a linha com o horário já o registra:</p>
     <div class="tatalhos">
       <div><span class="kbd">14h</span> horário</div>
-      <div><span class="kbd">#tag</span> classifica</div><div><span class="kbd">Ctrl+B</span> <b>negrito</b></div><div><span class="kbd">Ctrl+I</span> <i>itálico</i></div><div><span class="kbd">Ctrl+Shift+H</span> <mark>marca-texto</mark></div>
+      <div><span class="kbd">#tag</span> classifica</div><div><span class="kbd">Ctrl+B</span> <b>negrito</b></div><div><span class="kbd">Ctrl+I</span> <i>itálico</i></div>
     </div>
+    <p class="muted">Para formatar, selecione um trecho: aparece uma barrinha com <b>negrito</b>, <i>itálico</i>, <s>tachado</s> e <mark>marca-texto</mark>.</p>
     <p>Experimente agora — vai para a página de hoje:</p>
     <div class="qlog" style="grid-template-columns:1fr auto"><input class="txt" id="tu-teste" placeholder="Ex.: 14h Reunião com a equipe" autocomplete="off"><button class="btn primary" data-act="tut-teste">Registrar</button></div>
     <p class="hint" id="tu-ok"></p>`,
@@ -3343,6 +3352,43 @@ function barraFmt(){
 document.addEventListener('focusin', () => setTimeout(barraFmt, 50));
 document.addEventListener('focusout', () => setTimeout(barraFmt, 80));
 if (window.visualViewport){ visualViewport.addEventListener('resize', barraFmt); visualViewport.addEventListener('scroll', barraFmt); }
+
+/* Computador: ao selecionar um trecho num campo de texto, aparece uma barrinha logo acima da seleção
+   com negrito, itálico, tachado e marca-texto (como no Notion e no Google Docs). */
+function bolhaFmt(){
+  let b = $('#bolhafmt');
+  const t = document.activeElement;
+  let rect = null;
+  if (!CEL && ehEditavelFmt(t)){
+    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA'){
+      if (t.selectionEnd > t.selectionStart){ const r = t.getBoundingClientRect(); rect = { top: r.top, left: r.left + Math.min(r.width - 40, 24), width: 80 }; }
+    } else {
+      const s = getSelection();
+      if (s.rangeCount && !s.isCollapsed && t.contains(s.anchorNode)){ const r = s.getRangeAt(0).getBoundingClientRect(); if (r.width) rect = r; }
+    }
+  }
+  if (!rect){ if (b) b.hidden = true; return; }
+  if (!b){
+    b = document.createElement('div'); b.id = 'bolhafmt'; b.className = 'bolhafmt'; b.setAttribute('role', 'toolbar');
+    b.innerHTML = [['b', '<b>B</b>', 'Negrito (Ctrl+B)'], ['i', '<i>I</i>', 'Itálico (Ctrl+I)'], ['s', '<s>S</s>', 'Tachado'], ['h', '<span class="mk">M</span>', 'Marca-texto']].map(([k, h, tt]) => `<button data-mk="${k}" title="${tt}" aria-label="${tt}">${h}</button>`).join('');
+    b.addEventListener('mousedown', ev => ev.preventDefault());
+    b.addEventListener('click', ev => { const k = ev.target.closest('[data-mk]'); const el = document.activeElement; if (k && ehEditavelFmt(el)){ marcarSelecao(el, MARCAS[k.dataset.mk]); setTimeout(bolhaFmt, 0); } });
+    document.body.appendChild(b);
+  }
+  b.hidden = false;
+  const w = b.offsetWidth || 152, h = b.offsetHeight || 34;
+  let top = rect.top - h - 8; if (top < 8) top = (rect.bottom || rect.top + 24) + 8;
+  b.style.top = top + 'px';
+  b.style.left = Math.max(8, Math.min(rect.left + (rect.width || 0) / 2 - w / 2, innerWidth - w - 8)) + 'px';
+}
+let bolhaT = 0;
+const bolhaAgendar = () => { clearTimeout(bolhaT); bolhaT = setTimeout(bolhaFmt, 60); };
+document.addEventListener('selectionchange', bolhaAgendar);
+document.addEventListener('select', bolhaAgendar, true);
+document.addEventListener('mouseup', bolhaAgendar);
+document.addEventListener('keyup', ev => { if (ev.shiftKey || ev.key === 'Shift' || ev.key.startsWith('Arrow')) bolhaAgendar(); });
+document.addEventListener('focusout', () => setTimeout(bolhaFmt, 80));
+document.addEventListener('scroll', () => { const b = $('#bolhafmt'); if (b && !b.hidden) bolhaFmt(); }, true);
 
 /* ---------------- Tags (#) ----------------
    #palavra no texto (registro, caderno, lista) ou como classificação (registro, caderno, lista, documento).
@@ -4450,7 +4496,7 @@ function pickDate(cb, initial, ev){
 function nextBusiness(s){ let d = addDays(s, 1); while (!isBusiness(d)) d = addDays(d, 1); return d; }
 
 /* ---------------- Ações ---------------- */
-const DICA_REG = () => `O tipo e a prioridade ficam nos botões à esquerda. Começar com <span class="kbd">14h</span> ou <span class="kbd">14:30</span> já põe o horário. Ex.: <i>14h Reunião com a GECOT</i>. Formatação: <span class="kbd">Ctrl+B</span> negrito · <span class="kbd">Ctrl+I</span> itálico · <span class="kbd">Ctrl+Shift+S</span> tachado · <span class="kbd">Ctrl+Shift+H</span> marca-texto. Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).`;
+const DICA_REG = () => `O tipo e a prioridade ficam nos botões à esquerda. Começar com <span class="kbd">14h</span> ou <span class="kbd">14:30</span> já põe o horário. Ex.: <i>14h Reunião com a GECOT</i>. Formatação: selecione um trecho e escolha negrito, itálico, tachado ou marca-texto na barrinha que aparece (<span class="kbd">Ctrl+B</span> e <span class="kbd">Ctrl+I</span> também valem). Clique no símbolo para concluir; arraste-o para mudar a ordem ou o nível, ou use o botão ${'<span class="kbd">⋯</span>'} do registro para mudar o tipo. <span class="kbd">Alt ↑</span> / <span class="kbd">Alt ↓</span> movem o registro ao editar o texto. Para itens dentro de qualquer registro, use o botão ${'<span class="kbd">↳</span>'} do registro ou <span class="kbd">Tab</span> / <span class="kbd">Shift+Tab</span> ao editar o texto (até ${MAXSUB} níveis).`;
 const dicaBtn = html => `<span class="dica"><button type="button" class="btn icon ghost" data-act="dica" aria-label="Dicas de uso">${I.info}</button><span class="dicapop" role="tooltip">${html}</span></span>`;
 function qlogHtml(){ return `    <div>
       <div class="qlog">
