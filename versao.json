@@ -1,14 +1,14 @@
 {
- "version": "1.23.0",
+ "version": "1.24.0",
  "date": "2026-11-26",
  "notes": [
+  "Formatação nos registros, listas e anotações: Ctrl+B negrito, Ctrl+I itálico, Ctrl+Shift+S tachado e Ctrl+Shift+H marca-texto amarelo (ou digitando **negrito**, *itálico*, ~~tachado~~ e ==marca-texto==)",
+  "Novo registro também no fim da lista do dia, de forma discreta (aparece ao passar o mouse); nas listas, novo item no fim",
+  "Configurações › Aparência: tamanho do texto (por aparelho) e a opção de levar os concluídos para o fim da lista",
   "Layout próprio para o celular, no estilo do Notion: abas embaixo (Hoje, Calendário, + Novo, Avisos e Menu), página Menu com tudo o que fica na barra lateral, e janelas que sobem de baixo",
   "No celular, o botão ⋯ de cada registro abre todas as ações (concluir, editar, tipo, posição, nível, tag, anexo, migrar, excluir); o + abre o registro rápido, nova lista, novo caderno e envio de arquivos",
   "Configurações › Aparência › Layout: automático (celular nos telefones), computador ou celular",
   "Legenda do calendário com os mesmos símbolos dos registros",
-  "Correção: a página Perfil voltou ao formato de antes (os campos tinham ficado centralizados e estreitos)",
-  "Equipe aparece no menu mesmo na agenda pessoal, com os seus ambientes, o botão para abrir cada um e a opção de levar a agenda pessoal para o ambiente, juntando com o que já estiver lá",
-  "Sininho de notificações no canto superior direito: convites para aceitar ali mesmo, avisos da equipe (quem entrou no ambiente, mudança de função), compromissos de hoje com aviso 15 minutos antes, itens planejados que chegam hoje, o ponto pendente e as novidades de cada versão",
-  "Avisos também fora da agenda (Windows ou celular), se você ativar no próprio sininho"
+  "Correção: a página Perfil voltou ao formato de antes (os campos tinham ficado centralizados e estreitos)"
  ]
 }
